@@ -16,3 +16,6 @@ module.exports = {
     },
   ],
 };
+
+// Don't open the browser during development
+process.env.BROWSER = 'none';
