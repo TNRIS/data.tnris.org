@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+//package imports
+import { Layout } from "antd";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+//local imports
+import "./App.less";
+import CartRoute from "./components/routes/CartRoute";
+import CatalogRoute from "./components/routes/CatalogRoute";
+import CollectionRoute from "./components/routes/CollectionRoute";
+
+const { Header, Footer, Content } = Layout;
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Layout>
+        <Header>
+
+        </Header>
+        <Content>
+          <BrowserRouter>
+            <Switch>
+              <Route path="/collection" component={CollectionRoute} />
+              <Route path="/cart" component={CartRoute} />
+              <Route path="/" component={CatalogRoute} />
+            </Switch>
+          </BrowserRouter>
+        </Content>
+        <Footer>Footer</Footer>
+      </Layout>
     </div>
   );
 }
