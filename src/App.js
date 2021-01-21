@@ -12,11 +12,11 @@ const { Header, Footer, Content } = Layout;
 function App() {
   return (
     <div className="App">
-      <Layout>
+      <Layout id="Main-Layout">
         <Header>
 
         </Header>
-        <Content>
+        <Content style={{ height: 'calc(100% - 80px)' }}>
           <BrowserRouter>
             <Switch>
               <Route path="/collection" component={CollectionRoute} />
