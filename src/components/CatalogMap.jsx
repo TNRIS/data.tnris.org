@@ -1,5 +1,5 @@
 // package imports
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Map, NavigationControl, GeolocateControl } from 'maplibre-gl';
 import 'maplibre-gl/dist/mapbox-gl.css';
 
@@ -8,9 +8,9 @@ import useQuery from "../utilities/custom-hooks/useQuery";
 
 export function CatalogMap() {
   const [map, setMap] = useState(null);
-  const [lng, setLng] = useState(-99.341389);
-  const [lat, setLat] = useState(31.33);
-  const [zoom, setZoom] = useState(5.4);
+  const [lng] = useState(-99.341389);
+  const [lat] = useState(31.33);
+  const [zoom] = useState(5.4);
   const CatalogMapContainer = useRef(null);
   
   useEffect(() => {
