@@ -32,5 +32,3 @@ export const fetchCollectionsSelector = selector({
     return response.json();
   },
 });
-
-
