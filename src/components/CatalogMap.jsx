@@ -10,7 +10,8 @@ export function CatalogMap() {
   const [map, setMap] = useState(null);
   const [lng] = useState(-99.341389);
   const [lat] = useState(31.33);
-  const [zoom] = useState(5.4);
+  const [zoom] = useState(5.5);
+  const [bounds, setBounds] = useState(null); 
   const CatalogMapContainer = useRef(null);
   
   useEffect(() => {
@@ -39,11 +40,15 @@ export function CatalogMap() {
         map.on("load", () => {
           setMap(map);
         });
+
+        map.on("moveend", () => {
+          setBounds(JSON.stringify(map.getBounds()));
+        });
     }
 
     if (!map) initializeMap({ setMap, CatalogMapContainer });
 
-  }, [map, lng, lat, zoom]);
+  }, [map, lng, lat, zoom, bounds]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the
@@ -67,7 +72,27 @@ export function CatalogMap() {
             bottom: "0",
             width: "100%"
           }}
-        />
+        >
+        </div>
+        {bounds ? 
+        <div
+          style={{
+            display: "block",
+            position: "relative",
+            margin: "12px auto",
+            width: "50%",
+            padding: "10px",
+            border: "solid 1px #666",
+            borderRadius: "3px",
+            fontSize: "12px",
+            textAlign: "center",
+            color: "#222",
+            background: "#fff"
+          }}
+        >
+          MAP BOUNDS:<br/>
+          {bounds}
+        </div> : ''}
     </div>
   );
 }
