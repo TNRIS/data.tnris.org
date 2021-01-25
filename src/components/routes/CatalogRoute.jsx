@@ -3,7 +3,7 @@ import { Col, Row } from "antd"
 
 // local imports
 import { CollectionList } from '../CollectionList';
-import { CatalogMap } from '../CatalogMap';
+import { AppMap } from '../Map';
 import useQuery from "../../utilities/custom-hooks/useQuery";
 import { Link } from "react-router-dom";
 
@@ -31,7 +31,7 @@ export default function CatalogRoute() {
           span={map === "true" ? 16  : 0}
           style={{ border: "solid 1px #666" }}
         >
-          <CatalogMap/>
+          <AppMap/>
         </Col>
       </Row>
     </div>

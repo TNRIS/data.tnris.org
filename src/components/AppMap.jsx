@@ -6,7 +6,7 @@ import 'maplibre-gl/dist/mapbox-gl.css';
 // local imports
 import useQuery from "../utilities/custom-hooks/useQuery";
 
-export function CatalogMap() {
+export function AppMap() {
   const [map, setMap] = useState(null);
   const [lng] = useState(-99.341389);
   const [lat] = useState(31.33);

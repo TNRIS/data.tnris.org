@@ -1,5 +1,30 @@
-@import '~antd/dist/antd.less';
+@import "~antd/dist/antd.less";
 
-#root, .App, #Main-Layout {
-    height: 100%;
+#root,
+.App,
+#Main-Layout {
+  height: 100vh;
+}
+
+#Main-Layout {
+  grid-template-areas: "header header" "content content" "footer footer";
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: auto auto auto;
+}
+
+#Catalog-Collection-Router-Container {
+  height: 100%;
+}
+
+.header {
+  grid-area: header;
+}
+
+.content {
+  grid-area: content;
+  overflow: hidden;
+}
+
+.footer {
+  grid-area: footer;
 }
