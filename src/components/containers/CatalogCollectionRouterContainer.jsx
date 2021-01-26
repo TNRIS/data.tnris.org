@@ -25,7 +25,7 @@ export function CatalogCollectionRouterContainer(props) {
           <Col
             xs={{ order: 2, span: 24 }}
             md={{ order: 1, span: map === "true" ? 10 : 24 }}
-            className={`DataContainer ${map === "true" ? '' : "MapNone"}`}
+            className={`DataContainer`}
           >
             <CatalogList mapview={map} />
           </Col>
