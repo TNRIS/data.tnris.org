@@ -3,7 +3,7 @@ import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 // local imports
-import useQuery from "../utilities/custom-hooks/useQuery";
+import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
 export function AppMap() {
   const [map, setMap] = useState(null);
@@ -45,7 +45,7 @@ export function AppMap() {
   // because the map container size can't be determined till the
   // css loads. Setting a timeout is the best way I could do that
   // for now. There may be a better way do do this with hooks.
-  const showMap = useQuery().get("map");
+  const showMap = useQueryParam().get("map");
   if (map) {
     if (showMap === "true") {
       setTimeout(() => {

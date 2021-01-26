@@ -7,9 +7,11 @@ import {
   catalogIncrement,
   catalogPage,
   fetchCollectionsSelector,
-} from "../utilities/atoms/collectionsAtoms";
+} from "../../../utilities/atoms/collectionsAtoms";
+import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
-export function CatalogList({ mapview = "true" }) {
+export function CatalogList() {
+  const mapParam = useQueryParam().get("map");
   const { state, contents } = useRecoilValueLoadable(fetchCollectionsSelector);
   const [page, setPage] = useRecoilState(catalogPage);
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
@@ -20,8 +22,8 @@ export function CatalogList({ mapview = "true" }) {
         <>
           <Row>
             <Header>
-              <Link to={mapview === "true" ? "/?map=false" : "/?map=true"}>
-                {mapview === "true" ? "Close Map" : "Show Map"}
+              <Link to={mapParam === "true" ? "?map=false" : "?map=true"}>
+                {mapParam === "true" ? "Close Map" : "Show Map"}
               </Link>
             </Header>
           </Row>
@@ -30,9 +32,9 @@ export function CatalogList({ mapview = "true" }) {
               contents?.results?.map((v, i) => (
                 <Col
                   sm={{ span: 24 }}
-                  md={{ span: mapview === "true" ? 24 : 12 }}
-                  lg={{ span: mapview === "true" ? 24 : 8 }}
-                  xxl={{ span: mapview === "true" ? 24 : 6 }}
+                  md={{ span: mapParam === "true" ? 24 : 12 }}
+                  lg={{ span: mapParam === "true" ? 24 : 8 }}
+                  xxl={{ span: mapParam === "true" ? 24 : 6 }}
                   key={v.collection_id}
                 >
                   <Link to={`/collection?c=${v.collection_id}`}>
