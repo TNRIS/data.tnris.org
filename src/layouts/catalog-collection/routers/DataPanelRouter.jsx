@@ -1,12 +1,12 @@
 import { Route, Switch } from "react-router-dom";
-import { CatalogList } from "../containers/CatalogList";
-import CollectionRoute from "../containers/CollectionTabContainer";
+import { CatalogList } from "../components/CatalogList";
+import CollectionTabs from "../components/CollectionTabs";
 
 export function DataPanelRouter() {
   return (
     <Switch>
       <Route path="/collection">
-        <CollectionRoute />
+        <CollectionTabs />
       </Route>
       <Route path="/">
         <CatalogList />

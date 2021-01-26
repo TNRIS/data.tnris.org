@@ -1,12 +1,14 @@
 import { Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
-import { FooterContainer } from "./containers/FooterContainer";
-import { HeaderContainer } from "./containers/HeaderContainer";
+import { BrowserRouter } from "react-router-dom";
+import { FooterContainer } from "./components/FooterContainer";
+import { HeaderContainer } from "./components/HeaderContainer";
 import { RootRouter } from "./routers/RootRouter";
 
 export function RootLayout() {
-    return (
-        <Layout id="Main-Layout">
+  return (
+    <BrowserRouter>
+      <Layout id="Main-Layout">
         {/**Header contained in header grid-area */}
         <HeaderContainer className="header" />
         {/** Content contained in content grid-area */}
@@ -17,5 +19,6 @@ export function RootLayout() {
         {/** Footer contained in footer grid-area */}
         <FooterContainer className="footer" />
       </Layout>
-    )
+    </BrowserRouter>
+  );
 }
