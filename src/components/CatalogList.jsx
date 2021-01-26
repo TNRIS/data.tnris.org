@@ -9,7 +9,7 @@ import {
   fetchCollectionsSelector,
 } from "../utilities/atoms/collectionsAtoms";
 
-export function CollectionList({ mapview = "true" }) {
+export function CatalogList({ mapview = "true" }) {
   const { state, contents } = useRecoilValueLoadable(fetchCollectionsSelector);
   const [page, setPage] = useRecoilState(catalogPage);
   const [increment, setIncrement] = useRecoilState(catalogIncrement);

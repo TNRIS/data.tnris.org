@@ -55,7 +55,7 @@ export function AppMap() {
   }
 
   return (
-    <div>
+    <>
       <div
         ref={(el) => (CatalogMapContainer.current = el)}
         className="CatalogMapContainer"
@@ -66,6 +66,6 @@ export function AppMap() {
           width: "100%",
         }}
       />
-    </div>
+    </>
   );
 }

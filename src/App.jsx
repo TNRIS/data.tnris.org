@@ -18,6 +18,7 @@ function App() {
         <HeaderContainer className="header" />
         {/** Content contained in content grid-area */}
         <Content className="content" style={{ height: "100%" }}>
+          {/** Root instance of React Router Switch Router */}
           <BrowserRouter>
             <Switch>
               <Route path="/cart" component={CartRoute} />

@@ -8,7 +8,7 @@ export default function CollectionRoute() {
   return (
     <div style={{ height: "100%" }}>
       <h2>Collection Route | c = {useQuery().get("c") || "does not exist"}</h2>
-      <Row style={{ height: "100%" }}>Tabs</Row>
+      <Row>Tabs</Row>
     </div>
   );
 }

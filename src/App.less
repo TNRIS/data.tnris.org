@@ -12,8 +12,32 @@
   grid-template-rows: auto auto auto;
 }
 
-#Catalog-Collection-Router-Container {
+#CatalogCollectionRouterContainer {
   height: 100%;
+  
+  .MapNone {
+    display: none;
+  }
+  .AppMapContainer {
+    height: 100%;
+    @media (max-width: @screen-md) {
+      height: 30%;
+    };
+    @media (min-width: @screen-md) {
+      height: 100%,
+    };
+  }
+
+  .DataContainer {
+    overflow: hidden auto;
+    margin: 0;
+    @media (max-width: @screen-md) {
+      height: 70%;
+    };
+    @media (min-width: @screen-md) {
+      height: 100%,
+    };
+  }
 }
 
 .header {
