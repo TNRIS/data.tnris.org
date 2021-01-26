@@ -9,56 +9,33 @@ import {
   fetchCollectionsSelector,
 } from "../utilities/atoms/collectionsAtoms";
 
-const CollectionListCSS = {
-  wrapper: {
-    "@media screen and (maxWidth: 600px)": {
-      height: "70%",
-    },
-    "@media screen and (minWidth: 601px)": {
-      height: "100%",
-    },
-    overflow: "hidden scroll",
-    margin: 0,
-  },
-};
-
 export function CollectionList({ mapview = "true" }) {
   const { state, contents } = useRecoilValueLoadable(fetchCollectionsSelector);
   const [page, setPage] = useRecoilState(catalogPage);
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
 
   return (
-    <>
-      {state === "loading" && (
-        <Spin
-          spinning={state === "loading"}
-          tip="Loading collections from database. Please wait."
-        />
-      )}
+    <Spin spinning={state === "loading"} tip={"Loading data collections, please wait"} >
       {contents.results && contents.results.length > 0 && (
         <>
-          <Col
-            xs={{ order: 2, span: 24 }}
-            lg={{ order: 1, span: mapview === "true" ? 10 : 24 }}
-            style={CollectionListCSS.wrapper}
-          >
-            <Row>
-              <Header>
-                <Link to={mapview === "true" ? "/?map=false" : "/?map=true"}>
-                  {mapview === "true" ? "Close Map" : "Show Map"}
-                </Link>
-              </Header>
-            </Row>
-            <Row gutter={[8, 8]}>
-              {contents.results.length > 0 &&
-                contents?.results?.map((v, i) => (
-                  <Col
-                    sm={{ span: 24 }}
-                    md={{ span: mapview === "true" ? 24 : 12 }}
-                    lg={{ span: mapview === "true" ? 24 : 8 }}
-                    xxl={{ span: mapview === "true" ? 24 : 6 }}
-                    key={v.collection_id}
-                  >
+          <Row>
+            <Header>
+              <Link to={mapview === "true" ? "/?map=false" : "/?map=true"}>
+                {mapview === "true" ? "Close Map" : "Show Map"}
+              </Link>
+            </Header>
+          </Row>
+          <Row gutter={[8, 8]}>
+            {contents.results.length > 0 &&
+              contents?.results?.map((v, i) => (
+                <Col
+                  sm={{ span: 24 }}
+                  md={{ span: mapview === "true" ? 24 : 12 }}
+                  lg={{ span: mapview === "true" ? 24 : 8 }}
+                  xxl={{ span: mapview === "true" ? 24 : 6 }}
+                  key={v.collection_id}
+                >
+                  <Link to={`/collection?c=${v.collection_id}`}>
                     <Card
                       size={"small"}
                       hoverable
@@ -105,25 +82,25 @@ export function CollectionList({ mapview = "true" }) {
                         </Col>
                       </Row>
                     </Card>
-                  </Col>
-                ))}
-            </Row>
-            <Pagination
-              current={page}
-              pageSize={increment}
-              onChange={(pg, inc) => {
-                if (pg !== page) {
-                  setPage(pg);
-                }
-                if (inc !== increment) {
-                  setIncrement(inc);
-                }
-              }}
-              total={contents.count}
-            />
-          </Col>
+                  </Link>
+                </Col>
+              ))}
+          </Row>
+          <Pagination
+            current={page}
+            pageSize={increment}
+            onChange={(pg, inc) => {
+              if (pg !== page) {
+                setPage(pg);
+              }
+              if (inc !== increment) {
+                setIncrement(inc);
+              }
+            }}
+            total={contents.count}
+          />
         </>
       )}
-    </>
+    </Spin>
   );
 }
