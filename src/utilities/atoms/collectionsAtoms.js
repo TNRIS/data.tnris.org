@@ -18,7 +18,7 @@ export const fetchCollectionsSelector = selector({
   get: async ({ get }) => {
     const page = get(catalogPage);
     const increment = get(catalogIncrement);
-    const offset = page <=1 ? '': `offset=${page * increment}&`;
+    const offset = page <=1 ? '': `offset=${(page - 1) * increment}&`;
 
     const response = await fetch(
       `https://api.tnris.org/api/v1/collections/?${offset}limit=${increment}`,
