@@ -11,34 +11,37 @@ export function AppMap() {
   const [lat] = useState(31.33);
   const [zoom] = useState(5.4);
   const CatalogMapContainer = useRef(null);
-
+  
   useEffect(() => {
-    const mapTilerKey = "olPbAXB9QkZuFSDG4x2V";
+    const mapTilerKey = "olPbAXB9QkZuFSDG4x2V"
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new Map({
         container: CatalogMapContainer.current,
         style: `https://api.maptiler.com/maps/topo/style.json?key=${mapTilerKey}`,
         center: [lng, lat],
-        zoom: zoom,
-      });
+        zoom: zoom
+        });
 
-      map.addControl(new NavigationControl());
+        map.addControl(
+          new NavigationControl()
+        );
+        
+        map.addControl(
+          new GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true
+          })
+        );
 
-      map.addControl(
-        new GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          trackUserLocation: true,
-        })
-      );
-
-      map.on("load", () => {
-        setMap(map);
-      });
-    };
+        map.on("load", () => {
+          setMap(map);
+        });
+    }
 
     if (!map) initializeMap({ setMap, CatalogMapContainer });
+
   }, [map, lng, lat, zoom]);
 
   // We need to resize the map if it is initialized while hidden
@@ -48,24 +51,22 @@ export function AppMap() {
   const showMap = useQueryParam().get("map");
   if (map) {
     if (showMap === "true") {
-      setTimeout(() => {
-        map.resize();
-      }, 10);
+      setTimeout(() => {map.resize()}, 10);
     }
   }
 
   return (
-    <>
-      <div
-        ref={(el) => (CatalogMapContainer.current = el)}
-        className="CatalogMapContainer"
-        style={{
-          position: "absolute",
-          top: "0",
-          bottom: "0",
-          width: "100%",
-        }}
-      />
-    </>
+    <div>
+        <div
+          ref={el => CatalogMapContainer.current = el}
+          className='CatalogMapContainer'
+          style={{
+            position: "absolute",
+            top: "0",
+            bottom: "0",
+            width: "100%"
+          }}
+        />
+    </div>
   );
 }
