@@ -5,6 +5,8 @@ import React, { useEffect, useRef, useState } from "react";
 // local imports
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
+const cartodb = window.cartodb;
+
 export function MapContainer() {
   const [map, setMap] = useState(null);
   const [lng] = useState(-99.341389);
@@ -18,31 +20,100 @@ export function MapContainer() {
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new Map({
         container: CatalogMapContainer.current,
-        style: `https://api.maptiler.com/maps/topo/style.json?key=${mapTilerKey}`,
+        // style: `https://api.maptiler.com/maps/topo/style.json?key=${mapTilerKey}`,
+        style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/basic.json',
         center: [lng, lat],
         zoom: zoom
-        });
+      });
 
-        map.addControl(
-          new NavigationControl()
-        );
-        
-        map.addControl(
-          new GeolocateControl({
-            positionOptions: {
-              enableHighAccuracy: true
+      map.addControl(
+        new NavigationControl()
+      );
+      
+      map.addControl(
+        new GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      );
+
+      map.on("load", () => {
+        setMap(map);
+      });
+
+      map.on("moveend", () => {
+        setBounds(JSON.stringify(map.getBounds()));
+      });
+
+      map.on('load', () => {
+        // define area type layers and add to the map
+        const areaTypeLayerData = {
+          user_name: 'tnris-flood',
+          sublayers: [{
+            sql: `SELECT
+                    the_geom_webmercator,
+                    area_type,
+                    area_type_name,
+                    ST_AsText(ST_Centroid(the_geom)) as centroid
+                  FROM
+                    area_type;`,
+            cartocss: '{}'
+          }],
+          maps_api_template: 'https://tnris-flood.carto.com'
+        };
+  
+        cartodb.Tiles.getTiles(areaTypeLayerData, function (result, error) {
+          if (result == null) {
+            console.log("error: ", error.errors.join('\n'));
+            return;
+          }
+  
+          const areaTypeTiles = result.tiles.map(function (tileUrl) {
+            return tileUrl
+              .replace('{s}', 'a')
+              .replace(/\.png/, '.mvt');
+          });
+  
+          map.addSource(
+            'area-type-source',
+            { type: 'vector', tiles: areaTypeTiles }
+          );
+  
+          // Add the county outlines to the map
+          map.addLayer({
+            'id': 'county-outline',
+            'type': 'line',
+            'source': 'area-type-source',
+            'source-layer': 'layer0',
+            'minzoom': 2,
+            'maxzoom': 24,
+            'paint': {
+              'line-color': '#666',
+              'line-width': 1.5,
+              'line-opacity': .4
             },
-            trackUserLocation: true
-          })
-        );
-
-        map.on("load", () => {
-          setMap(map);
+            'filter': ["==", ["get", "area_type"], "county"]
+          });
+  
+          // Add the quad outlines to the map
+          map.addLayer({
+            'id': 'quad-outline',
+            'type': 'line',
+            'source': 'area-type-source',
+            'source-layer': 'layer0',
+            'minzoom': 9,
+            'maxzoom': 24,
+            'paint': {
+              'line-color': 'rgba(139,69,19,1)',
+              'line-width': 1.5,
+              'line-opacity': .05
+            },
+            'filter': ["==", ["get", "area_type"], "quad"]
+          }, 'county-outline');
         });
-
-        map.on("moveend", () => {
-          setBounds(JSON.stringify(map.getBounds()));
-        });
+      });
     }
 
     if (!map) initializeMap({ setMap, CatalogMapContainer });
