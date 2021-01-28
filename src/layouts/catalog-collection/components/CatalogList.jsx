@@ -6,13 +6,13 @@ import { useRecoilState, useRecoilValueLoadable } from "recoil";
 import {
   catalogIncrement,
   catalogPage,
-  fetchCollectionsSelector,
-} from "../../../utilities/atoms/collectionsAtoms";
+  fetchCatalogCollectionsSelector,
+} from "../../../utilities/atoms/catalogAtoms";
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
 export function CatalogList() {
   const mapParam = useQueryParam().get("map");
-  const { state, contents } = useRecoilValueLoadable(fetchCollectionsSelector);
+  const { state, contents } = useRecoilValueLoadable(fetchCatalogCollectionsSelector);
   const [page, setPage] = useRecoilState(catalogPage);
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
 
