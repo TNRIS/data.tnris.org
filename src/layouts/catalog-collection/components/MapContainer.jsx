@@ -16,7 +16,7 @@ export function MapContainer() {
   const CatalogMapContainer = useRef(null);
   
   useEffect(() => {
-    const mapTilerKey = "olPbAXB9QkZuFSDG4x2V"
+    // const mapTilerKey = "olPbAXB9QkZuFSDG4x2V"
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new Map({
         container: CatalogMapContainer.current,
