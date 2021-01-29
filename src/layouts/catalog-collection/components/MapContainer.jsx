@@ -25,7 +25,7 @@ export function MapContainer() {
         container: CatalogMapContainer.current,
         // you can switch to the commented out basemap below if the other
         // one is causing trouble
-        // style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/bright.json',
+        // style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/basic.json',
         style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json',
         center: [lng, lat],
         zoom: zoom
