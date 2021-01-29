@@ -12,6 +12,10 @@ export function MapContainer() {
   const [lng] = useState(-99.341389);
   const [lat] = useState(31.33);
   const [zoom] = useState(5.5);
+  const [selectedArea] = useState({
+    'areaType': 'county',
+    'areaTypeName': ['Travis', 'Hays', 'Bastrop', 'Blanco']
+  }) 
   const [bounds, setBounds] = useState(null); 
   const CatalogMapContainer = useRef(null);
   
@@ -48,7 +52,6 @@ export function MapContainer() {
       });
 
       map.on('load', () => {
-        // define area type layers and add to the map
         const areaTypeLayerData = {
           user_name: 'tnris-flood',
           sublayers: [{
@@ -81,6 +84,26 @@ export function MapContainer() {
             { type: 'vector', tiles: areaTypeTiles }
           );
   
+          // Add all area types to the map
+          map.addLayer({
+            'id': 'area-type-selected',
+            'type': 'line',
+            'source': 'area-type-source',
+            'source-layer': 'layer0',
+            'minzoom': 2,
+            'maxzoom': 24,
+            'paint': {
+              'line-color': '#f200ff',
+              'line-width': 3,
+              'line-opacity': .4
+            },
+            // Example of combining multiple filters
+            'filter': ['all',
+              ['==', 'area_type', selectedArea.areaType],
+              ['in', 'area_type_name', ...selectedArea.areaTypeName]
+            ]
+          });
+          
           // Add the county outlines to the map
           map.addLayer({
             'id': 'county-outline',
@@ -94,8 +117,10 @@ export function MapContainer() {
               'line-width': 1.5,
               'line-opacity': .4
             },
-            'filter': ["==", ["get", "area_type"], "county"]
-          });
+            'filter': ['in', 'area_type', 'county']
+          },
+          // Place these under the area-type-selected layer
+          'area-type-selected');
   
           // Add the quad outlines to the map
           map.addLayer({
@@ -110,23 +135,25 @@ export function MapContainer() {
               'line-width': 1.5,
               'line-opacity': .05
             },
-            'filter': ["==", ["get", "area_type"], "quad"]
-          }, 'county-outline');
+            'filter': ['in', 'area_type', 'quad']
+          },
+          // Place these under the county-outline layer
+          'county-outline');
         });
       });
     }
 
     if (!map) initializeMap({ setMap, CatalogMapContainer });
 
-  }, [map, lng, lat, zoom, bounds]);
+  }, [map, lng, lat, zoom, bounds, selectedArea]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the
   // css loads. Setting a timeout is the best way I could do that
   // for now. There may be a better way do do this with hooks.
-  const showMap = useQueryParam().get("map");
+  const showMap = useQueryParam().get('map');
   if (map) {
-    if (showMap === "true") {
+    if (showMap === 'true') {
       setTimeout(() => {map.resize()}, 10);
     }
   }
@@ -137,27 +164,27 @@ export function MapContainer() {
           ref={el => CatalogMapContainer.current = el}
           className='CatalogMapContainer'
           style={{
-            position: "absolute",
-            top: "0",
-            bottom: "0",
-            width: "100%"
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            width: '100%'
           }}
         >
         </div>
         {bounds ? 
         <div
           style={{
-            display: "block",
-            position: "relative",
-            margin: "12px auto",
-            width: "50%",
-            padding: "10px",
-            border: "solid 1px #666",
-            borderRadius: "3px",
-            fontSize: "12px",
-            textAlign: "center",
-            color: "#222",
-            background: "#fff"
+            display: 'block',
+            position: 'relative',
+            margin: '12px auto',
+            width: '50%',
+            padding: '10px',
+            border: 'solid 1px #666',
+            borderRadius: '3px',
+            fontSize: '12px',
+            textAlign: 'center',
+            color: '#222',
+            background: '#fff'
           }}
         >
           MAP BOUNDS:<br/>
