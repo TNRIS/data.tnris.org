@@ -23,8 +23,9 @@ export function MapContainer() {
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new Map({
         container: CatalogMapContainer.current,
-        // you can switch to the commented out basemap below if the other
+        // you can switch to one the commented out basemaps below if the other
         // one is causing trouble
+        // style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
         // style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/basic.json',
         style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json',
         center: [lng, lat],
