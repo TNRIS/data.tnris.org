@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from "recoil";
+import { atom, atomFamily } from "recoil";
 
 export const sort = atom({
   key: "sort",
@@ -45,13 +45,9 @@ export const catalogFiltersOptions = atom({
   },
 });
 
-const catalogFiltersSelector = selectorFamily({
-  key: "catalogFiltersState",
-  get: (filterType) => ({ get }) => get(catalogFiltersOptions)[filterType],
-  set: (filterType) => ({ set }, newValue) =>
-    set(catalogFiltersOptions, (prevState) => {
-      return { ...prevState, [filterType]: newValue };
-    }),
-});
+export const catalogFilterFamily = atomFamily({
+  key: "catalogFilterFamily",
+  default: new Set()
+})
 
 
