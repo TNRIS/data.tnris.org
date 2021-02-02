@@ -8,7 +8,7 @@ import { RootRouter } from "./routers/RootRouter";
 export function RootLayout() {
   return (
     <BrowserRouter>
-      <Layout id="Main-Layout">
+      <Layout id="MainLayout">
         {/**Header contained in header grid-area */}
         <HeaderContainer className="header" />
         {/** Content contained in content grid-area */}

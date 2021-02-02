@@ -2,7 +2,6 @@
 import { Spin } from "antd";
 import { useRecoilValueLoadable } from "recoil";
 import {
-  fetchAreasByCollectionIdSelector,
   fetchCollectionByIdSelector,
   fetchResourcesByCollectionIdSelector,
 } from "../../../utilities/atoms/collectionsAtoms";
@@ -21,14 +20,8 @@ export default function CollectionTabs() {
   } = useRecoilValueLoadable(
     fetchResourcesByCollectionIdSelector(collection_id)
   );
-  const {
-    state: areasState,
-    contents: areasContents,
-  } = useRecoilValueLoadable(
-    fetchAreasByCollectionIdSelector(collection_id)
-  );
+
   resourcesContents && resourcesState !== "loading" && console.log('resources', resourcesContents) 
-  areasContents && areasState !== "loading" && console.log('areas', areasContents) 
 
   return (
     <div style={{ height: "100%", padding: "8px", paddingBottom: "40px" }}>

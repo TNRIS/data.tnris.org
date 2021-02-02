@@ -2,12 +2,15 @@
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { hoverPreviewCoverageCounties } from "../../../utilities/atoms/geofilterAtoms";
 // local imports
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
 const cartodb = window.cartodb;
 
 export function MapContainer() {
+  const highlightCounties = useRecoilValue(hoverPreviewCoverageCounties);
   const [map, setMap] = useState(null);
   const [lng] = useState(-99.341389);
   const [lat] = useState(31.33);

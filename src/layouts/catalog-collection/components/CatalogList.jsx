@@ -1,44 +1,80 @@
-import { Card, Col, Pagination, Row, Spin, Tag } from "antd";
-import { Header } from "antd/lib/layout/layout";
+import { Card, Col, PageHeader, Pagination, Row, Spin, Tag } from "antd";
+import { useEffect } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
   catalogIncrement,
   catalogPage,
   fetchCatalogCollectionsSelector,
 } from "../../../utilities/atoms/catalogAtoms";
-import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import { hoverPreviewCoverageCounties } from "../../../utilities/atoms/geofilterAtoms";
+import {
+  useAllQueryParams,
+} from "../../../utilities/custom-hooks/useQueryParam";
 
 export function CatalogList() {
-  const mapParam = useQueryParam().get("map");
-  const { state, contents } = useRecoilValueLoadable(fetchCatalogCollectionsSelector);
+  const setPreviewCounties = useSetRecoilState(hoverPreviewCoverageCounties)
   const [page, setPage] = useRecoilState(catalogPage);
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
+  const {
+    map,
+    pg,
+    inc,
+    sort,
+    categories,
+    availability,
+    filetype,
+    date,
+    geography,
+    bounds,
+  } = useAllQueryParams();
+  const { state, contents } = useRecoilValueLoadable(
+    fetchCatalogCollectionsSelector
+  );
+
 
   return (
-    <Spin spinning={state === "loading"} tip={"Loading data collections, please wait"} >
+    <Spin
+      spinning={state === "loading"}
+      tip={"Loading data collections, please wait"}
+    >
       {contents.results && contents.results.length > 0 && (
         <>
-          <Row>
-            <Header>
-              <Link to={mapParam === "true" ? "?map=false" : "?map=true"}>
-                {mapParam === "true" ? "Close Map" : "Show Map"}
-              </Link>
-            </Header>
-          </Row>
-          <Row gutter={[8, 8]}>
+          <PageHeader
+            extra={
+              <Pagination
+                size="small"
+                showQuickJumper
+                responsive
+                pageSizeOptions={[12, 24, 60, 120]}
+                current={page}
+                pageSize={increment}
+                onChange={(pg, inc) => {
+                  if (pg !== page) {
+                    setPage(pg);
+                  }
+                  if (inc !== increment) {
+                    setIncrement(inc);
+                  }
+                }}
+                total={contents.count}
+              />
+            }
+          />
+          <Row gutter={[8, 8]} style={{ padding: "8px" }}>
             {contents.results.length > 0 &&
               contents?.results?.map((v, i) => (
                 <Col
                   sm={{ span: 24 }}
-                  md={{ span: mapParam === "true" ? 24 : 12 }}
-                  lg={{ span: mapParam === "true" ? 24 : 8 }}
-                  xxl={{ span: mapParam === "true" ? 24 : 6 }}
+                  md={{ span: map === "true" ? 24 : 12 }}
+                  lg={{ span: map === "true" ? 24 : 8 }}
+                  xxl={{ span: map === "true" ? 24 : 6 }}
                   key={v.collection_id}
                 >
                   <Link to={`/collection?c=${v.collection_id}`}>
                     <Card
+                      onMouseEnter={ () => setPreviewCounties(v.counties.split(", ")) }
                       size={"small"}
                       hoverable
                       height={"300px"}
@@ -88,19 +124,25 @@ export function CatalogList() {
                 </Col>
               ))}
           </Row>
-          <Pagination
-            current={page}
-            pageSize={increment}
-            onChange={(pg, inc) => {
-              if (pg !== page) {
-                setPage(pg);
-              }
-              if (inc !== increment) {
-                setIncrement(inc);
-              }
-            }}
-            total={contents.count}
-          />
+          <Row>
+            <Pagination
+              size="small"
+              showQuickJumper
+              responsive
+              pageSizeOptions={[12, 24, 60, 120]}
+              current={page}
+              pageSize={increment}
+              onChange={(pg, inc) => {
+                if (pg !== page) {
+                  setPage(pg);
+                }
+                if (inc !== increment) {
+                  setIncrement(inc);
+                }
+              }}
+              total={contents.count}
+            />
+          </Row>
         </>
       )}
     </Spin>

@@ -5,21 +5,53 @@ export const sort = atom({
   default: "newest",
 });
 
-export const catalogFiltersState = atom({
+export const catalogFiltersOptions = atom({
   key: "catalogFilters",
   default: {
-    availability: [],
-    category: [],
-    filetype: [],
-    date: [],
+    availability: [
+      "Download",
+      "External Link",
+      "Order Only",
+      "WMS Service",
+    ],
+    category: [
+      "Basemap",
+      "Elevation",
+      "Historic Imagery",
+      "Hydrography",
+      "Imagery",
+      "Land Cover",
+      "Lidar",
+      "Reference Grid",
+      "Transportation",
+      "Weather",
+    ],
+    file_type: [
+      "DEM",
+      "DWG",
+      "ECW",
+      "ESRI Grid",
+      "GDB",
+      "GEOJSON",
+      "IMG",
+      "JP2",
+      "JPG",
+      "LAZ",
+      "MrSID",
+      "SHP",
+      "TIFF",
+      "TOPOJSON",
+    ],
   },
 });
 
 const catalogFiltersSelector = selectorFamily({
   key: "catalogFiltersState",
-  get: (filterType) => ({ get }) => get(catalogFiltersState)[filterType],
+  get: (filterType) => ({ get }) => get(catalogFiltersOptions)[filterType],
   set: (filterType) => ({ set }, newValue) =>
-    set(catalogFiltersState, (prevState) => {
+    set(catalogFiltersOptions, (prevState) => {
       return { ...prevState, [filterType]: newValue };
     }),
 });
+
+
