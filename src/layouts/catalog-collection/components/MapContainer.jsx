@@ -10,9 +10,7 @@ import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 const cartodb = window.cartodb;
 
 export function MapContainer() {
-  const highlightedCounties = useRecoilValue(
-    hoverPreviewCoverageCounties
-  );
+  const highlightedCounties = useRecoilValue(hoverPreviewCoverageCounties);
   const [map, setMap] = useState(null);
   const [lng] = useState(-99.341389);
   const [lat] = useState(31.33);
@@ -137,10 +135,16 @@ export function MapContainer() {
 
   useEffect(() => {
     if (map && highlightedCounties.length === 0) {
-      map.removeLayer("area-type-selected");
+      const mapLayer = map.getLayer("area-type-selected");
+      if (typeof mapLayer !== "undefined") {
+        map.removeLayer("area-type-selected");
+      }
     }
     if (map && highlightedCounties.length >= 1) {
-      map.removeLayer("area-type-selected");
+      const mapLayer = map.getLayer("area-type-selected");
+      if (typeof mapLayer !== "undefined") {
+        map.removeLayer("area-type-selected");
+      }
       map.addLayer({
         id: "area-type-selected",
         type: "fill",
