@@ -1,4 +1,14 @@
-import { Button, Checkbox, Col, Input, Popover, Row, Select, Switch } from "antd";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Col,
+  Input,
+  Popover,
+  Row,
+  Select,
+  Switch,
+} from "antd";
 import { EnvironmentOutlined, SearchOutlined } from "@ant-design/icons";
 import { Link, useHistory } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
@@ -12,7 +22,6 @@ import {
   geoFilterSelectedResult,
 } from "../../../utilities/atoms/geofilterAtoms";
 import useQueryParam, {
-  useAllQueryParams,
 } from "../../../utilities/custom-hooks/useQueryParam";
 
 export function ShowMapSwitch() {
@@ -35,9 +44,24 @@ export function ShowMapSwitch() {
   );
 }
 
+export function FilterCategorySelectionLengthIndicator({
+  filterCategoryId,
+  children,
+  offset,
+  size,
+}) {
+  const filterValue = useRecoilValue(catalogFilterFamily(filterCategoryId));
+
+  return (
+    <Badge offset={offset} size={size} count={filterValue.length}>
+      {children}
+    </Badge>
+  );
+}
+
 export function FilterOptionSet({ filterOptions, category }) {
   return filterOptions.map((v, i) => (
-    <FilterOption filterId={`${category}_${v}`} value={v} />
+    <FilterOption filterId={`${category}`} value={v} />
   ));
 }
 export function FilterOption({ filterId, value }) {
@@ -47,11 +71,12 @@ export function FilterOption({ filterId, value }) {
 
   return (
     <Checkbox
-      checked={filterValue.has(value)}
+      style={{ marginLeft: "0px", display: "block" }}
+      checked={filterValue.includes(value)}
       onClick={() =>
-        filterValue.has(value)
-          ? setFilterValue(filterValue.remove(value))
-          : setFilterValue(filterValue.add(value))
+        filterValue.includes(value)
+          ? setFilterValue(filterValue.filter((v) => v !== value))
+          : setFilterValue([...filterValue, value])
       }
     >
       {value}
@@ -96,7 +121,7 @@ export function GeoFilterSearchBar(props) {
 }
 
 export function SearchBar() {
-  const {
+  /* const {
     map,
     pg,
     inc,
@@ -107,7 +132,7 @@ export function SearchBar() {
     date,
     geography,
     bounds,
-  } = useAllQueryParams();
+  } = useAllQueryParams(); */
 
   const filtersOptions = useRecoilValue(catalogFiltersOptions);
   const filterKeys = Object.keys(filtersOptions);
@@ -128,12 +153,27 @@ export function SearchBar() {
       <div className={"FilterRow"}>
         {filterKeys.map((v, i) => (
           <Popover
+            key={`popover_${v}`}
             placement="bottomLeft"
             trigger="click"
             animation=""
-            content={<Col><FilterOptionSet filterOptions={filtersOptions[v]} category={v} /></Col>}
+            content={
+              <Col>
+                <FilterOptionSet
+                  filterOptions={filtersOptions[v]}
+                  category={v}
+                />
+              </Col>
+            }
           >
-            <Button>{v.replace("_", " ")}</Button>
+            <Button>
+              <FilterCategorySelectionLengthIndicator 
+                children={v.replace("_", " ")}
+                offset={[8,-4]}
+                size="small"
+                filterCategoryId={v}
+              />
+            </Button>
           </Popover>
         ))}
         <ShowMapSwitch />
@@ -149,7 +189,7 @@ export function HeaderContainer(props) {
         <div className={"HeaderLogo"}>
           <Link to="/">
             <img
-              class="TnrisLogo"
+              className="TnrisLogo"
               src="https://data.tnris.org/static/media/tnris_logo.1b5d784b.svg"
               alt="TNRIS Logo"
               title="tnris.org"

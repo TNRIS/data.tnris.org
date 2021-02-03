@@ -1,8 +1,7 @@
 import { Card, Col, PageHeader, Pagination, Row, Spin, Tag } from "antd";
-import { useEffect } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
   catalogIncrement,
   catalogPage,
@@ -19,7 +18,7 @@ export function CatalogList() {
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
   const {
     map,
-    pg,
+    /* pg,
     inc,
     sort,
     categories,
@@ -27,12 +26,11 @@ export function CatalogList() {
     filetype,
     date,
     geography,
-    bounds,
+    bounds, */
   } = useAllQueryParams();
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
-
 
   return (
     <Spin
