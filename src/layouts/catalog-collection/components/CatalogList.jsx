@@ -1,19 +1,21 @@
 import { Card, Col, PageHeader, Pagination, Row, Spin, Tag } from "antd";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import {
+  useRecoilState,
+  useRecoilValueLoadable,
+  useSetRecoilState,
+} from "recoil";
 import {
   catalogIncrement,
   catalogPage,
   fetchCatalogCollectionsSelector,
 } from "../../../utilities/atoms/catalogAtoms";
 import { hoverPreviewCoverageCounties } from "../../../utilities/atoms/geofilterAtoms";
-import {
-  useAllQueryParams,
-} from "../../../utilities/custom-hooks/useQueryParam";
+import { useAllQueryParams } from "../../../utilities/custom-hooks/useQueryParam";
 
 export function CatalogList() {
-  const setPreviewCounties = useSetRecoilState(hoverPreviewCoverageCounties)
+  const setPreviewCounties = useSetRecoilState(hoverPreviewCoverageCounties);
   const [page, setPage] = useRecoilState(catalogPage);
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
   const {
@@ -72,7 +74,10 @@ export function CatalogList() {
                 >
                   <Link to={`/collection?c=${v.collection_id}`}>
                     <Card
-                      onMouseEnter={ () => setPreviewCounties(v.counties.split(", ")) }
+                      onMouseEnter={() =>
+                        setPreviewCounties(v.counties.split(", "))
+                      }
+                      onMouseLeave={() => setPreviewCounties([])}
                       size={"small"}
                       hoverable
                       height={"300px"}

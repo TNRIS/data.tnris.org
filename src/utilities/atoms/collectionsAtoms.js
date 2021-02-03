@@ -1,5 +1,4 @@
 import { selectorFamily } from "recoil";
-import { recursiveFetcher } from "../recursiveFetcher";
 
 export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",
