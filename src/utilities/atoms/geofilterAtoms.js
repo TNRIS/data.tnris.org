@@ -18,7 +18,7 @@ export const fetchGeofilterSearchResults = selector({
 
 export const geoFilterSelectedResult = atom({
   key: "geoFitlerSelectedResult",
-  default: "",
+  default: null,
 });
 
 export const hoverPreviewCoverageCounties = atom({

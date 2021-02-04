@@ -3,13 +3,17 @@ import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { hoverPreviewCoverageCounties } from "../../../utilities/atoms/geofilterAtoms";
+import {
+  geoFilterSelectedResult,
+  hoverPreviewCoverageCounties,
+} from "../../../utilities/atoms/geofilterAtoms";
 // local imports
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
 const cartodb = window.cartodb;
 
 export function MapContainer() {
+  const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
   const highlightedCounties = useRecoilValue(hoverPreviewCoverageCounties);
   const [map, setMap] = useState(null);
   const [lng] = useState(-99.341389);
@@ -165,6 +169,33 @@ export function MapContainer() {
       });
     }
   }, [map, highlightedCounties]);
+
+  useEffect(() => {
+    if (geoFilterSelection) {
+      console.log(geoFilterSelection);
+      const filterLayer = map.getLayer("geofilter-layer");
+      if (typeof filterLayer !== "undefined") {
+        map.removeLayer("geofilter-layer");
+        map.removeSource("geofilter-source");
+      }
+
+      map.addSource("geofilter-source", {
+        type: "geojson",
+        data: geoFilterSelection,
+      });
+      map.addLayer({
+        id: "geofilter-layer",
+        type: "fill",
+        source: "geofilter-source",
+        layout: {},
+        paint: {
+          "fill-color": "#088",
+          "fill-opacity": 0.6,
+        },
+      });
+      map.fitBounds(geoFilterSelection.bbox, { padding: 40})
+    }
+  }, [geoFilterSelection, map]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the
