@@ -137,18 +137,26 @@ export function MapContainer() {
     if (!map) initializeMap({ setMap, CatalogMapContainer });
   }, [map, lng, lat, zoom, bounds, selectedArea]);
 
+  // add highlighted counties when set / changed
   useEffect(() => {
+    // if highlighted counties array length is 0, remove layers from map
     if (map && highlightedCounties.length === 0) {
       const mapLayer = map.getLayer("area-type-selected");
+      // check that the map layer exists before attempting to remove it
+      // this is required onload when highlightedCounties.length will resolve to 0 as its default is []
       if (typeof mapLayer !== "undefined") {
         map.removeLayer("area-type-selected");
       }
     }
+    // check if highlightedCounties length is greater or equal to 1
     if (map && highlightedCounties.length >= 1) {
+      // if so, check if a layer is already drawn
       const mapLayer = map.getLayer("area-type-selected");
       if (typeof mapLayer !== "undefined") {
+        // remove the previous layer if already drawn
         map.removeLayer("area-type-selected");
       }
+      // add new highlightedCounties layer
       map.addLayer(
         {
           id: "area-type-selected",
@@ -161,7 +169,6 @@ export function MapContainer() {
             "fill-color": "#1e8dc1",
             "fill-opacity": 0.4,
           },
-          // Example of combining multiple filters
           filter: [
             "all",
             ["==", "area_type", "county"],
@@ -173,14 +180,20 @@ export function MapContainer() {
     }
   }, [map, highlightedCounties, geoFilterSelection]);
 
+  // show geofilter search geometry when available
   useEffect(() => {
+    // check that map is initialized
     if (map) {
+      // check if layer already exists
       const filterLayer = map.getLayer("geofilter-layer");
       if (typeof filterLayer !== "undefined") {
+        // if it exists, remove it and its source
         map.removeLayer("geofilter-layer");
         map.removeSource("geofilter-source");
       }
+      // check if geoFilterSelection atom is populated with search result
       if (geoFilterSelection) {
+        // if so, add source from geojson and layer from source
         map.addSource("geofilter-source", {
           type: "geojson",
           data: geoFilterSelection,
@@ -196,6 +209,7 @@ export function MapContainer() {
             "line-width": 4,
           },
         });
+        // after adding layer, fit bounds to selection
         map.fitBounds(geoFilterSelection.bbox, { padding: 40 });
       }
     }
