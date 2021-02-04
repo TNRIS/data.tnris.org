@@ -149,51 +149,55 @@ export function MapContainer() {
       if (typeof mapLayer !== "undefined") {
         map.removeLayer("area-type-selected");
       }
-      map.addLayer({
-        id: "area-type-selected",
-        type: "fill",
-        source: "area-type-source",
-        "source-layer": "layer0",
-        minzoom: 2,
-        maxzoom: 24,
-        paint: {
-          "fill-color": "#1e8dc1",
-          "fill-opacity": 0.4,
+      map.addLayer(
+        {
+          id: "area-type-selected",
+          type: "fill",
+          source: "area-type-source",
+          "source-layer": "layer0",
+          minzoom: 2,
+          maxzoom: 24,
+          paint: {
+            "fill-color": "#1e8dc1",
+            "fill-opacity": 0.4,
+          },
+          // Example of combining multiple filters
+          filter: [
+            "all",
+            ["==", "area_type", "county"],
+            ["in", "area_type_name", ...highlightedCounties],
+          ],
         },
-        // Example of combining multiple filters
-        filter: [
-          "all",
-          ["==", "area_type", "county"],
-          ["in", "area_type_name", ...highlightedCounties],
-        ],
-      });
+        geoFilterSelection ? "geofilter-layer" : null
+      );
     }
-  }, [map, highlightedCounties]);
+  }, [map, highlightedCounties, geoFilterSelection]);
 
   useEffect(() => {
-    if (geoFilterSelection) {
-      console.log(geoFilterSelection);
+    if (map) {
       const filterLayer = map.getLayer("geofilter-layer");
       if (typeof filterLayer !== "undefined") {
         map.removeLayer("geofilter-layer");
         map.removeSource("geofilter-source");
       }
-
-      map.addSource("geofilter-source", {
-        type: "geojson",
-        data: geoFilterSelection,
-      });
-      map.addLayer({
-        id: "geofilter-layer",
-        type: "fill",
-        source: "geofilter-source",
-        layout: {},
-        paint: {
-          "fill-color": "#088",
-          "fill-opacity": 0.6,
-        },
-      });
-      map.fitBounds(geoFilterSelection.bbox, { padding: 40})
+      if (geoFilterSelection) {
+        map.addSource("geofilter-source", {
+          type: "geojson",
+          data: geoFilterSelection,
+        });
+        map.addLayer({
+          id: "geofilter-layer",
+          type: "line",
+          source: "geofilter-source",
+          layout: {},
+          paint: {
+            "line-color": "red",
+            "line-opacity": 1,
+            "line-width": 4,
+          },
+        });
+        map.fitBounds(geoFilterSelection.bbox, { padding: 40 });
+      }
     }
   }, [geoFilterSelection, map]);
 

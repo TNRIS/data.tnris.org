@@ -104,6 +104,7 @@ export function GeoFilterSearchBar(props) {
       showArrow={false}
       filterOption={false}
       allowClear
+      onClear={ () => setGeoFilterSelection(null) }
       value={
         geoFilterSelection ? geoFilterSelection.properties.display_name : null
       }
