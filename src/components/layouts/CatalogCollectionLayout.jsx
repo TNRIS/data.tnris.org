@@ -1,7 +1,7 @@
 import { Col, Row } from "antd";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import { MapContainer } from "./components/MapContainer";
-import { DataPanelRouter } from "./routers/DataPanelRouter";
+import { MapContainer } from "../MapContainer";
+import { LeftPanelRouter } from "../../routers/LeftPanelRouter";
 
 export function CatalogCollectionLayout(props) {
   const mapParam = useQueryParam().get("map");
@@ -18,7 +18,7 @@ export function CatalogCollectionLayout(props) {
         lg={{ span: hideMap() ? 24 : 10 }}
         className={`DataContainer${hideMap() ? " HideMap" : ""}`}
       >
-        <DataPanelRouter />
+        <LeftPanelRouter />
       </Col>
       <Col
         xs={{ order: 1, span: 24 }}

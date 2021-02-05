@@ -1,6 +1,6 @@
 import { Route, Switch } from "react-router-dom";
 import CartContainer from "../components/CartContainer";
-import { CatalogCollectionLayout } from "../../catalog-collection/CatalogCollectionLayout";
+import { CatalogCollectionLayout } from "../components/layouts/CatalogCollectionLayout";
 export function RootRouter() {
   return (
       <Switch>

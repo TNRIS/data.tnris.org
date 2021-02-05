@@ -1,7 +1,7 @@
 //package imports
 //local imports
 import "./App.less";
-import { RootLayout } from "./layouts/root/RootLayout";
+import { RootLayout } from "./components/layouts/RootLayout";
 
 function App() {
   return (

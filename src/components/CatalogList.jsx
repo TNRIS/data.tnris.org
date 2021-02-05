@@ -10,9 +10,9 @@ import {
   catalogIncrement,
   catalogPage,
   fetchCatalogCollectionsSelector,
-} from "../../../utilities/atoms/catalogAtoms";
-import { hoverPreviewCoverageCounties } from "../../../utilities/atoms/geofilterAtoms";
-import { useAllQueryParams } from "../../../utilities/custom-hooks/useQueryParam";
+} from "../utilities/atoms/catalogAtoms";
+import { hoverPreviewCoverageCounties } from "../utilities/atoms/geofilterAtoms";
+import { useAllQueryParams } from "../utilities/custom-hooks/useQueryParam";
 
 export function CatalogList() {
   const setPreviewCounties = useSetRecoilState(hoverPreviewCoverageCounties);
@@ -20,15 +20,6 @@ export function CatalogList() {
   const [increment, setIncrement] = useRecoilState(catalogIncrement);
   const {
     map,
-    /* pg,
-    inc,
-    sort,
-    categories,
-    availability,
-    filetype,
-    date,
-    geography,
-    bounds, */
   } = useAllQueryParams();
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector

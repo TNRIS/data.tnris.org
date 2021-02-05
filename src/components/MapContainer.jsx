@@ -6,9 +6,9 @@ import { useRecoilValue } from "recoil";
 import {
   geoFilterSelectedResult,
   hoverPreviewCoverageCounties,
-} from "../../../utilities/atoms/geofilterAtoms";
+} from "../utilities/atoms/geofilterAtoms";
 // local imports
-import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 const cartodb = window.cartodb;
 
@@ -19,10 +19,6 @@ export function MapContainer() {
   const [lng] = useState(-99.341389);
   const [lat] = useState(31.33);
   const [zoom] = useState(5.5);
-  const [selectedArea] = useState({
-    areaType: "county",
-    areaTypeName: ["Travis", "Hays", "Bastrop", "Blanco"],
-  });
   const [bounds, setBounds] = useState(null);
   const CatalogMapContainer = useRef(null);
 
@@ -135,7 +131,7 @@ export function MapContainer() {
     };
 
     if (!map) initializeMap({ setMap, CatalogMapContainer });
-  }, [map, lng, lat, zoom, bounds, selectedArea]);
+  }, [map, lng, lat, zoom, bounds]);
 
   // add highlighted counties when set / changed
   useEffect(() => {
@@ -240,29 +236,6 @@ export function MapContainer() {
           width: "100%",
         }}
       ></div>
-      {bounds ? (
-        <div
-          style={{
-            display: "block",
-            position: "relative",
-            margin: "12px auto",
-            width: "50%",
-            padding: "10px",
-            border: "solid 1px #666",
-            borderRadius: "3px",
-            fontSize: "12px",
-            textAlign: "center",
-            color: "#222",
-            background: "#fff",
-          }}
-        >
-          MAP BOUNDS:
-          <br />
-          {bounds}
-        </div>
-      ) : (
-        ""
-      )}
     </div>
   );
 }

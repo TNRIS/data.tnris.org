@@ -1,9 +1,9 @@
 import { Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { BrowserRouter } from "react-router-dom";
-import { FooterContainer } from "./components/FooterContainer";
-import { HeaderContainer } from "./components/HeaderContainer";
-import { RootRouter } from "./routers/RootRouter";
+import { RootRouter } from "../../routers/RootRouter";
+import { FooterContainer } from "../FooterContainer";
+import { HeaderContainer } from "../HeaderContainer";
 
 export function RootLayout() {
   return (

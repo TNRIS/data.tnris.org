@@ -15,13 +15,13 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   catalogFiltersOptions,
   catalogFilterFamily,
-} from "../../../utilities/atoms/catalogFilterAtoms";
+} from "../utilities/atoms/catalogFilterAtoms";
 import {
   fetchGeofilterSearchResults,
   geoFilterSearchText,
   geoFilterSelectedResult,
-} from "../../../utilities/atoms/geofilterAtoms";
-import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+} from "../utilities/atoms/geofilterAtoms";
+import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 export function MapViewSwitch() {
   const history = useHistory();
