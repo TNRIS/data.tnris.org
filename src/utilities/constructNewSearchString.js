@@ -1,3 +1,11 @@
+/**
+ * Pure function which takes the current search string, a key-value pair, and a statement to alter them. Returns a new search string after with the changed key-value
+ * @param { string } paramKey - the key value of the parameter to edit.
+ * @param { any } paramValue - the current parameter value, or null 
+ * @param { any } newParamValue - a variable, statement, or function that returns or outputs the intended new value
+ * @param { string } currentSearchString - the current search string, as in ${window.location.search}
+ */
+
 export const constructNewSearchString = (
   paramKey,
   paramValue,

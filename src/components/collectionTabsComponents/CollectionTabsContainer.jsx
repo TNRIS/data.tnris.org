@@ -9,7 +9,7 @@ import {
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 
-export default function CollectionTabsContainer() {
+export default function CollectionTabsContainer({collection}) {
   const collection_id = useQueryParam().get("c");
   const { state, contents } = useRecoilValueLoadable(
     fetchCollectionByIdSelector(collection_id)
