@@ -12,8 +12,6 @@ export function CatalogPaginationControls() {
   const search = useLocation().search;
   const page = useQueryParam().get("pg");
   const increment = useQueryParam().get("inc");
-  /* const page = useRecoilValue(catalogPageSelector);
-    const increment = useRecoilValue(catalogIncrementSelector); */
   const { contents } = useRecoilValueLoadable(fetchCatalogCollectionsSelector);
 
   useEffect(() => {
@@ -26,7 +24,7 @@ export function CatalogPaginationControls() {
   }, [search, history]);
   return (
     <>
-      {(contents.count % (page * increment)) <= 1 && page > 1
+      {contents.count < ((page -1) * increment) && page > 1
         ? history.push({
             pathname: "/",
             search: constructNewSearchString("pg", page, 1, search),
