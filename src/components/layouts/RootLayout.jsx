@@ -3,7 +3,7 @@ import { Content } from "antd/lib/layout/layout";
 import { BrowserRouter } from "react-router-dom";
 import { RootRouter } from "../../routers/RootRouter";
 import { FooterContainer } from "../FooterContainer";
-import { HeaderContainer } from "../HeaderContainer";
+import { HeaderContainer } from "../headerComponents/HeaderContainer";
 
 export function RootLayout() {
   return (

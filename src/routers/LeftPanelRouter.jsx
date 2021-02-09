@@ -1,6 +1,6 @@
 import { Route, Switch } from "react-router-dom";
-import { CatalogList } from "../components/CatalogList";
-import CollectionTabsContainer from "../components/CollectionTabsContainer";
+import { CatalogList } from "../components/catalogListComponents/CatalogList";
+import CollectionTabsContainer from "../components/collectionTabsComponents/CollectionTabsContainer";
 
 export function LeftPanelRouter() {
   return (

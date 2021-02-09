@@ -2,10 +2,12 @@
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useLocation } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   geoFilterSelectedResult,
   hoverPreviewCoverageCounties,
+  mapBounds,
 } from "../utilities/atoms/geofilterAtoms";
 // local imports
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
@@ -13,13 +15,12 @@ import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 const cartodb = window.cartodb;
 
 export function MapContainer() {
+  const location = useLocation();
   const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
   const highlightedCounties = useRecoilValue(hoverPreviewCoverageCounties);
   const [map, setMap] = useState(null);
-  const [lng] = useState(-99.341389);
-  const [lat] = useState(31.33);
+  const [bounds, setBounds] = useRecoilState(mapBounds);
   const [zoom] = useState(5.5);
-  const [bounds, setBounds] = useState(null);
   const CatalogMapContainer = useRef(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function MapContainer() {
         // style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/basic.json',
         style:
           "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json",
-        center: [lng, lat],
+        center: [bounds.lng, bounds.lat],
         zoom: zoom,
       });
 
@@ -83,6 +84,7 @@ export function MapContainer() {
             return tileUrl.replace("{s}", "a").replace(/\.png/, ".mvt");
           });
 
+          // add source for area-type layers
           map.addSource("area-type-source", {
             type: "vector",
             tiles: areaTypeTiles,
@@ -131,9 +133,9 @@ export function MapContainer() {
     };
 
     if (!map) initializeMap({ setMap, CatalogMapContainer });
-  }, [map, lng, lat, zoom, bounds]);
+  }, [map, bounds, setBounds, zoom]);
 
-  // add highlighted counties when set / changed
+  // add highlighted counties when set or changed
   useEffect(() => {
     // if highlighted counties array length is 0, remove layers from map
     if (map && highlightedCounties.length === 0) {
@@ -146,70 +148,76 @@ export function MapContainer() {
     }
     // check if highlightedCounties length is greater or equal to 1
     if (map && highlightedCounties.length >= 1) {
-      // if so, check if a layer is already drawn
-      const mapLayer = map.getLayer("area-type-selected");
-      if (typeof mapLayer !== "undefined") {
-        // remove the previous layer if already drawn
-        map.removeLayer("area-type-selected");
-      }
-      // add new highlightedCounties layer
-      map.addLayer(
-        {
-          id: "area-type-selected",
-          type: "fill",
-          source: "area-type-source",
-          "source-layer": "layer0",
-          minzoom: 2,
-          maxzoom: 24,
-          paint: {
-            "fill-color": "#1e8dc1",
-            "fill-opacity": 0.4,
+      // make sure source has been loaded
+      if (typeof map.getSource("area-type-source") !== "undefined") {
+        // if so, check if a layer is already drawn
+        const mapLayer = map.getLayer("area-type-selected");
+        if (typeof mapLayer !== "undefined") {
+          // remove the previous layer if already drawn
+          map.removeLayer("area-type-selected");
+        }
+        // add new highlightedCounties layer
+        map.addLayer(
+          {
+            id: "area-type-selected",
+            type: "fill",
+            source: "area-type-source",
+            "source-layer": "layer0",
+            minzoom: 2,
+            maxzoom: 24,
+            paint: {
+              "fill-color": "#1e8dc1",
+              "fill-opacity": 0.4,
+            },
+            filter: [
+              "all",
+              ["==", "area_type", "county"],
+              ["in", "area_type_name", ...highlightedCounties],
+            ],
           },
-          filter: [
-            "all",
-            ["==", "area_type", "county"],
-            ["in", "area_type_name", ...highlightedCounties],
-          ],
-        },
-        geoFilterSelection ? "geofilter-layer" : null
-      );
+          geoFilterSelection ? "geofilter-layer" : null
+        );
+      }
     }
   }, [map, highlightedCounties, geoFilterSelection]);
 
   // show geofilter search geometry when available
   useEffect(() => {
-    // check that map is initialized
-    if (map) {
-      // check if layer already exists
-      const filterLayer = map.getLayer("geofilter-layer");
-      if (typeof filterLayer !== "undefined") {
-        // if it exists, remove it and its source
-        map.removeLayer("geofilter-layer");
-        map.removeSource("geofilter-source");
-      }
-      // check if geoFilterSelection atom is populated with search result
-      if (geoFilterSelection) {
-        // if so, add source from geojson and layer from source
-        map.addSource("geofilter-source", {
-          type: "geojson",
-          data: geoFilterSelection,
-        });
-        map.addLayer({
-          id: "geofilter-layer",
-          type: "line",
-          source: "geofilter-source",
-          layout: {},
-          paint: {
-            "line-color": "red",
-            "line-opacity": 1,
-            "line-width": 4,
-          },
-        });
-        // after adding layer, fit bounds to selection
-        map.fitBounds(geoFilterSelection.bbox, { padding: 40 });
+    // only animate to geosearch layer when at root "/" path
+    if (location.pathname === "/") {
+      // check that map is initialized
+      if (map) {
+        // check if layer already exists
+        const filterLayer = map.getLayer("geofilter-layer");
+        if (typeof filterLayer !== "undefined") {
+          // if it exists, remove it and its source
+          map.removeLayer("geofilter-layer");
+          map.removeSource("geofilter-source");
+        }
+        // check if geoFilterSelection atom is populated with search result
+        if (geoFilterSelection) {
+          // if so, add source from geojson and layer from source
+          map.addSource("geofilter-source", {
+            type: "geojson",
+            data: geoFilterSelection,
+          });
+          map.addLayer({
+            id: "geofilter-layer",
+            type: "line",
+            source: "geofilter-source",
+            layout: {},
+            paint: {
+              "line-color": "red",
+              "line-opacity": 1,
+              "line-width": 4,
+            },
+          });
+          // after adding layer, fit bounds to selection
+          map.fitBounds(geoFilterSelection.bbox, { padding: 100 });
+        }
       }
     }
-  }, [geoFilterSelection, map]);
+  }, [geoFilterSelection, map, location]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the

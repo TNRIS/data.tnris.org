@@ -4,10 +4,10 @@ import { useRecoilValueLoadable } from "recoil";
 import {
   fetchCollectionByIdSelector,
   fetchResourcesByCollectionIdSelector,
-} from "../utilities/atoms/collectionsAtoms";
+} from "../../utilities/atoms/collectionsAtoms";
 
 // local imports
-import useQueryParam from "../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 
 export default function CollectionTabsContainer() {
   const collection_id = useQueryParam().get("c");

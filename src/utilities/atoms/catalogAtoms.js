@@ -1,20 +1,45 @@
-import { atom, selector } from "recoil";
+import { selector } from "recoil";
+import { searchString } from "./urlFactoryAtoms";
 
-export const catalogPage = atom({
-  key: "catalogPage",
+// parse pg from url, if present. If not, default to 1
+export const catalogPageSelector = selector({
+  key: "catalogPageSelector",
   default: 1,
-});
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const pgValue = new URLSearchParams(urlParams).get("pg");
 
-export const catalogIncrement = atom({
-  key: "catalogIncrement",
+    return pgValue ? Number(pgValue) : 1;
+  },
+});
+// parse increment from url, if present. If not, default to 24
+export const catalogIncrementSelector = selector({
+  key: "catalogIncrementSelector",
   default: 24,
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const incValue = new URLSearchParams(urlParams).get("inc");
+
+    return incValue ? Number(incValue) : 24;
+  },
+});
+// parse map value from url, if present. If not, default to false
+export const showMapSelector = selector({
+  key: "showMap",
+  default: false,
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const showMapValue = new URLSearchParams(urlParams).get("map");
+
+    return showMapValue ? showMapValue : false;
+  },
 });
 
 export const fetchCatalogCollectionsSelector = selector({
   key: "fetchCollectionsSelector",
   get: async ({ get }) => {
-    const page = get(catalogPage);
-    const increment = get(catalogIncrement);
+    const page = get(catalogPageSelector);
+    const increment = get(catalogIncrementSelector);
     const offset = page <= 1 ? "" : `offset=${(page - 1) * increment}&`;
 
     const response = await fetch(

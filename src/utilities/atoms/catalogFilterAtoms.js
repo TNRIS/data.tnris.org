@@ -49,5 +49,3 @@ export const catalogFilterFamily = atomFamily({
   key: "catalogFilterFamily",
   default: []
 })
-
-

@@ -22,6 +22,12 @@ export const geoFilterSelectedResult = atom({
 });
 
 export const hoverPreviewCoverageCounties = atom({
-    key: "hoverPreviewCoverageCounties",
-    default: []
+  key: "hoverPreviewCoverageCounties",
+  default: [],
+});
+
+
+export const mapBounds = atom({
+  key: "mapBounds",
+  default: {lng: -99.341389, lat: 31.33}
 })
