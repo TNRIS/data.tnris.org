@@ -1,11 +1,13 @@
-import { Badge, Button, Checkbox, Col, Dropdown, Row, Space } from "antd";
+import { Badge, Button, Checkbox, Col, Popover, Row } from "antd";
 import { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useHistory, useLocation } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   catalogFilterFamily,
   catalogFiltersOptions,
 } from "../../utilities/atoms/catalogFilterAtoms";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { changeParams } from "../../utilities/changeParamsUtil";
 
 export function FilterOption({ filterSet, filterOption, filterAtomFamily }) {
   const [filterValue, setFilterValue] = useRecoilState(
@@ -17,7 +19,12 @@ export function FilterOption({ filterSet, filterOption, filterAtomFamily }) {
       : setFilterValue([...filterValue, filterOption]);
   return (
     <Row>
-      <Checkbox checked={filterValue.includes(filterOption)} onClick={handleOptionClick}>{filterOption}</Checkbox>
+      <Checkbox
+        checked={filterValue.includes(filterOption)}
+        onClick={handleOptionClick}
+      >
+        {filterOption}
+      </Checkbox>
     </Row>
   );
 }
@@ -38,39 +45,51 @@ export function FilterCategorySelectionLengthIndicator({
   );
 }
 
-export function FilterOptionsDropdown({filterSet, filtersSets}) {
+export function FilterOptionsDropdown({ filterSet, filtersSets }) {
+  const history = useHistory();
+  const {search} = useLocation();
   const filterParam = useQueryParam().get(filterSet);
-  const setFilterValue = useSetRecoilState(catalogFilterFamily(filterSet))
+  const [filterValue, setFilterValue] = useRecoilState(
+    catalogFilterFamily(filterSet)
+  );
   useEffect(() => {
     if (filterParam && filterParam.length) {
       setFilterValue(filterParam.split(","));
     }
   }, [filterParam, setFilterValue]);
 
+
   return (
-    <Dropdown
-      key={`popover_${filterSet}`}
+    <Popover
+      trigger={"click"}
       placement="bottomLeft"
-      trigger="click"
-      overlay={
-        <Space size={[4, 4]}>
-          <Col>
-            {filtersSets[filterSet].map((option) => (
-              <FilterOption
-                key={`${filterSet}_${option}`}
-                filterSet={filterSet}
-                filterOption={option}
-                filterAtomFamily={catalogFilterFamily}
-              />
-            ))}
-            <hr />
-            <Row>
-              <Button size="small" type="primary" block={true}>
-                Apply Filters
-              </Button>
-            </Row>
-          </Col>
-        </Space>
+      content={
+        <Col>
+          {filtersSets[filterSet].map((option) => (
+            <FilterOption
+              key={`${filterSet}_${option}`}
+              filterSet={filterSet}
+              filterOption={option}
+              filterAtomFamily={catalogFilterFamily}
+            />
+          ))}
+          <hr />
+          <Row>
+            <Button
+              size="small"
+              type="primary"
+              block={true}
+              onClick={() => history.push({
+                pathname: "/",
+                search: changeParams([
+                  { key: filterSet, value: filterValue, ACTION: filterValue.length ? "set" : "delete" }
+                ], search)
+              })}
+            >
+              Apply Filters
+            </Button>
+          </Row>
+        </Col>
       }
     >
       <Button>
@@ -82,7 +101,7 @@ export function FilterOptionsDropdown({filterSet, filtersSets}) {
           filterAtomFamily={catalogFilterFamily}
         />
       </Button>
-    </Dropdown>
+    </Popover>
   );
 }
 
@@ -92,8 +111,9 @@ export function FiltersBar() {
 
   return (
     <>
-      {filterKeys.map((key, i) => (
-        <FilterOptionsDropdown 
+      {filterKeys.map((key) => (
+        <FilterOptionsDropdown
+          key={`dropdown_${key}`}
           filterSet={key}
           filtersSets={filtersOptions}
         />

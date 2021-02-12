@@ -1,33 +1,23 @@
 import { Pagination } from "antd";
-import { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
-import { constructNewSearchString } from "../../utilities/constructNewSearchString";
+import { changeParams } from "../../utilities/changeParamsUtil";
 
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 
 export function CatalogPaginationControls() {
   const history = useHistory();
-  const search = useLocation().search;
+  const {search} = useLocation();
   const page = useQueryParam().get("pg");
   const increment = useQueryParam().get("inc");
   const { contents } = useRecoilValueLoadable(fetchCatalogCollectionsSelector);
 
-  useEffect(() => {
-    if (!search) {
-      history.push({
-        pathname: "/",
-        search: "?page=1&inc=24&map=false",
-      });
-    }
-  }, [search, history]);
   return (
     <>
       {contents.count < ((page -1) * increment) && page > 1
         ? history.push({
-            pathname: "/",
-            search: constructNewSearchString("pg", page, 1, search),
+            search: changeParams([{key: "pg", value: 1, ACTION: "set"}], search),
           })
         : null}
       <Pagination
@@ -40,14 +30,12 @@ export function CatalogPaginationControls() {
         onChange={(pg, inc) => {
           if (pg !== Number(page)) {
             history.push({
-              pathname: "/",
-              search: constructNewSearchString("pg", page, pg, search),
+              search: changeParams([{key: "pg", value: pg, ACTION: "set"}], search),
             });
           }
           if (inc !== Number(increment)) {
             history.push({
-              pathname: "/",
-              search: constructNewSearchString("inc", increment, inc, search),
+              search: changeParams([{key: "inc", value: inc, ACTION: "set"}], search),
             });
           }
         }}

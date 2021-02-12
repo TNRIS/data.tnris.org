@@ -5,9 +5,10 @@ import CartContainer from "../components/CartContainer";
 import { CatalogCollectionLayout } from "../components/layouts/CatalogCollectionLayout";
 import { searchString } from "../utilities/atoms/urlFactoryAtoms";
 export function RootRouter() {
+
   const location = useLocation()
   const [search, setSearch] = useRecoilState(searchString)
-
+  
   useEffect(() => {
     setSearch(location.search)
   }, [location, setSearch])

@@ -1,8 +1,32 @@
-import { Route, Switch } from "react-router-dom";
+import { useEffect } from "react";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { CatalogList } from "../components/catalogListComponents/CatalogList";
 import CollectionTabsContainer from "../components/collectionTabsComponents/CollectionTabsContainer";
+import { changeParams } from "../utilities/changeParamsUtil";
+import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 export function LeftPanelRouter() {
+  const history = useHistory();
+  const {search, pathname} = useLocation();
+  const page = useQueryParam().get("pg");
+
+  useEffect(() => {
+    if ( (!page) && pathname === "/") {
+      history.push({
+        search: changeParams([
+          {key:"pg", value: 1, ACTION: "set"},
+          {key:"inc", value: 24, ACTION: "set"},
+          {key: "c", value: null, ACTION: "delete"}
+        ], search)
+      }, search);
+    }
+    if(pathname === "/"){
+      changeParams([
+        {key: "c", value: null, ACTION: "delete"}
+      ], search)
+    }
+  }, [page,history,search,pathname]);
+
   return (
     <Switch>
       <Route path="/collection" exact>
