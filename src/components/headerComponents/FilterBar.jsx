@@ -18,7 +18,7 @@ export function FilterBar() {
           content={
             <Col>
               {set[1].map((opt) => (
-                <FiltersOption filterSet={set[0]} value={opt} />
+                <FilterOption filterSet={set[0]} value={opt} />
               ))}
             </Col>
           }
@@ -32,7 +32,7 @@ export function FilterBar() {
   );
 }
 
-export function FiltersOption({ filterSet, value }) {
+export function FilterOption({ filterSet, value }) {
   const history = useHistory();
   const { search } = useLocation();
   const param = useQueryParam().get(filterSet);
