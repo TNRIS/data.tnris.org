@@ -18,13 +18,15 @@ export function FilterBar() {
           content={
             <Col>
               {set[1].map((opt) => (
-                <FilterOption filterSet={set[0]} value={opt} />
+                <FilterOption key={set[0]+"+"+opt} filterSet={set[0]} value={opt} />
               ))}
             </Col>
           }
         >
           <Button>
-          <FilterCountBadge filterSet={set[0]}><Badge>{set[0].replace("_", " ")}</Badge></FilterCountBadge>
+            <FilterCountBadge filterSet={set[0]}>
+              <Badge>{set[0].replace("_", " ")}</Badge>
+            </FilterCountBadge>
           </Button>
         </Popover>
       ))}
@@ -68,5 +70,14 @@ export function FilterOption({ filterSet, value }) {
 export function FilterCountBadge({ filterSet, offset, children }) {
   const param = useQueryParam().get(filterSet);
 
-  return <Badge style={{background: "#1e8dc1",}} size="small" offset={[8,-4]} count={param && param.split(",").length}>{children}</Badge>;
+  return (
+    <Badge
+      style={{ background: "#1e8dc1" }}
+      size="small"
+      offset={[8, -4]}
+      count={param && param.split(",").length}
+    >
+      {children}
+    </Badge>
+  );
 }

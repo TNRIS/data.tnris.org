@@ -1,4 +1,4 @@
-import { atom, atomFamily } from "recoil";
+import { atom } from "recoil";
 
 export const sort = atom({
   key: "sort",
@@ -44,8 +44,3 @@ export const catalogFiltersOptions = atom({
     ],
   },
 });
-
-export const catalogFilterFamily = atomFamily({
-  key: "catalogFilterFamily",
-  default: []
-})
