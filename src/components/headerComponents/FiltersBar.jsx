@@ -1,123 +1,72 @@
 import { Badge, Button, Checkbox, Col, Popover, Row } from "antd";
-import { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  catalogFilterFamily,
-  catalogFiltersOptions,
-} from "../../utilities/atoms/catalogFilterAtoms";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { useRecoilValue } from "recoil";
+import { catalogFiltersOptions } from "../../utilities/atoms/catalogFilterAtoms";
 import { changeParams } from "../../utilities/changeParamsUtil";
+import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 
-export function FilterOption({ filterSet, filterOption, filterAtomFamily }) {
-  const [filterValue, setFilterValue] = useRecoilState(
-    filterAtomFamily(filterSet)
+export function FilterBar() {
+  const filterOptions = useRecoilValue(catalogFiltersOptions);
+
+  return (
+    <>
+      {Object.entries(filterOptions).map((set, i) => (
+        <Popover
+          key={set[0] + "+" + i}
+          trigger={"click"}
+          placement="bottomLeft"
+          content={
+            <Col>
+              {set[1].map((opt) => (
+                <FiltersOption filterSet={set[0]} value={opt} />
+              ))}
+            </Col>
+          }
+        >
+          <Button>
+          <FilterCountBadge filterSet={set[0]}><Badge>{set[0].replace("_", " ")}</Badge></FilterCountBadge>
+          </Button>
+        </Popover>
+      ))}
+    </>
   );
-  const handleOptionClick = () =>
-    filterValue.includes(filterOption)
-      ? setFilterValue(filterValue.filter((v) => v !== filterOption))
-      : setFilterValue([...filterValue, filterOption]);
+}
+
+export function FiltersOption({ filterSet, value }) {
+  const history = useHistory();
+  const { search } = useLocation();
+  const param = useQueryParam().get(filterSet);
+  const paramArray = param ? param.split(",") : [];
+  const selected = paramArray.includes(value);
+  const setOrDelete = selected && paramArray.length === 1 ? "delete" : "set";
+
+  const toggle = () =>
+    history.push({
+      pathname: "/",
+      search: changeParams(
+        [
+          {
+            key: filterSet,
+            value: selected
+              ? paramArray.filter((v) => v !== value)
+              : [...paramArray, value],
+            ACTION: setOrDelete,
+          },
+        ],
+        search
+      ),
+    });
   return (
     <Row>
-      <Checkbox
-        checked={filterValue.includes(filterOption)}
-        onClick={handleOptionClick}
-      >
-        {filterOption}
+      <Checkbox checked={selected} onClick={toggle}>
+        {value.replace("_", " ")}
       </Checkbox>
     </Row>
   );
 }
-// a component that shows the number of selected filters in a specified filter type.
-// shows the count in a Badge component from Ant Design
-export function FilterCategorySelectionLengthIndicator({
-  filterAtomFamily,
-  filterKey,
-  children,
-  offset,
-  size,
-}) {
-  const filterValue = useRecoilValue(filterAtomFamily(filterKey));
-  return (
-    <Badge offset={offset} size={size} count={filterValue.length}>
-      {children}
-    </Badge>
-  );
-}
 
-export function FilterOptionsDropdown({ filterSet, filtersSets }) {
-  const history = useHistory();
-  const {search} = useLocation();
-  const filterParam = useQueryParam().get(filterSet);
-  const [filterValue, setFilterValue] = useRecoilState(
-    catalogFilterFamily(filterSet)
-  );
-  useEffect(() => {
-    if (filterParam && filterParam.length) {
-      setFilterValue(filterParam.split(","));
-    }
-  }, [filterParam, setFilterValue]);
+export function FilterCountBadge({ filterSet, offset, children }) {
+  const param = useQueryParam().get(filterSet);
 
-
-  return (
-    <Popover
-      trigger={"click"}
-      placement="bottomLeft"
-      content={
-        <Col>
-          {filtersSets[filterSet].map((option) => (
-            <FilterOption
-              key={`${filterSet}_${option}`}
-              filterSet={filterSet}
-              filterOption={option}
-              filterAtomFamily={catalogFilterFamily}
-            />
-          ))}
-          <hr />
-          <Row>
-            <Button
-              size="small"
-              type="primary"
-              block={true}
-              onClick={() => history.push({
-                pathname: "/",
-                search: changeParams([
-                  { key: filterSet, value: filterValue, ACTION: filterValue.length ? "set" : "delete" }
-                ], search)
-              })}
-            >
-              Apply Filters
-            </Button>
-          </Row>
-        </Col>
-      }
-    >
-      <Button>
-        <FilterCategorySelectionLengthIndicator
-          children={filterSet.replace("_", " ")}
-          offset={[8, -4]}
-          size="small"
-          filterKey={filterSet}
-          filterAtomFamily={catalogFilterFamily}
-        />
-      </Button>
-    </Popover>
-  );
-}
-
-export function FiltersBar() {
-  const filtersOptions = useRecoilValue(catalogFiltersOptions);
-  const filterKeys = Object.keys(filtersOptions);
-
-  return (
-    <>
-      {filterKeys.map((key) => (
-        <FilterOptionsDropdown
-          key={`dropdown_${key}`}
-          filterSet={key}
-          filtersSets={filtersOptions}
-        />
-      ))}
-    </>
-  );
+  return <Badge style={{background: "#1e8dc1",}} size="small" offset={[8,-4]} count={param && param.split(",").length}>{children}</Badge>;
 }

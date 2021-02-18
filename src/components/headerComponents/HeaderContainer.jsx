@@ -3,7 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { GeoFilterSearchBar } from "./GeoFilterSearchBar";
-import { FiltersBar } from "./FiltersBar";
+import { FilterBar, FiltersBar } from "./FiltersBar";
 
 // a component that returns a stateful checkbox, state being stored in a designated atomFamily
 // filterAtomFamily is a pointer to an atomFamily in which to store key-value pairs
@@ -43,7 +43,7 @@ export function SearchBar() {
       </div>
 
       <div className={"FilterRow"}>
-        <FiltersBar />
+        <FilterBar />
       </div>
     </div>
   );

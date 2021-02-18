@@ -1,5 +1,6 @@
 // package imports
 import { PageHeader, Spin, Tabs } from "antd";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import {
@@ -9,24 +10,7 @@ import {
 
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-
-export function ResourcesDownloadsTab({resources}) {
-  console.log(resources)
-
-  return (
-    <Tabs>
-      <Tabs.TabPane tab="County" key="0">
-
-      </Tabs.TabPane>
-      <Tabs.TabPane tab="Quad" key="1">
-
-      </Tabs.TabPane>
-      <Tabs.TabPane tab="QQuad" key="2">
-
-      </Tabs.TabPane>
-    </Tabs>
-  )
-}
+import { ResourcesDownloadsTab } from "./ResourcesDownloadTab";
 
 export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
@@ -41,9 +25,9 @@ export default function CollectionTabsContainer({ collection }) {
     fetchResourcesByCollectionIdSelector(collection_id)
   );
 
-  resourcesContents &&
-    resourcesState !== "loading" &&
-    console.log("resources", resourcesContents);
+  useEffect(() => {
+    console.log(resourcesContents);
+  }, [resourcesContents]);
 
   return (
     <div style={{ height: "100%", padding: "8px", paddingBottom: "40px" }}>
@@ -57,7 +41,7 @@ export default function CollectionTabsContainer({ collection }) {
             onBack={() => (history.length > 0 ? history.goBack() : null)}
           />
         )}
-        {contents && (
+        {state !== "loading" && contents && (
           <Tabs tabPosition={"left"} type="card">
             <Tabs.TabPane tab="Metadata" key="0">
               {contents &&
@@ -80,8 +64,14 @@ export default function CollectionTabsContainer({ collection }) {
                 ))}
             </Tabs.TabPane>
             <Tabs.TabPane tab="Data Downloads" key="1">
-              Downloads tab
-              <ResourcesDownloadsTab resources={resourcesContents} />
+              <Spin
+                spinning={resourcesState === "loading"}
+                tip={"Very large dataset, please wait while resources load."}
+              >
+                {resourcesState !== "loading" && (
+                  <ResourcesDownloadsTab resources={resourcesContents} />
+                )}
+              </Spin>
             </Tabs.TabPane>
             <Tabs.TabPane tab="WMS Link" key="2">
               WMS Link
@@ -92,4 +82,3 @@ export default function CollectionTabsContainer({ collection }) {
     </div>
   );
 }
-

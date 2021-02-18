@@ -1,4 +1,5 @@
 import { selectorFamily } from "recoil";
+import { recursiveFetcher } from "../recursiveFetcher";
 
 export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",
@@ -19,7 +20,11 @@ export const fetchCollectionByIdSelector = selectorFamily({
 export const fetchResourcesByCollectionIdSelector = selectorFamily({
   key: "fetchResourcesByCollectionIdSelector",
   get: (collection_id) => async ({ get }) => {
-    const qquads = fetch(
+    const qquads = recursiveFetcher(
+      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=qquad`,
+      []
+    );
+    /* fetch(
       `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=qquad`,
       {
         headers: {
@@ -27,8 +32,26 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
           Accept: "application/json",
         },
       }
-    ).then((resp) => resp.json());
-    const counties = fetch(
+    ).then((resp) => resp.json()); */
+    const counties = recursiveFetcher(
+      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=quad`,
+      []
+    );
+    /* fetch(
+      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=quad`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    ).then((resp) => resp.json()); */
+    const state = recursiveFetcher(
+      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=county`,
+      []
+    );
+
+    /* fetch(
       `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=county`,
       {
         headers: {
@@ -36,21 +59,17 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
           Accept: "application/json",
         },
       }
-    ).then((resp) => resp.json());
-    const state = fetch(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=county`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    ).then((resp) => resp.json());
+    ).then((resp) => resp.json()); */
     try {
       const response = await Promise.all([qquads, counties, state]);
-      return response;
-    } catch (error) {
-      console.log(error);
+      return {
+        total: response.reduce((acc, cur) => acc + cur.count, 0),
+        counties: response[2],
+        quads: response[1],
+        qquads: response[0],
+      };
+    } catch (e) {
+      console.log(e);
     }
   },
 });
