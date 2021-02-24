@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { CatalogList } from "../components/catalogListComponents/CatalogList";
-import CollectionTabsContainer from "../components/collectionTabsComponents/CollectionTabsContainer";
+import { CatalogList } from "../components/catalogViewComponents/CatalogList";
+import CollectionTabsContainer from "../components/collectionViewComponents/TabsContainer";
 import { changeParams } from "../utilities/changeParamsUtil";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 

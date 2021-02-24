@@ -28,6 +28,7 @@ export function GeoFilterSearchBar(props) {
       showArrow={false}
       filterOption={false}
       allowClear
+      loading={state === "loading"}
       onClear={() => setGeoFilterSelection(null)}
       // value is set to selection from dropdown if selection made, else, null
       value={

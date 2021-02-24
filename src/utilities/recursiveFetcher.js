@@ -9,7 +9,6 @@ export const recursiveFetcher = async (next, results) => {
     });
 
     const j = await r.json();
-    console.log(j)
     const concatResults = {...j, "results": results.results ? [...results.results, ...j.results] : j.results};
     return recursiveFetcher(j.next, concatResults);
   } else {

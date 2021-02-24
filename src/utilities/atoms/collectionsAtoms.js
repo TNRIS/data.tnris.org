@@ -24,42 +24,15 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
       `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=qquad`,
       []
     );
-    /* fetch(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=qquad`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    ).then((resp) => resp.json()); */
     const counties = recursiveFetcher(
       `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=quad`,
       []
     );
-    /* fetch(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=quad`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    ).then((resp) => resp.json()); */
     const state = recursiveFetcher(
       `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=county`,
       []
     );
 
-    /* fetch(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=county`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    ).then((resp) => resp.json()); */
     try {
       const response = await Promise.all([qquads, counties, state]);
       return {

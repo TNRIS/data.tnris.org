@@ -1,7 +1,7 @@
 import { Col, Row } from "antd";
+import { LeftPanelRouter } from "../../routers/LeftPanelRouter";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import { MapContainer } from "../MapContainer";
-import { LeftPanelRouter } from "../../routers/LeftPanelRouter";
 
 export function CatalogCollectionLayout(props) {
   const mapParam = useQueryParam().get("map");
@@ -14,15 +14,15 @@ export function CatalogCollectionLayout(props) {
     <Row id="CatalogCollectionLayout">
       <Col
         xs={{ order: 2, span: 24 }}
-        md={{ order: 1, span: hideMap() ? 24 : 12 }}
-        lg={{ span: hideMap() ? 24 : 10 }}
-        className={`DataContainer${hideMap() ? " HideMap" : ""}`}
+        md={{ order: 2, span: 24 }}
+        lg={{ order: 1, span: hideMap() ? 24 : 10 }}
+        className={`LeftPanelContainer${hideMap() ? " HideMap" : ""}`}
       >
         <LeftPanelRouter />
       </Col>
       <Col
         xs={{ order: 1, span: 24 }}
-        md={{ order: 1, span: 12 }}
+        md={{ order: 1, span: 24 }}
         lg={{ span: 14 }}
         className={`MapContainer${hideMap() ? " HideMap" : ""}`}
       >
