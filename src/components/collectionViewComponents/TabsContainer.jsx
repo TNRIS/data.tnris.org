@@ -47,7 +47,7 @@ export default function CollectionTabsContainer({ collection }) {
             <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
               <MetadataTab metadata={contents} />
             </Tabs.TabPane>
-            <Tabs.TabPane tab="Data Downloads" key="1">
+            <Tabs.TabPane tab="Downloads" key="1">
               <Spin
                 spinning={resourcesState === "loading"}
                 tip="Large collection, please wait as resources load..."

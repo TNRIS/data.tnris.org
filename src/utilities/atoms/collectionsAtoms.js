@@ -6,12 +6,7 @@ export const fetchCollectionByIdSelector = selectorFamily({
   get: (collection_id) => async ({ get }) => {
     const response = await fetch(
       `https://api.tnris.org/api/v1/collections/${collection_id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
+      
     );
     return response.json();
   },
@@ -36,7 +31,7 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
     try {
       const response = await Promise.all([qquads, counties, state]);
       return {
-        total: response.reduce((acc, cur) => acc + cur.count, 0),
+        //total: response.reduce((acc, cur) => acc + cur.count, 0),
         counties: response[2],
         quads: response[1],
         qquads: response[0],

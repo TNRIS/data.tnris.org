@@ -1,15 +1,46 @@
 import { Card, Col, Row, Tag } from "antd";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useSetRecoilState } from "recoil";
-import { hoverPreviewCoverageCounties } from "../../utilities/atoms/geofilterAtoms";
+import { useRecoilValue } from "recoil";
+import { mapAtom } from "../../utilities/atoms/mapAtoms";
 
-export function CatalogListCard({collection}) {
-  const setPreviewCounties = useSetRecoilState(hoverPreviewCoverageCounties);
+export function CatalogListCard({ collection }) {
+  const map = useRecoilValue(mapAtom);
+  const highlightCounties = (counties) => {
+    if (map) {
+      const addFn = () =>
+        map.addLayer({
+          id: "catalog-hover",
+          type: "fill",
+          source: "area-type-source",
+          "source-layer": "area_type",
+          minzoom: 2,
+          maxzoom: 24,
+          paint: {
+            "fill-color": "black",
+            "fill-opacity": 0.4,
+          },
+          filter: [
+            "all",
+            ["==", "area_type", "county"],
+            ["in", "area_type_name", ...counties],
+          ],
+        });
 
+      if (counties && counties.length >= 1) {
+        //console.log("drawing new layer")
+        addFn();
+      }
+    }
+  };
+  const removeHighlightedCounties = () => {
+    if(map && map.getLayer("catalog-hover") !== "undefined"){
+      map.removeLayer("catalog-hover")
+    }
+  }
   return (
     <Card
-      onMouseEnter={() => setPreviewCounties(collection.counties.split(", "))}
-      onMouseLeave={() => setPreviewCounties([])}
+      onMouseEnter={() => highlightCounties(collection.counties.split(", "))}
+      onMouseLeave={() => removeHighlightedCounties()}
       size={"small"}
       hoverable
       height={"300px"}
@@ -45,7 +76,9 @@ export function CatalogListCard({collection}) {
           </Row>
           <Row>Availability</Row>
           <Row>
-            {collection.availability && <Tag>{collection.availability.replace("_", " ")}</Tag>}
+            {collection.availability && (
+              <Tag>{collection.availability.replace("_", " ")}</Tag>
+            )}
             {collection.wms_link && <Tag>WMS</Tag>}
           </Row>
         </Col>

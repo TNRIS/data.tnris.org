@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.0",
+    "@turf/bbox": "^6.3.0",
     "antd": "^4.10.2",
     "craco-less": "^1.17.1",
     "maplibre-gl": "^1.13.0-rc.4",

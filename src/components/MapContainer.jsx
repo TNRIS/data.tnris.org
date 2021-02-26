@@ -1,4 +1,5 @@
 // package imports
+import { Spin } from "antd";
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
@@ -6,27 +7,25 @@ import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   geoFilterSelectedResult,
-  hoverPreviewCoverageCounties,
-  mapBounds,
+
+  mapBounds
 } from "../utilities/atoms/geofilterAtoms";
+import { mapAtom } from "../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
-
-const cartodb = window.cartodb;
 
 export function MapContainer() {
   const location = useLocation();
   const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
-  const highlightedCounties = useRecoilValue(hoverPreviewCoverageCounties);
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useRecoilState(mapAtom);
   const [bounds, setBounds] = useRecoilState(mapBounds);
   const [zoom] = useState(5.5);
-  const CatalogMapContainer = useRef(null);
+  const MapContainer = useRef(null);
 
   useEffect(() => {
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new Map({
-        container: CatalogMapContainer.current,
+        container: MapContainer.current,
         // you can switch to one the commented out basemaps below if the other
         // one is causing trouble
         // style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
@@ -36,9 +35,7 @@ export function MapContainer() {
         center: [bounds.lng, bounds.lat],
         zoom: zoom,
       });
-
       map.addControl(new NavigationControl());
-
       map.addControl(
         new GeolocateControl({
           positionOptions: {
@@ -47,139 +44,52 @@ export function MapContainer() {
           trackUserLocation: true,
         })
       );
-
-      map.on("load", () => {
-        setMap(map);
-      });
-
       map.on("moveend", () => {
         setBounds(JSON.stringify(map.getBounds()));
       });
-
       map.on("load", () => {
-        const areaTypeLayerData = {
-          user_name: "tnris-flood",
-          sublayers: [
-            {
-              sql: `SELECT
-                    the_geom_webmercator,
-                    area_type,
-                    area_type_name,
-                    ST_AsText(ST_Centroid(the_geom)) as centroid
-                  FROM
-                    area_type;`,
-              cartocss: "{}",
-            },
-          ],
-          maps_api_template: "https://tnris-flood.carto.com",
-        };
+        // store map object in Recoil Atom
+        setMap(map);
+        const areaTypeTiles =
+          "https://mapserver.tnris.org/?map=/tnris_mapfiles/area_type.map&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=area_type&map.imagetype=mvt";
+        // add source for area-type layers
+        map.addSource("area-type-source", {
+          type: "vector",
+          tiles: [areaTypeTiles],
+        });
 
-        cartodb.Tiles.getTiles(areaTypeLayerData, function (result, error) {
-          if (result == null) {
-            console.log("error: ", error.errors.join("\n"));
-            return;
-          }
-
-          const areaTypeTiles = result.tiles.map(function (tileUrl) {
-            return tileUrl.replace("{s}", "a").replace(/\.png/, ".mvt");
-          });
-
-          // add source for area-type layers
-          map.addSource("area-type-source", {
-            type: "vector",
-            tiles: areaTypeTiles,
-          });
-
-          // Add the county outlines to the map
+        const layerTypes = ["county", "quad", "qquad"];
+        layerTypes.forEach((v, i) => {
           map.addLayer(
             {
-              id: "county-outline",
+              id: `${v}-outline`,
               type: "line",
               source: "area-type-source",
-              "source-layer": "layer0",
+              "source-layer": "area_type",
               minzoom: 2,
               maxzoom: 24,
               paint: {
                 "line-color": "#666",
-                "line-width": 1.5,
-                "line-opacity": 0.4,
+                "line-width": 1.0,
+                "line-opacity": 0.3,
               },
-              filter: ["in", "area_type", "county"],
-            }
-            // Place these under the area-type-selected layer
-          );
-
-          // Add the quad outlines to the map
-          map.addLayer(
-            {
-              id: "quad-outline",
-              type: "line",
-              source: "area-type-source",
-              "source-layer": "layer0",
-              minzoom: 9,
-              maxzoom: 24,
-              paint: {
-                "line-color": "rgba(139,69,19,1)",
-                "line-width": 1.5,
-                "line-opacity": 0.05,
-              },
-              filter: ["in", "area_type", "quad"],
+              filter: ["in", "area_type", v],
             },
-            // Place these under the county-outline layer
-            "county-outline"
+            layerTypes[i - 1] ? `${layerTypes[i - 1]}-outline` : null
           );
+          map.on("mouseenter", `${v}-outline`, (e) => {
+            map.getCanvas().style.cursor = "pointer";
+            const area = e.features[0];
+            if (area) {
+              console.log(area);
+            }
+          });
         });
       });
     };
 
-    if (!map) initializeMap({ setMap, CatalogMapContainer });
-  }, [map, bounds, setBounds, zoom]);
-
-  // add highlighted counties when set or changed
-  useEffect(() => {
-    // if highlighted counties array length is 0, remove layers from map
-    if (map && highlightedCounties.length === 0) {
-      const mapLayer = map.getLayer("area-type-selected");
-      // check that the map layer exists before attempting to remove it
-      // this is required onload when highlightedCounties.length will resolve to 0 as its default is []
-      if (typeof mapLayer !== "undefined") {
-        map.removeLayer("area-type-selected");
-      }
-    }
-    // check if highlightedCounties length is greater or equal to 1
-    if (map && highlightedCounties.length >= 1) {
-      // make sure source has been loaded
-      if (typeof map.getSource("area-type-source") !== "undefined") {
-        // if so, check if a layer is already drawn
-        const mapLayer = map.getLayer("area-type-selected");
-        if (typeof mapLayer !== "undefined") {
-          // remove the previous layer if already drawn
-          map.removeLayer("area-type-selected");
-        }
-        // add new highlightedCounties layer
-        map.addLayer(
-          {
-            id: "area-type-selected",
-            type: "fill",
-            source: "area-type-source",
-            "source-layer": "layer0",
-            minzoom: 2,
-            maxzoom: 24,
-            paint: {
-              "fill-color": "#1e8dc1",
-              "fill-opacity": 0.4,
-            },
-            filter: [
-              "all",
-              ["==", "area_type", "county"],
-              ["in", "area_type_name", ...highlightedCounties],
-            ],
-          },
-          geoFilterSelection ? "geofilter-layer" : null
-        );
-      }
-    }
-  }, [map, highlightedCounties, geoFilterSelection]);
+    if (!map) initializeMap({ setMap, MapContainer });
+  }, [map, bounds, setBounds, zoom, setMap]);
 
   // show geofilter search geometry when available
   useEffect(() => {
@@ -233,17 +143,32 @@ export function MapContainer() {
   }
 
   return (
-    <div>
+    <>
+      <Spin
+        spinning={map ? false : true}
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        size="large"
+        tip="Loading Map..."
+      ></Spin>
+      {map ? null : <h1>Loading Map</h1>}
       <div
-        ref={(el) => (CatalogMapContainer.current = el)}
-        className="CatalogMapContainer"
+        ref={(el) => (MapContainer.current = el)}
+        className="MapContainer"
         style={{
           position: "absolute",
           top: "0",
           bottom: "0",
           width: "100%",
+          height: "100%",
         }}
       ></div>
-    </div>
+    </>
   );
 }

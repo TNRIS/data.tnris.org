@@ -26,7 +26,6 @@ export const hoverPreviewCoverageCounties = atom({
   default: [],
 });
 
-
 export const mapBounds = atom({
   key: "mapBounds",
   default: {lng: -99.341389, lat: 31.33}
