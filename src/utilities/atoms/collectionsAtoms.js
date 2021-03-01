@@ -31,10 +31,9 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
     try {
       const response = await Promise.all([qquads, counties, state]);
       return {
-        //total: response.reduce((acc, cur) => acc + cur.count, 0),
-        counties: response[2],
-        quads: response[1],
-        qquads: response[0],
+        county: response[2],
+        quad: response[1],
+        qquad: response[0],
       };
     } catch (e) {
       console.log(e);

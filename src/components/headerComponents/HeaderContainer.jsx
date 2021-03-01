@@ -1,9 +1,9 @@
 import { Checkbox, Input, Row } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { GeoFilterSearchBar } from "./GeoFilterSearchBar";
 import { FilterBar } from "./FilterBar";
+import { GeoFilterSearchBar } from "./GeoFilterSearchBar";
+import { KeywordSearchBar } from "./KeywordSearchBar";
 
 // a component that returns a stateful checkbox, state being stored in a designated atomFamily
 // filterAtomFamily is a pointer to an atomFamily in which to store key-value pairs
@@ -28,16 +28,12 @@ export function FilterOption({ filterKey, value, filterAtomFamily }) {
   );
 }
 
-export function SearchBar() {
+export function SearchBars() {
   return (
     <div className={"CatalogSearchBar"}>
       <div className={"SearchRow"}>
         <Input.Group compact>
-          <Input
-            style={{ width: "50%", minWidth: "300px" }}
-            prefix={<SearchOutlined />}
-            placeholder="Search collections by keyword"
-          />
+          <KeywordSearchBar />
           <GeoFilterSearchBar style={{ width: "50%", minWidth: "300px" }} />
         </Input.Group>
       </div>
@@ -64,8 +60,7 @@ export function HeaderContainer(props) {
           </Link>
         </div>
       </Row>
-
-      <SearchBar />
+      <SearchBars />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Input, Select, Table } from "antd";
 import { useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { hoverResourceAreaId, mapAtom } from "../../utilities/atoms/mapAtoms";
+import { useRecoilValue } from "recoil";
+import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import { shingledJaccard } from "../../utilities/searchFunctions";
 
 export function DownloadsTab({ resources, resourcesState }) {
@@ -15,7 +15,7 @@ export function DownloadsTab({ resources, resourcesState }) {
       ? 1
       : -1;
   }
-  const [opts, setOpts] = useState(
+  const [opts, ] = useState(
     Object.keys(resources).sort((a, b) =>
       resources[a].results.length > resources[b].results.length ? -1 : 1
     )
@@ -26,11 +26,7 @@ export function DownloadsTab({ resources, resourcesState }) {
   const [searchResults, setSearchResults] = useState(
     [...resources[areaTypeSelection].results].sort((a, b) => sortFn(a, b))
   );
-  const setHoverResourceId = useSetRecoilState(hoverResourceAreaId);
-  // get unique "resource_type_name"s
-  /* const getFileTypes = (dataset) => [
-    ...new Set([...dataset].map((r) => r.resource_type_name)),
-  ]; */
+
   const handleSearch = () => {
     if (searchInput?.length && searchInput?.length >= 3) {
       setSearchResults((searchResults) =>
@@ -55,13 +51,23 @@ export function DownloadsTab({ resources, resourcesState }) {
       setPg(1);
     }
   };
+
   useEffect(() => {
     setPg(1);
     setSearchInput(null);
     setSearchResults((searchResults) =>
       [...resources[areaTypeSelection].results].sort((a, b) => sortFn(a, b))
     );
-  }, [areaTypeSelection, resources, opts]);
+    opts.forEach(v => {
+      //console.log(map.getLayer(`${v}-outline`))
+      if(v !== areaTypeSelection){
+        map.setLayoutProperty(`${v}-outline`, "visibility", "none")
+      } else {
+        map.setLayoutProperty(`${v}-outline`, "visibility", "visible")
+      }
+    })
+  }, [areaTypeSelection, resources, opts, map]);
+
   return (
     <div id="DownloadsTabContentContainer">
       <div className="search">

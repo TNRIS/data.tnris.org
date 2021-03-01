@@ -1,12 +1,19 @@
 import { Select } from "antd";
+import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeofilterSearchResults,
   geoFilterSearchText,
   geoFilterSelectedResult,
 } from "../../utilities/atoms/geofilterAtoms";
+import { changeParams } from "../../utilities/changeParamsUtil";
+import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 
 export function GeoFilterSearchBar(props) {
+  const history = useHistory();
+  const geo = useQueryParam().get("geo");
+  const search = useLocation().search;
+
   const { state, contents } = useRecoilValueLoadable(
     fetchGeofilterSearchResults
   );
@@ -16,6 +23,15 @@ export function GeoFilterSearchBar(props) {
   const [geoFilterSelection, setGeoFilterSelection] = useRecoilState(
     geoFilterSelectedResult
   );
+
+  //if the geo param is set on page load, register it as the search text
+  //then, store the first result as the geoFilterSelection, which will trigger map render of feature
+  if (geo) {
+    setGeoSearchInputText(geo);
+    if (state !== "loading" && contents.features.length === 1) {
+      setGeoFilterSelection(contents.features[0]);
+    }
+  }
 
   return (
     <Select
@@ -29,13 +45,45 @@ export function GeoFilterSearchBar(props) {
       filterOption={false}
       allowClear
       loading={state === "loading"}
-      onClear={() => setGeoFilterSelection(null)}
+      onClear={() => {
+        history.push({
+          pathname: "/",
+          search: changeParams(
+            [
+              {
+                key: "geo",
+                value: null,
+                ACTION: "delete",
+              },
+            ],
+            search
+          ),
+        });
+        setGeoFilterSelection(null);
+      }}
       // value is set to selection from dropdown if selection made, else, null
       value={
         geoFilterSelection ? geoFilterSelection.properties.display_name : null
       }
       // on selection change, geoFilterSelectedResult atom set to whole object from nominatim results
-      onChange={(v) => setGeoFilterSelection(contents.features[v])}
+      onChange={(v) => {
+        if (contents.features[v]?.properties) {
+          console.log(v, contents.features[v]);
+          history.push({
+            search: changeParams(
+              [
+                {
+                  key: "geo",
+                  value: contents?.features[v]?.properties?.display_name,
+                  ACTION: "set",
+                },
+              ],
+              search
+            ),
+          });
+          setGeoFilterSelection(contents.features[v]);
+        }
+      }}
       {...props}
     >
       {

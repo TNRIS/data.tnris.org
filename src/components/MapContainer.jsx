@@ -4,19 +4,18 @@ import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   geoFilterSelectedResult,
-
-  mapBounds
+  mapBounds,
 } from "../utilities/atoms/geofilterAtoms";
-import { mapAtom } from "../utilities/atoms/mapAtoms";
-// local imports
+import { mapAtom, mapHoverAreaId } from "../utilities/atoms/mapAtoms";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 export function MapContainer() {
   const location = useLocation();
   const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
+  const setMapHoverArea = useSetRecoilState(mapHoverAreaId);
   const [map, setMap] = useRecoilState(mapAtom);
   const [bounds, setBounds] = useRecoilState(mapBounds);
   const [zoom] = useState(5.5);
@@ -30,10 +29,11 @@ export function MapContainer() {
         // one is causing trouble
         // style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
         // style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/basic.json',
-        style:
-          "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json",
+        // style: "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json"
+        style: "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json",
         center: [bounds.lng, bounds.lat],
         zoom: zoom,
+        hash: true,
       });
       map.addControl(new NavigationControl());
       map.addControl(
@@ -57,7 +57,9 @@ export function MapContainer() {
           type: "vector",
           tiles: [areaTypeTiles],
         });
-
+        // add the point sources for the county and quad
+        // reference layer labels
+       
         const layerTypes = ["county", "quad", "qquad"];
         layerTypes.forEach((v, i) => {
           map.addLayer(
@@ -73,58 +75,50 @@ export function MapContainer() {
                 "line-width": 1.0,
                 "line-opacity": 0.3,
               },
+              layout: { visibility: v === "county" ? "visible" : "none" },
               filter: ["in", "area_type", v],
             },
             layerTypes[i - 1] ? `${layerTypes[i - 1]}-outline` : null
           );
-          map.on("mouseenter", `${v}-outline`, (e) => {
-            map.getCanvas().style.cursor = "pointer";
-            const area = e.features[0];
-            if (area) {
-              console.log(area);
-            }
-          });
         });
       });
     };
 
     if (!map) initializeMap({ setMap, MapContainer });
-  }, [map, bounds, setBounds, zoom, setMap]);
+  }, [map, bounds, setBounds, zoom, setMap, setMapHoverArea]);
 
   // show geofilter search geometry when available
   useEffect(() => {
     // only animate to geosearch layer when at root "/" path
-    if (location.pathname === "/") {
-      // check that map is initialized
-      if (map) {
-        // check if layer already exists
-        const filterLayer = map.getLayer("geofilter-layer");
-        if (typeof filterLayer !== "undefined") {
-          // if it exists, remove it and its source
-          map.removeLayer("geofilter-layer");
-          map.removeSource("geofilter-source");
-        }
-        // check if geoFilterSelection atom is populated with search result
-        if (geoFilterSelection) {
-          // if so, add source from geojson and layer from source
-          map.addSource("geofilter-source", {
-            type: "geojson",
-            data: geoFilterSelection,
-          });
-          map.addLayer({
-            id: "geofilter-layer",
-            type: "line",
-            source: "geofilter-source",
-            layout: {},
-            paint: {
-              "line-color": "red",
-              "line-opacity": 1,
-              "line-width": 4,
-            },
-          });
-          // after adding layer, fit bounds to selection
-          map.fitBounds(geoFilterSelection.bbox, { padding: 100 });
-        }
+    // check that map is initialized
+    if (map) {
+      // check if layer already exists
+      const filterLayer = map.getLayer("geofilter-layer");
+      if (typeof filterLayer !== "undefined") {
+        // if it exists, remove it and its source
+        map.removeLayer("geofilter-layer");
+        map.removeSource("geofilter-source");
+      }
+      // check if geoFilterSelection atom is populated with search result
+      if (geoFilterSelection) {
+        // if so, add source from geojson and layer from source
+        map.addSource("geofilter-source", {
+          type: "geojson",
+          data: geoFilterSelection,
+        });
+        map.addLayer({
+          id: "geofilter-layer",
+          type: "line",
+          source: "geofilter-source",
+          layout: {},
+          paint: {
+            "line-color": "red",
+            "line-opacity": 1,
+            "line-width": 4,
+          },
+        });
+        // after adding layer, fit bounds to selection
+        map.fitBounds(geoFilterSelection.bbox, { padding: 100 });
       }
     }
   }, [geoFilterSelection, map, location]);

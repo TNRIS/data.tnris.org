@@ -2,11 +2,13 @@ import { Card, Col, Row, Tag } from "antd";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
+import bbox from "@turf/bbox"
+const countyLabelCentroids = require("../../mapdata/countyCentroids.geojson.json");
 
 export function CatalogListCard({ collection }) {
   const map = useRecoilValue(mapAtom);
   const highlightCounties = (counties) => {
-    if (map) {
+    if (map && !map.getLayer("catalog-hover")) {
       const addFn = () =>
         map.addLayer({
           id: "catalog-hover",
@@ -25,18 +27,23 @@ export function CatalogListCard({ collection }) {
             ["in", "area_type_name", ...counties],
           ],
         });
-
       if (counties && counties.length >= 1) {
         //console.log("drawing new layer")
         addFn();
+        const features = countyLabelCentroids.features.filter( v => counties.includes(v.properties.area_type_name))
+        const zoomToFeatures = {...countyLabelCentroids, features: features}
+        map.fitBounds(bbox(zoomToFeatures), {
+          padding: features.length === 1 ? 800 : 200
+        })
+        
       }
     }
   };
   const removeHighlightedCounties = () => {
-    if(map && map.getLayer("catalog-hover") !== "undefined"){
-      map.removeLayer("catalog-hover")
+    if (map && map.getLayer("catalog-hover")) {
+      map.removeLayer("catalog-hover");
     }
-  }
+  };
   return (
     <Card
       onMouseEnter={() => highlightCounties(collection.counties.split(", "))}
