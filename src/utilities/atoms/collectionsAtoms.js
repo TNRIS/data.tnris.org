@@ -1,12 +1,12 @@
 import { selectorFamily } from "recoil";
+import { AREA_TYPES } from "../constants/areaTypes";
 import { recursiveFetcher } from "../recursiveFetcher";
 
 export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",
   get: (collection_id) => async ({ get }) => {
     const response = await fetch(
-      `https://api.tnris.org/api/v1/collections/${collection_id}`,
-      
+      `https://api.tnris.org/api/v1/collections/${collection_id}`
     );
     return response.json();
   },
@@ -15,26 +15,18 @@ export const fetchCollectionByIdSelector = selectorFamily({
 export const fetchResourcesByCollectionIdSelector = selectorFamily({
   key: "fetchResourcesByCollectionIdSelector",
   get: (collection_id) => async ({ get }) => {
-    const qquads = recursiveFetcher(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=qquad`,
-      []
-    );
-    const counties = recursiveFetcher(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=quad`,
-      []
-    );
-    const state = recursiveFetcher(
-      `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=county`,
-      []
+    const mappedPromises = AREA_TYPES.map((areatype) =>
+      recursiveFetcher(
+        `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=${areatype}`,
+        []
+      )
     );
 
     try {
-      const response = await Promise.all([qquads, counties, state]);
-      return {
-        county: response[2],
-        quad: response[1],
-        qquad: response[0],
-      };
+      const response = await Promise.all(mappedPromises);
+      const returnObject = {};
+      AREA_TYPES.forEach((v, i) => (returnObject[v] = response[i]));
+      return returnObject;
     } catch (e) {
       console.log(e);
     }

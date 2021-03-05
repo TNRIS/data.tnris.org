@@ -10,6 +10,7 @@ import {
   mapBounds,
 } from "../utilities/atoms/geofilterAtoms";
 import { mapAtom, mapHoverAreaId } from "../utilities/atoms/mapAtoms";
+import { AREA_TYPES } from "../utilities/constants/areaTypes";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 export function MapContainer() {
@@ -59,8 +60,7 @@ export function MapContainer() {
           tiles: [areaTypeTiles],
         });
         
-        const layerTypes = ["county", "quad", "qquad"];
-        layerTypes.forEach((v, i) => {
+        AREA_TYPES.forEach((v, i) => {
           map.addLayer(
             {
               id: `${v}-outline`,
@@ -77,7 +77,7 @@ export function MapContainer() {
               layout: { visibility: v === "county" ? "visible" : "none" },
               filter: ["in", "area_type", v],
             },
-            layerTypes[i - 1] ? `${layerTypes[i - 1]}-outline` : null
+            AREA_TYPES[i - 1] ? `${AREA_TYPES[i - 1]}-outline` : null
           );
         });
       });
