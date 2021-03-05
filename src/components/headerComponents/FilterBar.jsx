@@ -7,7 +7,6 @@ import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
-
   return (
     <>
       {Object.entries(filterOptions).map((set, i) => (
@@ -18,8 +17,13 @@ export function FilterBar() {
           content={
             <Col>
               {set[1].map((opt) => (
-                <FilterOption key={set[0]+"+"+opt} filterSet={set[0]} value={opt} />
+                <FilterOption
+                  key={set[0] + "+" + opt}
+                  filterSet={set[0]}
+                  value={opt}
+                />
               ))}
+              <ToggleAllOptions set={set} />
             </Col>
           }
         >
@@ -30,6 +34,22 @@ export function FilterBar() {
           </Button>
         </Popover>
       ))}
+    </>
+  );
+}
+export function ToggleAllOptions({ set }) {
+  const selected = useQueryParam().get(set[0]);
+  console.log(set[1], selected);
+  return (
+    <>
+      <hr />
+      <Row>
+        <Button>
+          { selected && selected.split(",").sort().toString() === set[1].sort().toString()
+            ? "Clear selection"
+            : "Select all"}
+        </Button>
+      </Row>
     </>
   );
 }

@@ -5,7 +5,7 @@ import { searchString } from "../../utilities/atoms/urlFactoryAtoms";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import { changeParams } from "../../utilities/changeParamsUtil";
 
-export function MapViewSwitch() {
+export function ViewMapSwitch() {
   const history = useHistory();
   const currentSearchString = useRecoilValue(searchString);
   const map = useQueryParam().get("map");

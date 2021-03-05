@@ -2,20 +2,24 @@ import { Input, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
+import {
+  highlightDownloadArea,
+  removeHighlightedDownloadArea,
+} from "../../utilities/mapHelpers/highlightHelpers";
 import { shingledJaccard } from "../../utilities/searchFunctions";
 
 export function DownloadsTab({ resources, resourcesState }) {
   const map = useRecoilValue(mapAtom);
   function sortFn(a, b) {
-    return a.area_type_id === b.area_type_id
+    return a.area_type_name === b.area_type_name
       ? a.resource_type_name > b.resource_type_name
         ? -1
         : 1
-      : a.area_type_id > b.area_type_id
+      : a.area_type_name > b.area_type_name
       ? 1
       : -1;
   }
-  const [opts, ] = useState(
+  const [opts] = useState(
     Object.keys(resources).sort((a, b) =>
       resources[a].results.length > resources[b].results.length ? -1 : 1
     )
@@ -35,9 +39,9 @@ export function DownloadsTab({ resources, resourcesState }) {
             return {
               ...v,
               jaccard: shingledJaccard(
-                v.resource_type_name.toUpperCase(),
+                v.area_type_name.toUpperCase(),
                 searchInput.toUpperCase(),
-                2 //use shingle / k-size of 2 since search corpora is small (return more results)
+                2 //use shingle (k-size) of 2 since search corpora is small (return more results)
               ),
             };
           })
@@ -52,57 +56,75 @@ export function DownloadsTab({ resources, resourcesState }) {
     }
   };
 
+  // when areaTypeSelection changes
   useEffect(() => {
+    //set pagination to pg 1
     setPg(1);
+    //clear Downloads SearchBar
     setSearchInput(null);
+    //set results equal to resources sorted by area name
     setSearchResults((searchResults) =>
       [...resources[areaTypeSelection].results].sort((a, b) => sortFn(a, b))
     );
-    opts.forEach(v => {
-      //console.log(map.getLayer(`${v}-outline`))
-      if(v !== areaTypeSelection){
-        map.setLayoutProperty(`${v}-outline`, "visibility", "none")
+    //for each of counties, quads, qquads, check if it is the current selection
+    //if not current selection, set visibility to none, else set to visible and filter
+    opts.forEach((v) => {
+      if (v !== areaTypeSelection) {
+        map.setLayoutProperty(`${v}-outline`, "visibility", "none");
       } else {
-        map.setLayoutProperty(`${v}-outline`, "visibility", "visible")
+        map.setLayoutProperty(`${v}-outline`, "visibility", "visible");
+        const rsrcAreas = [...resources[areaTypeSelection].results].map(
+          (v) => v.area_type_id
+        );
+        map.setFilter(`${v}-outline`, ["in", "area_type_id", ...rsrcAreas]);
       }
-    })
+    });
+
+    return () =>
+      opts.forEach((v) => {
+        map.setLayoutProperty(`${v}-outline`, "visibility", "none");
+      });
   }, [areaTypeSelection, resources, opts, map]);
 
   return (
     <div id="DownloadsTabContentContainer">
-      <div className="search">
-        <Input.Search
-          enterButton={true}
-          placeholder={`Search by ${areaTypeSelection} by name`}
-          value={searchInput}
-          onChange={(e) => setSearchInput((searchInput) => e.target.value)}
-          onSearch={handleSearch}
-          allowClear
-          addonBefore={
-            <Select
-              value={areaTypeSelection}
-              onChange={(e) => setAreaTypeSelection((areaTypeSelection) => e)}
-            >
-              {opts
-                .sort((a, b) =>
-                  resources[a].results.length > resources[b].results.length
-                    ? -1
-                    : 1
-                )
-                .map((v, i) => (
-                  <Select.Option
-                    key={v + "+" + i}
-                    value={v}
-                    disabled={resources[v].results.length === 0}
-                  >
-                    {v} ({resources[v].results.length})
-                  </Select.Option>
-                ))}
-            </Select>
-          }
-        ></Input.Search>
-      </div>
       <Table
+        title={() => (
+          <div className="search">
+            <Input.Search
+              enterButton={true}
+              placeholder={`Search by ${areaTypeSelection} by name`}
+              value={searchInput}
+              onChange={(e) => setSearchInput((searchInput) => e.target.value)}
+              onSearch={handleSearch}
+              allowClear
+              addonBefore={
+                <Select
+                  value={areaTypeSelection}
+                  onChange={(e) =>
+                    setAreaTypeSelection((areaTypeSelection) => e)
+                  }
+                >
+                  {opts
+                    .sort((a, b) =>
+                      resources[a].results.length > resources[b].results.length
+                        ? -1
+                        : 1
+                    )
+                    .map((v, i) => (
+                      <Select.Option
+                        key={v + "+" + i}
+                        value={v}
+                        disabled={resources[v].results.length === 0}
+                      >
+                        {v} ({resources[v].results.length})
+                      </Select.Option>
+                    ))}
+                </Select>
+              }
+            />
+          </div>
+        )}
         id="DownloadsTable"
         loading={resourcesState === "loading"}
         sticky
@@ -123,7 +145,11 @@ export function DownloadsTab({ resources, resourcesState }) {
         }}
         dataSource={searchResults}
         columns={[
-          { title: "AreaId", dataIndex: "area_type_id" },
+          {
+            title: "Name",
+            dataIndex: "area_type_name",
+            render: (name) => `${name}`,
+          },
           {
             title: "Type",
             dataIndex: "resource_type_name",
@@ -144,41 +170,12 @@ export function DownloadsTab({ resources, resourcesState }) {
               </a>
             ),
           },
-          {
+          /* {
             title: "Similarity",
             dataIndex: "jaccard",
-          },
+          }, */
         ]}
       />
     </div>
   );
 }
-
-export const highlightDownloadArea = (areaTypeId, map) => {
-  if (map) {
-    const addFn = () => {
-      map.addLayer({
-        id: "dl-hover",
-        type: "fill",
-        source: "area-type-source",
-        "source-layer": "area_type",
-        minzoom: 2,
-        maxzoom: 24,
-        paint: {
-          "fill-color": "black",
-          "fill-opacity": 0.4,
-        },
-        filter: ["all", ["==", "area_type_id", areaTypeId]],
-      });
-    };
-    if (areaTypeId) {
-      addFn();
-    }
-  }
-};
-
-export const removeHighlightedDownloadArea = (areaTypeId, map) => {
-  if (map && map.getLayer("dl-hover")) {
-    map.removeLayer("dl-hover");
-  }
-};

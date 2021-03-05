@@ -4,7 +4,7 @@ import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import { CatalogListCard } from "./ListCard";
-import { MapViewSwitch } from "./MapViewSwitch";
+import { ViewMapSwitch } from "./ViewMapSwitch";
 import { CatalogPaginationControls } from "./PaginationControls";
 
 export function CatalogList() {
@@ -16,7 +16,7 @@ export function CatalogList() {
   return (
     <Col id={"CatalogViewContainer"}>
       <PageHeader
-        subTitle={<MapViewSwitch />}
+        subTitle={<ViewMapSwitch />}
         extra={<CatalogPaginationControls />}
       />
       <div id={"CatalogListContainer"}>

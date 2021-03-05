@@ -1,40 +1,47 @@
 // package imports
 import { PageHeader, Skeleton, Spin, Table, Tabs } from "antd";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { useRecoilValueLoadable } from "recoil";
+import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchCollectionByIdSelector,
   fetchResourcesByCollectionIdSelector
 } from "../../utilities/atoms/collectionsAtoms";
+import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { highlightCounties } from "../../utilities/mapHelpers/highlightHelpers";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
-
 
 export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
   const collection_id = useQueryParam().get("c");
-  const { state, contents } = useRecoilValueLoadable(
-    fetchCollectionByIdSelector(collection_id)
-  );
+  const map = useRecoilValue(mapAtom);
+  const {
+    state: collectionState,
+    contents: collectionContents,
+  } = useRecoilValueLoadable(fetchCollectionByIdSelector(collection_id));
   const {
     state: resourcesState,
     contents: resourcesContents,
   } = useRecoilValueLoadable(
     fetchResourcesByCollectionIdSelector(collection_id)
   );
+  useEffect(() => {
+    highlightCounties(map, collectionContents.counties);
+  }, [map, collectionContents]);
 
   return (
     <div id="TabsContainer">
-      {contents && (
+      {collectionContents && (
         <PageHeader
-          title={contents.name}
+          title={collectionContents.name}
           onBack={() => (history.length > 0 ? history.goBack() : null)}
         />
       )}
       <div id={"TabContentContainer"}>
-        {state !== "loading" && contents && (
+        {collectionState !== "loading" && collectionContents && (
           <Tabs
             tabPosition={"top"}
             style={{
@@ -45,7 +52,7 @@ export default function CollectionTabsContainer({ collection }) {
             keyboard="true"
           >
             <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
-              <MetadataTab metadata={contents} />
+              <MetadataTab metadata={collectionContents} />
             </Tabs.TabPane>
             <Tabs.TabPane tab="Downloads" key="1">
               <Spin

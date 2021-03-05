@@ -50,6 +50,7 @@ export function MapContainer() {
       map.on("load", () => {
         // store map object in Recoil Atom
         setMap(map);
+        //retreive area type tiles as mvt
         const areaTypeTiles =
           "https://mapserver.tnris.org/?map=/tnris_mapfiles/area_type.map&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=area_type&map.imagetype=mvt";
         // add source for area-type layers
@@ -57,9 +58,7 @@ export function MapContainer() {
           type: "vector",
           tiles: [areaTypeTiles],
         });
-        // add the point sources for the county and quad
-        // reference layer labels
-       
+        
         const layerTypes = ["county", "quad", "qquad"];
         layerTypes.forEach((v, i) => {
           map.addLayer(
@@ -71,9 +70,9 @@ export function MapContainer() {
               minzoom: 2,
               maxzoom: 24,
               paint: {
-                "line-color": "#666",
+                "line-color": "#222",
                 "line-width": 1.0,
-                "line-opacity": 0.3,
+                "line-opacity": 0.85,
               },
               layout: { visibility: v === "county" ? "visible" : "none" },
               filter: ["in", "area_type", v],
@@ -85,6 +84,7 @@ export function MapContainer() {
     };
 
     if (!map) initializeMap({ setMap, MapContainer });
+
   }, [map, bounds, setBounds, zoom, setMap, setMapHoverArea]);
 
   // show geofilter search geometry when available

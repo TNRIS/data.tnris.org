@@ -34,6 +34,63 @@ export const showMapSelector = selector({
     return showMapValue ? showMapValue : false;
   },
 });
+// parse search from url
+export const catalogSearchSelector = selector({
+  key: "catalogSearchSelector",
+  default: null,
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const s = new URLSearchParams(urlParams).get("s");
+    if (s) {
+      return `&search=${s}`;
+    }
+    return "";
+  },
+});
+
+// parse availability from url
+export const catalogAvailabilitySelector = selector({
+  key: "catalogAvailabilitySelector",
+  default: null,
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const availability = new URLSearchParams(urlParams).get("availability");
+    if (availability) {
+      return `&availability__icontains=${availability
+        .toString()
+        .replaceAll(" ", "_")}`;
+    }
+    return "";
+  },
+});
+// parse category from url
+export const catalogCategorySelector = selector({
+  key: "catalogCategorySelector",
+  default: null,
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const category = new URLSearchParams(urlParams).get("category");
+    if (category) {
+      return `&category__icontains=${category.toString().replaceAll(" ", "_")}`;
+    }
+    return "";
+  },
+});
+// parse category from url
+export const catalogFileTypeSelector = selector({
+  key: "catalogFileTypeSelector",
+  default: null,
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const fileType = new URLSearchParams(urlParams).get("file_type");
+    if (fileType) {
+      return `&file_type__icontains=${fileType
+        .toString()
+        .replaceAll(" ", "_")}`;
+    }
+    return "";
+  },
+});
 
 export const fetchCatalogCollectionsSelector = selector({
   key: "fetchCollectionsSelector",
@@ -41,8 +98,14 @@ export const fetchCatalogCollectionsSelector = selector({
     const page = get(catalogPageSelector);
     const increment = get(catalogIncrementSelector);
     const offset = page <= 1 ? "" : `offset=${(page - 1) * increment}&`;
+    //get search
+    const search = get(catalogSearchSelector);
+    //get filters
+    const availability = get(catalogAvailabilitySelector);
+    const category = get(catalogCategorySelector);
+    const fileType = get(catalogFileTypeSelector);
     const response = await fetch(
-      `https://api.tnris.org/api/v1/collections/?${offset}limit=${increment}`,
+      `http://localhost:8000/api/v1/collections/?${offset}limit=${increment}${search}${availability}${category}${fileType}`,
       {
         headers: {
           "Content-Type": "application/json",

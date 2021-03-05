@@ -20,7 +20,7 @@ export function fuzzySearch(keyword, corpus) {
   return true;
 }
 
-// break string into token "shingles" of length k at each index i - k + 1
+// break string into token "shingles" of length k at each index of i - k + 1
 export function shingle(doc, k = 3) {
   let shingles = Array.from(Array(doc.length - k + 1));
   return shingles.map((v, i) => doc.slice(i, i + k));
