@@ -1,5 +1,4 @@
 // package imports
-import { Spin } from "antd";
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
@@ -31,7 +30,8 @@ export function MapContainer() {
         // style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
         // style: 'http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/basic.json',
         // style: "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json"
-        style: "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json",
+        style:
+          "http://basemap.tnris.org.s3-website-us-east-1.amazonaws.com/liberty.json",
         center: [bounds.lng, bounds.lat],
         zoom: zoom,
         hash: true,
@@ -59,7 +59,7 @@ export function MapContainer() {
           type: "vector",
           tiles: [areaTypeTiles],
         });
-        
+
         AREA_TYPES.forEach((v, i) => {
           map.addLayer(
             {
@@ -83,8 +83,10 @@ export function MapContainer() {
       });
     };
 
-    if (!map) initializeMap({ setMap, MapContainer });
-
+    if (!map) {
+      console.log("map initialized")
+      initializeMap({ setMap, MapContainer });
+    }
   }, [map, bounds, setBounds, zoom, setMap, setMapHoverArea]);
 
   // show geofilter search geometry when available
@@ -138,20 +140,6 @@ export function MapContainer() {
 
   return (
     <>
-      <Spin
-        spinning={map ? false : true}
-        style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        size="large"
-        tip="Loading Map..."
-      ></Spin>
-      {map ? null : <h1>Loading Map</h1>}
       <div
         ref={(el) => (MapContainer.current = el)}
         className="MapContainer"

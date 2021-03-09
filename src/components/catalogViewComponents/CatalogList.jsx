@@ -1,4 +1,4 @@
-import { Col, PageHeader, Row, Spin } from "antd";
+import { Button, Col, Empty, PageHeader, Row, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
@@ -6,6 +6,7 @@ import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import { CatalogListCard } from "./ListCard";
 import { ViewMapSwitch } from "./ViewMapSwitch";
 import { CatalogPaginationControls } from "./PaginationControls";
+import { FilterBar } from "./FilterBar";
 
 export function CatalogList() {
   const map = useQueryParam().get("map");
@@ -15,10 +16,15 @@ export function CatalogList() {
 
   return (
     <Col id={"CatalogViewContainer"}>
-      <PageHeader
-        subTitle={<ViewMapSwitch />}
-        extra={<CatalogPaginationControls />}
-      />
+      <div>
+        <div className={"FilterRow"}>
+          <FilterBar />
+        </div>
+        <PageHeader
+          subTitle={<ViewMapSwitch />}
+          extra={<CatalogPaginationControls />}
+        />
+      </div>
       <div id={"CatalogListContainer"}>
         <Spin
           spinning={state === "loading"}
@@ -43,6 +49,11 @@ export function CatalogList() {
                   ))}
               </Row>
             </>
+          )}
+          {contents.results && contents.results.length === 0 && (
+            <Empty description={"No results found for that search query"}>
+              <Button type="outline">Clear Search</Button>
+            </Empty>
           )}
         </Spin>
       </div>

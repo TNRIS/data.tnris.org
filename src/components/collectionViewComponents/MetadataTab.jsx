@@ -1,10 +1,12 @@
+import { emailRegex, urlRegex } from "../../utilities/regexHelpers/regexHelpers";
+
 export function MetadataTab({metadata}) {
   return (
     <div id="MetadataTabContentContainer">
       {metadata &&
-        Object.entries(metadata).map((v, i) => (
+        orderedMetaKeys.map((k,i) => (
           <div
-            key={metadata.collection_id + "_" + v[0]}
+            key={metadata.collection_id + "_" + k}
             style={
               i === Object.keys(metadata).length - 1
                 ? { paddingBottom: "40px" }
@@ -12,11 +14,15 @@ export function MetadataTab({metadata}) {
             }
           >
             <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
-              {v[1] ? v[0].replaceAll("_", " ") : null}
+              {metadata[k] ? k.replaceAll("_", " ") : null}
             </h3>
-            <p>{v[1] ? v[1] : null}</p>
+            {emailRegex.test(metadata[k]) && <a href={`mailto:${metadata[k]}`}>{metadata[k]}</a>}
+            {urlRegex.test(metadata[k]) && <a href={`${metadata[k]}`}>{metadata[k]}</a>}
+            {!emailRegex.test(metadata[k]) && !urlRegex.test(metadata[k]) && <p>{metadata[k] ? metadata[k] : null}</p>}
           </div>
         ))}
     </div>
   );
 }
+
+const orderedMetaKeys = ["description", "partners", "source_name", "source_data_website", "source_contact", "spatial_reference", "license", "file_type", "download_formats", "bands", "category"]

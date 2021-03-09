@@ -14,12 +14,16 @@
 
 .HeaderBar {
   //box-shadow: @shadow-1-down;
+  display: inline-flex;
+  background-image: linear-gradient(115deg, #1e8dc1 20%, #2A2B2E 20%);
 
   .BrandBar {
+    min-width: 25%;
     padding: 0.25rem;
     grid-area: header;
-    background-color: @primary-color;
     .HeaderLogo {
+      display: flex;
+      align-items: center;
       color: white;
       width: fit-content;
       .TnrisLogo {
@@ -34,18 +38,18 @@
 
   .CatalogSearchBar {
     display: grid;
-    grid-template-rows: 1fr 1fr;
     grid-row: wrap;
     gap: 0.25rem;
     padding: 0.25rem;
     max-width: @screen-md;
-
-    .FilterRow {
-      display: flex;
-      gap: 0.25rem;
-      align-items: center;
-    }
   }
+}
+
+.FilterRow {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  padding: 1rem;
 }
 
 .content {
