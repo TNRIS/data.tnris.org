@@ -26,13 +26,13 @@ export const highlightCounties = (map, counties, type, paint, filter) => {
     if (counties && counties.length >= 1) {
       //console.log("drawing new layer")
       addFn();
-      const features = countyLabelCentroids.features.filter((v) =>
+      /* const features = countyLabelCentroids.features.filter((v) =>
         counties.includes(v.properties.area_type_name)
       );
       const zoomToFeatures = { ...countyLabelCentroids, features: features };
       map.fitBounds(bbox(zoomToFeatures), {
         padding: features.length < 2 ? 600 : 200,
-      });
+      }); */
       //console.log(features, counties, zoomToFeatures, bbox(zoomToFeatures));
     }
   }

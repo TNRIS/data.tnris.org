@@ -120,7 +120,7 @@ export function MapContainer() {
           },
         });
         // after adding layer, fit bounds to selection
-        map.fitBounds(geoFilterSelection.bbox, { padding: 100 });
+        //map.fitBounds(geoFilterSelection.bbox, { padding: 100 });
       }
     }
   }, [geoFilterSelection, map, location]);

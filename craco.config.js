@@ -11,11 +11,11 @@ module.exports = {
             modifyVars: { 
               '@layout-footer-background': '#333',
               '@layout-footer-color': '@layout-header-background',
-              '@layout-header-background': '#1e8dc1',
+              '@layout-header-background': '#222',
               '@layout-header-color': '#fff',
               '@primary-color': '#1e8dc1',
               '@link-color': '#1e8dc1',
-              '@border-radius-base': '4px'
+              '@border-radius-base': '4px',
             },
             javascriptEnabled: true,
           },
