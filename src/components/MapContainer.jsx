@@ -72,7 +72,7 @@ export function MapContainer() {
               paint: {
                 "line-color": "#222",
                 "line-width": 1.0,
-                "line-opacity": 0.85,
+                "line-opacity": 0.75,
               },
               layout: { visibility: v === "county" ? "visible" : "none" },
               filter: ["in", "area_type", v],
