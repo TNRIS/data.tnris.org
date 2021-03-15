@@ -1,4 +1,5 @@
 import { selector } from "recoil";
+import { geoFilterSelectedResult } from "./geofilterAtoms";
 import { searchString } from "./urlFactoryAtoms";
 
 // parse pg from url, if present. If not, default to 1
@@ -92,6 +93,20 @@ export const catalogFileTypeSelector = selector({
   },
 });
 
+export const catalogBBoxSelector = selector({
+  key: "catalogBBoxSelector",
+  default: null,
+  get: ({ get }) => {
+    const geo = get(geoFilterSelectedResult);
+    
+    if (geo !== null) {
+      return `&in_bbox=${geo.bbox.toString()}`
+    } else {
+      return ""
+    }
+  }
+})
+
 export const fetchCatalogCollectionsSelector = selector({
   key: "fetchCollectionsSelector",
   get: async ({ get }) => {
@@ -104,8 +119,9 @@ export const fetchCatalogCollectionsSelector = selector({
     const availability = get(catalogAvailabilitySelector);
     const category = get(catalogCategorySelector);
     const fileType = get(catalogFileTypeSelector);
+    const bbox = get(catalogBBoxSelector);
     const response = await fetch(
-      `http://localhost:8000/api/v1/collections/?${offset}limit=${increment}${search}${availability}${category}${fileType}`,
+      `http://localhost:8000/api/v1/collections/?${offset}limit=${increment}${search}${availability}${category}${fileType}${bbox}`,
       {
         headers: {
           "Content-Type": "application/json",

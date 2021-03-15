@@ -38,8 +38,9 @@ export const highlightCounties = (map, counties, type, paint, filter) => {
   }
 };
 export const removeHighlightCounties = (map) => {
-  if (map && map.getLayer("catalog-hover")) {
-    map.removeLayer("catalog-hover");
+  if (map && map.getLayer("catalog-hover-layer")) {
+    map.removeLayer("catalog-hover-layer");
+    map.removeSource("catalog-hover-source")
   }
 };
 
@@ -61,7 +62,7 @@ export const highlightDownloadArea = (areaTypeId, map) => {
         filter: ["all", ["==", "area_type_id", areaTypeId]],
       });
     };
-    
+
     if (areaTypeId) {
       addFn();
     }
@@ -72,4 +73,23 @@ export const removeHighlightedDownloadArea = (areaTypeId, map) => {
   if (map && map.getLayer("dl-hover")) {
     map.removeLayer("dl-hover");
   }
+};
+
+export const highlightCoverage = (map, coverage) => {
+  console.log(coverage)
+  map.addSource("catalog-hover-source", {
+    type: "geojson",
+    data: coverage,
+  });
+  map.addLayer({
+    id: "catalog-hover-layer",
+    type: "fill",
+    source: "catalog-hover-source",
+    minzoom: 2,
+    maxzoom: 24,
+    paint: {
+      "fill-color": "#1e8dc1",
+      "fill-opacity": 0.25,
+    },
+  });
 };

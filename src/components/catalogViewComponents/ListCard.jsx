@@ -1,18 +1,24 @@
 import { Card, Col, Row, Tag } from "antd";
+import { useEffect } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
-  highlightCounties,
+  highlightCoverage,
   removeHighlightCounties
 } from "../../utilities/mapHelpers/highlightHelpers";
 
 export function CatalogListCard({ collection }) {
   const map = useRecoilValue(mapAtom);
 
+  useEffect(() => {
+    //remove highlight when listcard leaves dom
+    return () => removeHighlightCounties(map)
+  },[map])
+
   return (
     <Card
-      onMouseEnter={() => highlightCounties(map, collection.counties)}
+      onMouseEnter={() => highlightCoverage(map, collection.the_geom)}
       onMouseLeave={() => removeHighlightCounties(map)}
       size={"small"}
       hoverable
