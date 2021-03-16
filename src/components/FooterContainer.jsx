@@ -1,4 +1,4 @@
-import { Col, Dropdown, Menu, Popover, Row, Space } from "antd";
+import { Col, Dropdown, Menu, Row } from "antd";
 import { Footer } from "antd/lib/layout/layout";
 import React from "react";
 
@@ -40,7 +40,17 @@ export function FooterContainer(props) {
                 overlay={
                   <>
                     {typeof footerLinks[v] === "string" && (
-                        <div style={{ background: "#222", color: "white", maxWidth: "200px", padding: "1rem", borderRadius: ".25rem"}}>{footerLinks[v]}</div>
+                      <div
+                        style={{
+                          background: "#222",
+                          color: "white",
+                          maxWidth: "200px",
+                          padding: "1rem",
+                          borderRadius: ".25rem",
+                        }}
+                      >
+                        {footerLinks[v]}
+                      </div>
                     )}
                     {typeof footerLinks[v] === "object" && (
                       <Menu key={`menu_${i}__${v}`} title={v} theme="dark">

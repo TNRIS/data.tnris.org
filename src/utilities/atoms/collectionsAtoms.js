@@ -6,7 +6,7 @@ export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",
   get: (collection_id) => async ({ get }) => {
     const response = await fetch(
-      `https://api.tnris.org/api/v1/collections/${collection_id}`
+      `http://localhost:8000/api/v1/collections/${collection_id}`
     );
     return response.json();
   },
@@ -17,7 +17,7 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
   get: (collection_id) => async ({ get }) => {
     const mappedPromises = AREA_TYPES.map((areatype) =>
       recursiveFetcher(
-        `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=${areatype}`,
+        `http://localhost:8000/api/v1/resources/?collection_id=${collection_id}&area_type=${areatype}`,
         []
       )
     );

@@ -1,5 +1,8 @@
 import bbox from "@turf/bbox";
+import { multiPolygon } from "@turf/helpers";
 
-const zoomToFeatures = (features, map, padding=100) => {
-    map.fitBounds(bbox(features), { padding: padding })
-}
+export const zoomToFeatures = (map, features, padding = 100) => {
+  if (map) {
+    map.fitBounds(bbox(multiPolygon(features.coordinates)), { padding: padding });
+  }
+};

@@ -52,15 +52,15 @@ export function MapContainer() {
         // store map object in Recoil Atom
         setMap(map);
         //retreive area type tiles as mvt
-        const areaTypeTiles =
+        /* const areaTypeTiles =
           "https://mapserver.tnris.org/?map=/tnris_mapfiles/area_type.map&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=area_type&map.imagetype=mvt";
         // add source for area-type layers
         map.addSource("area-type-source", {
           type: "vector",
           tiles: [areaTypeTiles],
-        });
+        }); */
 
-        AREA_TYPES.forEach((v, i) => {
+        /* AREA_TYPES.forEach((v, i) => {
           map.addLayer(
             {
               id: `${v}-outline`,
@@ -74,12 +74,12 @@ export function MapContainer() {
                 "line-width": 1.0,
                 "line-opacity": 0.75,
               },
-              layout: { visibility: v === "county" ? "visible" : "none" },
+              layout: { visibility: "none" },
               filter: ["in", "area_type", v],
             },
             AREA_TYPES[i - 1] ? `${AREA_TYPES[i - 1]}-outline` : null
           );
-        });
+        }); */
       });
     };
 
