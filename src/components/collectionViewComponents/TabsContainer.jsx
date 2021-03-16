@@ -5,12 +5,16 @@ import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchCollectionByIdSelector,
-  fetchResourcesByCollectionIdSelector
+  fetchResourcesByCollectionIdSelector,
 } from "../../utilities/atoms/collectionsAtoms";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import { highlightCounties } from "../../utilities/mapHelpers/highlightHelpers";
+import {
+  highlightCoverage,
+  removeHighlightCoverage,
+} from "../../utilities/mapHelpers/highlightHelpers";
+import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
 
@@ -29,7 +33,19 @@ export default function CollectionTabsContainer({ collection }) {
     fetchResourcesByCollectionIdSelector(collection_id)
   );
   useEffect(() => {
-    highlightCounties(map, collectionContents.counties);
+    console.log(collectionContents)
+    if(map && collectionContents.the_geom){
+      highlightCoverage(map, collectionContents.the_geom);
+      zoomToFeatures(map, collectionContents.the_geom);
+    }
+
+    return () => {
+      if (map && map.getLayer("collection-coverage-layer")) {
+        removeHighlightCoverage();
+        return null
+      }
+      return null
+    };
   }, [map, collectionContents]);
 
   return (

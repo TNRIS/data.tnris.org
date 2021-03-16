@@ -1,3 +1,4 @@
+import { multiPolygon } from "@turf/helpers";
 import { Card, Col, Row, Tag } from "antd";
 import { useEffect } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -5,21 +6,25 @@ import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   highlightCoverage,
-  removeHighlightCounties
+  removeHighlightCoverage,
 } from "../../utilities/mapHelpers/highlightHelpers";
+import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 
 export function CatalogListCard({ collection }) {
   const map = useRecoilValue(mapAtom);
 
   useEffect(() => {
     //remove highlight when listcard leaves dom
-    return () => removeHighlightCounties(map)
-  },[map])
+    return () => removeHighlightCoverage(map);
+  }, [map]);
 
   return (
     <Card
-      onMouseEnter={() => highlightCoverage(map, collection.the_geom)}
-      onMouseLeave={() => removeHighlightCounties(map)}
+      onMouseEnter={() => {
+        highlightCoverage(map, collection.the_geom);
+        //zoomToFeatures(map, multiPolygon(collection?.the_geom))
+      }}
+      onMouseLeave={() => removeHighlightCoverage(map)}
       size={"small"}
       hoverable
       height={"300px"}
