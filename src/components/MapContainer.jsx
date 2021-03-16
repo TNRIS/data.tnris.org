@@ -3,19 +3,18 @@ import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   geoFilterSelectedResult,
   mapBounds,
 } from "../utilities/atoms/geofilterAtoms";
-import { mapAtom, mapHoverAreaId } from "../utilities/atoms/mapAtoms";
+import { mapAtom } from "../utilities/atoms/mapAtoms";
 import { AREA_TYPES } from "../utilities/constants/areaTypes";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 export function MapContainer() {
   const location = useLocation();
   const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
-  const setMapHoverArea = useSetRecoilState(mapHoverAreaId);
   const [map, setMap] = useRecoilState(mapAtom);
   const [bounds, setBounds] = useRecoilState(mapBounds);
   const [zoom] = useState(5.5);
@@ -84,10 +83,10 @@ export function MapContainer() {
     };
 
     if (!map) {
-      console.log("map initialized")
+      console.log("map initialized");
       initializeMap({ setMap, MapContainer });
     }
-  }, [map, bounds, setBounds, zoom, setMap, setMapHoverArea]);
+  }, [map, bounds, setBounds, zoom, setMap]);
 
   // show geofilter search geometry when available
   useEffect(() => {

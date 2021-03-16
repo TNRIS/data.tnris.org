@@ -31,7 +31,7 @@ export function SearchBars() {
   return (
     <div className={"CatalogSearchBar"}>
       <div className={"SearchBar"}>
-        <Input.Group compact>
+        <Input.Group>
           <KeywordSearchBar />
           <GeoFilterSearchBar style={{ width: "50%", minWidth: "300px" }} />
         </Input.Group>

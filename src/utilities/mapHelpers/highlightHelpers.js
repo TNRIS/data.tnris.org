@@ -28,7 +28,6 @@ export const removeHighlightedDownloadArea = (areaTypeId, map) => {
   }
 };
 
-
 export const removeHighlightCoverage = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {
     map.removeLayer("collection-coverage-layer");
