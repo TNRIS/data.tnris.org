@@ -36,7 +36,6 @@ export function GeoFilterSearchBar(props) {
   return (
     <Select
       showSearch
-      enterButton
       placeholder="Search location"
       searchValue={geoSearchInputText}
       // set geoFilterSearchText atom
