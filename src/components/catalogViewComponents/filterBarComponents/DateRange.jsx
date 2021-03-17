@@ -23,7 +23,7 @@ export function DateRange() {
           <Col span={24}>
             <h5>Date Range</h5>
             <Slider
-              step={5}
+              step={1}
               range
               min={1835}
               onChange={(v) => {
@@ -48,7 +48,7 @@ export function DateRange() {
           <Col span={10}>
             <InputNumber
               value={min}
-              step={5}
+              step={1}
               onChange={(v) => {
                 setMin((min) => v);
                 history.push({
@@ -66,7 +66,7 @@ export function DateRange() {
           <Col span={10}>
             <InputNumber
               value={max}
-              step={5}
+              step={1}
               onChange={(v) => {
                 setMax((max) => v);
                 history.push({

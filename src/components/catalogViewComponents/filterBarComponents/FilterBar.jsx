@@ -4,12 +4,14 @@ import { useRecoilValue } from "recoil";
 import { catalogFiltersOptions } from "../../../utilities/atoms/catalogFilterAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import { ClearAllFilters } from "./ClearAllFilters";
 import { DateRange } from "./DateRange";
+import { Sort } from "./Sort";
 
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
   return (
-    <>
+    <Row justify="start" style={{ gap: ".25rem"}}>
       {Object.entries(filterOptions).map((set, i) => (
         <Popover
           key={set[0] + "+" + i}
@@ -35,21 +37,24 @@ export function FilterBar() {
           </Button>
         </Popover>
       ))}
+
       <Popover
-          key={"datepicker"}
-          trigger={"click"}
-          placement="bottomLeft"
-          content={
-            <DateRange />
-          }
-        >
-          <Button>
-            <FilterCountBadge>
-              <Badge>Date Range</Badge>
-            </FilterCountBadge>
-          </Button>
-        </Popover>
-    </>
+        key={"datepicker"}
+        trigger={"click"}
+        placement="bottomLeft"
+        content={<DateRange />}
+      >
+        <Button>
+          <FilterCountBadge>
+            <Badge>Date Range</Badge>
+          </FilterCountBadge>
+        </Button>
+      </Popover>
+
+      <Sort />
+
+      <ClearAllFilters />
+    </Row>
   );
 }
 export function ToggleAllOptions({ set }) {
@@ -60,7 +65,8 @@ export function ToggleAllOptions({ set }) {
       <hr />
       <Row>
         <Button>
-          { selected && selected.split(",").sort().toString() === set[1].sort().toString()
+          {selected &&
+          selected.split(",").sort().toString() === set[1].sort().toString()
             ? "Clear selection"
             : "Select all"}
         </Button>
