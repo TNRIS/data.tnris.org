@@ -6,7 +6,7 @@ import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import { CatalogListCard } from "./ListCard";
 import { ViewMapSwitch } from "./ViewMapSwitch";
 import { CatalogPaginationControls } from "./PaginationControls";
-import { FilterBar } from "./FilterBar";
+import { FilterBar } from "./filterBarComponents/FilterBar";
 
 export function CatalogList() {
   const map = useQueryParam().get("map");

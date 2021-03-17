@@ -1,10 +1,10 @@
 import { Badge, Button, Checkbox, Col, Popover, Row } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { catalogFiltersOptions } from "../../utilities/atoms/catalogFilterAtoms";
-import { changeParams } from "../../utilities/changeParamsUtil";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import { DateRange } from "./Filters/DateRange";
+import { catalogFiltersOptions } from "../../../utilities/atoms/catalogFilterAtoms";
+import { changeParams } from "../../../utilities/changeParamsUtil";
+import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import { DateRange } from "./DateRange";
 
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
