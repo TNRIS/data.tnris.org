@@ -40,6 +40,7 @@ export function CatalogPaginationControls() {
           }
         }}
         total={contents.count}
+        showTotal={() => <span>{page*increment - increment +1} - {page*increment <= contents.count ? page*increment : contents.count} of {contents.count}</span>}
       />
     </>
   );
