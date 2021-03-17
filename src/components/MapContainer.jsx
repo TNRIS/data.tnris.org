@@ -9,7 +9,7 @@ import {
   mapBounds,
 } from "../utilities/atoms/geofilterAtoms";
 import { mapAtom } from "../utilities/atoms/mapAtoms";
-import { AREA_TYPES } from "../utilities/constants/areaTypes";
+//import { AREA_TYPES } from "../utilities/constants/areaTypes";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 
 export function MapContainer() {

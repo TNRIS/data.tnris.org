@@ -36,7 +36,7 @@ export function CatalogListCard({ collection }) {
       size={"small"}
       hoverable
       height={"300px"}
-      extra={new Date().getFullYear(collection.acquisition_date)}
+      extra={new Date(collection.acquisition_date).getFullYear()}
       title={collection.name}
     >
       <Row gutter={[8, 0]}>

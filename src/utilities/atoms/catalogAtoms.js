@@ -92,7 +92,21 @@ export const catalogFileTypeSelector = selector({
     return "";
   },
 });
-
+export const catalogDateRangeSelector = selector({
+  key: "catalogDateRangeSelector",
+  default: null,
+  get: ({ get }) => {
+    const urlParams = get(searchString)
+    const dr = new URLSearchParams(urlParams).get("dates")
+    const drToArray = dr ? dr.split(",") : null
+    if(drToArray){
+      return `&acquisition_date__gte=${drToArray[0]}&acquisition_date__lte=${drToArray[1]}`
+    }
+    else {
+      return ""
+    }
+  }
+})
 export const catalogBBoxSelector = selector({
   key: "catalogBBoxSelector",
   default: null,
@@ -107,6 +121,8 @@ export const catalogBBoxSelector = selector({
   }
 })
 
+
+
 export const fetchCatalogCollectionsSelector = selector({
   key: "fetchCollectionsSelector",
   get: async ({ get }) => {
@@ -119,9 +135,10 @@ export const fetchCatalogCollectionsSelector = selector({
     const availability = get(catalogAvailabilitySelector);
     const category = get(catalogCategorySelector);
     const fileType = get(catalogFileTypeSelector);
+    const acquisitionDateRange = get(catalogDateRangeSelector);
     const bbox = get(catalogBBoxSelector);
     const response = await fetch(
-      `http://localhost:8000/api/v1/collections/?${offset}limit=${increment}${search}${availability}${category}${fileType}${bbox}`,
+      `http://localhost:8000/api/v1/collections/?${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}`,
       {
         headers: {
           "Content-Type": "application/json",

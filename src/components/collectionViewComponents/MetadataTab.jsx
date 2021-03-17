@@ -25,4 +25,4 @@ export function MetadataTab({metadata}) {
   );
 }
 
-const orderedMetaKeys = ["description", "partners", "source_name", "source_data_website", "source_contact", "spatial_reference", "license", "file_type", "download_formats", "bands", "category"]
+const orderedMetaKeys = ["description", "acquisition_date", "partners", "source_name", "source_data_website", "source_contact", "spatial_reference", "license", "file_type", "download_formats", "bands", "category"]

@@ -4,6 +4,7 @@ import { useRecoilValue } from "recoil";
 import { catalogFiltersOptions } from "../../utilities/atoms/catalogFilterAtoms";
 import { changeParams } from "../../utilities/changeParamsUtil";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { DateRange } from "./Filters/DateRange";
 
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
@@ -34,6 +35,20 @@ export function FilterBar() {
           </Button>
         </Popover>
       ))}
+      <Popover
+          key={"datepicker"}
+          trigger={"click"}
+          placement="bottomLeft"
+          content={
+            <DateRange />
+          }
+        >
+          <Button>
+            <FilterCountBadge>
+              <Badge>Date Range</Badge>
+            </FilterCountBadge>
+          </Button>
+        </Popover>
     </>
   );
 }
