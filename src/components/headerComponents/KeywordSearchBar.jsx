@@ -19,7 +19,7 @@ export function KeywordSearchBar() {
         value={searchbar}
         onChange={(e) => {
           setSearchbar(e.target.value);
-          if(!e.target.value) {
+          if (!e.target.value) {
             history.push({
               pathname: "/",
               search: changeParams(
@@ -32,7 +32,7 @@ export function KeywordSearchBar() {
                 ],
                 search
               ),
-            })
+            });
           }
         }}
         onSearch={(e) =>
