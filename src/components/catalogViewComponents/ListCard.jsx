@@ -7,6 +7,7 @@ import {
   highlightCoverage,
   removeHighlightCoverage
 } from "../../utilities/mapHelpers/highlightHelpers";
+import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 
 export function CatalogListCard({ collection }) {
   const map = useRecoilValue(mapAtom);
@@ -21,7 +22,10 @@ export function CatalogListCard({ collection }) {
     <Card
       onMouseEnter={() => {
         hoverTimer.current = setTimeout(
-          () => highlightCoverage(map, collection.the_geom),
+          () => {
+            highlightCoverage(map, collection.the_geom)
+            zoomToFeatures(map, collection.the_geom)
+          },
           1000
         );
       }}
