@@ -46,7 +46,7 @@ export function FilterBar() {
       >
         <Button>
           <FilterCountBadge>
-            <Badge>Date Range</Badge>
+            <Badge>date range</Badge>
           </FilterCountBadge>
         </Button>
       </Popover>

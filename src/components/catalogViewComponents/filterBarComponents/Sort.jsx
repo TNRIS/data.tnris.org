@@ -24,7 +24,9 @@ export function Sort() {
             search
           ),
         });
+        
       }}
+      bordered={false}
     >
       <Select.Option value="NEWEST">Newest</Select.Option>
       <Select.Option value="OLDEST">Oldest</Select.Option>
