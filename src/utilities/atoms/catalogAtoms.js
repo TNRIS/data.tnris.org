@@ -48,7 +48,6 @@ export const catalogSearchSelector = selector({
     return "";
   },
 });
-
 // parse availability from url
 export const catalogAvailabilitySelector = selector({
   key: "catalogAvailabilitySelector",
@@ -140,7 +139,6 @@ export const catalogBBoxSelector = selector({
     }
   }
 })
-
 export const fetchCatalogCollectionsSelector = selector({
   key: "fetchCollectionsSelector",
   get: async ({ get }) => {
