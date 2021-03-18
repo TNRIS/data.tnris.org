@@ -11,11 +11,12 @@ export function ClearAllFilters() {
     "file_type",
     "dates",
     "sort",
+    "pg",
   ];
 
   return (
     <>
-      {clearFiltersKeys.filter((v) => search.includes(v)).length > 0 && (
+      {clearFiltersKeys.filter((v) => search.includes(v)).length > 1 && (
         <Button
           type="link"
           onClick={() => {
@@ -32,7 +33,7 @@ export function ClearAllFilters() {
           Clear all filters &#10005;
         </Button>
       )}
-      {  clearFiltersKeys.filter(v => search.includes(v)).length < 1 &&
+      {  clearFiltersKeys.filter(v => search.includes(v)).length < 2 &&
       null
 }
     </>
