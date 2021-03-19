@@ -41,7 +41,7 @@ export default function CollectionTabsContainer({ collection }) {
 
     return () => {
       if (map && map.getLayer("collection-coverage-layer")) {
-        removeHighlightCoverage();
+        removeHighlightCoverage(map);
         return null
       }
       return null

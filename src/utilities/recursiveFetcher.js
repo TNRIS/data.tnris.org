@@ -1,5 +1,4 @@
 export const recursiveFetcher = async (next, results) => {
-    console.log(results)
   if (next) {
     const r = await fetch(next, {
       headers: {
