@@ -15,6 +15,7 @@ import {
   removeHighlightCoverage,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
+import { GeneralContactForm } from "../forms/GeneralContactForm";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
 
@@ -33,7 +34,6 @@ export default function CollectionTabsContainer({ collection }) {
     fetchResourcesByCollectionIdSelector(collection_id)
   );
   useEffect(() => {
-    console.log(collectionContents)
     if(map && collectionContents.the_geom){
       highlightCoverage(map, collectionContents.the_geom);
       zoomToFeatures(map, collectionContents.the_geom);
@@ -94,7 +94,7 @@ export default function CollectionTabsContainer({ collection }) {
               Custom Order
             </Tabs.TabPane>
             <Tabs.TabPane tab="Contact" key="4" style={{ height: "100%" }}>
-              Custom Order
+              <GeneralContactForm />
             </Tabs.TabPane>
           </Tabs>
         )}
