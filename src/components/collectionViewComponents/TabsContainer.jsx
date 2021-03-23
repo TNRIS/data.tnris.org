@@ -15,6 +15,7 @@ import {
   removeHighlightCoverage,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
+import { DataInquiryForm } from "../forms/DataInquiryForm";
 import { GeneralContactForm } from "../forms/GeneralContactForm";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
@@ -94,7 +95,16 @@ export default function CollectionTabsContainer({ collection }) {
               Custom Order
             </Tabs.TabPane>
             <Tabs.TabPane tab="Contact" key="4" style={{ height: "100%" }}>
-              <GeneralContactForm />
+              {
+                collectionState === "hasValue" && (
+                  <DataInquiryForm 
+                    collectionId={collectionContents.collection_id}
+                    collectionName={collectionContents.name}
+                    collectionCategory={collectionContents.category}
+                    collectionAcquisitionDate={collectionContents.acquisition_date}
+                  />
+                )
+              }
             </Tabs.TabPane>
           </Tabs>
         )}

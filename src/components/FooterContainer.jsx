@@ -1,6 +1,7 @@
-import { Col, Dropdown, Menu, Row } from "antd";
+import { Button, Col, Dropdown, Menu, Modal, Row } from "antd";
 import { Footer } from "antd/lib/layout/layout";
-import React from "react";
+import React, { useState } from "react";
+import { GeneralContactForm } from "./forms/GeneralContactForm";
 
 const footerLinks = {
   Legal: {
@@ -28,6 +29,8 @@ const footerLinks = {
 };
 
 export function FooterContainer(props) {
+  const [showContactForm, setShowContactForm] = useState(false);
+
   return (
     <Footer style={{ padding: "0px 8vw" }} className="footer">
       <Row justify="center">
@@ -67,9 +70,30 @@ export function FooterContainer(props) {
                 <div className="footerLink">{v}</div>
               </Dropdown>
             ))}
+            <Button
+              type="text"
+              className="footerLink"
+              onClick={() => setShowContactForm(true)}
+            >
+              Contact
+            </Button>
           </Row>
         </Col>
       </Row>
+      <Modal
+        title="Contact TNRIS"
+        footer={null}
+        centered
+        visible={showContactForm}
+        onCancel={() => setShowContactForm(false)}
+        destroyOnClose={true}
+      >
+        {showContactForm && (
+          <GeneralContactForm
+            onSuccessConfirm={() => setShowContactForm(false)}
+          />
+        )}
+      </Modal>
     </Footer>
   );
 }
