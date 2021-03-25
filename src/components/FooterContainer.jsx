@@ -34,7 +34,7 @@ export function FooterContainer(props) {
   return (
     <Footer style={{ padding: "0px 8vw" }} className="footer">
       <Row justify="center">
-        <Col xs={{ span: 24 }} md={{ span: 16 }} lg={{ span: 8 }}>
+        <Col xs={{ span: 24 }} md={{ span: 16 }} lg={{ span: 12 }}>
           <Row justify="space-between">
             {Object.keys(footerLinks).map((v, i) => (
               <Dropdown

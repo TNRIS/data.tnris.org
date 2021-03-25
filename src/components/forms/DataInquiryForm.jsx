@@ -83,14 +83,13 @@ export function DataInquiryForm({
           }}
         >
           <Alert
-            message="Notice"
-            description={
+            message={
               <span>
                 For questions about the <strong>{collectionName} </strong>
                 dataset, please complete the form below. Orders for this data
                 cannot be submitted via this form.
                 <strong>
-                  <br/><br/>To order this dataset, please visit the Custom Order tab.
+                  To order this dataset, please visit the Custom Order tab.
                 </strong>
               </span>
             }
@@ -119,7 +118,6 @@ export function DataInquiryForm({
               <Form.Item
                 label={"First name"}
                 name={["First name"]}
-                style={{ paddingRight: "1rem" }}
                 rules={[{ required: true }]}
               >
                 <Input placeholder="First name"></Input>

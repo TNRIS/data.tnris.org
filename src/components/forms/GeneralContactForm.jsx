@@ -1,5 +1,5 @@
 import { Button, Form, Input, Result, Select } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { phoneRegex } from "../../utilities/regexHelpers/regexHelpers";
 import { validationMessages } from "./validationMessages";
@@ -22,7 +22,7 @@ const industriesList = [
   "Retail",
   "Utilities",
   "Urban Planning",
-  "Other"
+  "Other",
 ];
 
 export function GeneralContactForm({ onSuccessConfirm }) {
@@ -107,7 +107,6 @@ export function GeneralContactForm({ onSuccessConfirm }) {
               <Form.Item
                 label={"First name"}
                 name={["First name"]}
-                style={{ paddingRight: "1rem" }}
                 rules={[{ required: true }]}
               >
                 <Input placeholder="First name"></Input>
@@ -130,7 +129,6 @@ export function GeneralContactForm({ onSuccessConfirm }) {
               <Form.Item
                 label="Phone number"
                 name={["Phone"]}
-                style={{ paddingRight: "1rem" }}
                 help="Phone number must be formatted like 555-555-5555"
                 rules={[
                   {
