@@ -15,11 +15,13 @@
 .HeaderBar {
   //box-shadow: @shadow-1-down;
   display: inline-flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: .5rem 1rem;
   background-image: linear-gradient(115deg, #1e8dc1 20%, #2A2B2E 20%);
 
   .BrandBar {
     min-width: 25%;
-    padding: 0.25rem;
     grid-area: header;
     .HeaderLogo {
       display: flex;
@@ -27,7 +29,7 @@
       color: white;
       width: fit-content;
       .TnrisLogo {
-        width: 3.6rem;
+        width: 4rem;
       }
 
       a {
@@ -55,6 +57,7 @@
 .content {
   grid-area: content;
   overflow: hidden;
+  position: relative;
 }
 
 .footer {

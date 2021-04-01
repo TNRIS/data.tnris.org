@@ -188,7 +188,7 @@ export function GeneralContactForm({ onSuccessConfirm }) {
               />
             </Form.Item>
             <Form.Item>
-              <Button block htmlType="submit" type="primary">
+              <Button block size="large" htmlType="submit" type="primary">
                 Submit
               </Button>
             </Form.Item>

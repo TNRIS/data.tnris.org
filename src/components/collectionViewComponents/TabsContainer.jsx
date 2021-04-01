@@ -60,6 +60,7 @@ export default function CollectionTabsContainer({ collection }) {
       <div id={"TabContentContainer"}>
         {collectionState !== "loading" && collectionContents && (
           <Tabs
+            type="card"
             tabPosition={"top"}
             style={{
               display: "grid",

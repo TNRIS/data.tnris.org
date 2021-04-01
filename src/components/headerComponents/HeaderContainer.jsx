@@ -1,6 +1,7 @@
 import { Checkbox, Input, Row } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { CartIndicator } from "./CartIndicator";
 import { GeoFilterSearchBar } from "./GeoFilterSearchBar";
 import { KeywordSearchBar } from "./KeywordSearchBar";
 
@@ -56,6 +57,7 @@ export function HeaderContainer(props) {
         </div>
       </Row>
       <SearchBars />
+      <CartIndicator />
     </div>
   );
 }

@@ -1,20 +1,8 @@
 import { Alert, Button, Form, Input, Result, Select } from "antd";
 import { useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { softwareList } from "./commonFieldOptions";
 import { validationMessages } from "./validationMessages";
-
-const softwareList = [
-  "ArcMap",
-  "ENVI",
-  "ERDAS",
-  "Global Mapper",
-  "Integraph",
-  "LP360",
-  "Microstation",
-  "PostGIS",
-  "QGIS",
-  "Other",
-];
 
 export function DataInquiryForm({
   collectionId,
@@ -167,7 +155,7 @@ export function DataInquiryForm({
               />
             </Form.Item>
             <Form.Item>
-              <Button block htmlType="submit" type="primary">
+              <Button block size="large" htmlType="submit" type="primary">
                 Submit
               </Button>
             </Form.Item>
