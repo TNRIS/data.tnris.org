@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   highlightDownloadArea,
-  removeHighlightedDownloadArea,
+  removeHighlightedDownloadArea
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { shingledJaccard } from "../../utilities/searchFunctions";
 
@@ -68,7 +68,7 @@ export function DownloadsTab({ resources, resourcesState }) {
     );
     //for each of counties, quads, qquads, check if it is the current selection
     //if not current selection, set visibility to none, else set to visible and filter
-    opts.forEach((v) => {
+   /*  opts.forEach((v) => {
       if (v !== areaTypeSelection) {
         map.setLayoutProperty(`${v}-outline`, "visibility", "none");
       } else {
@@ -83,7 +83,7 @@ export function DownloadsTab({ resources, resourcesState }) {
     return () =>
       opts.forEach((v) => {
         map.setLayoutProperty(`${v}-outline`, "visibility", "none");
-      });
+      }); */
   }, [areaTypeSelection, resources, opts, map]);
 
   return (
@@ -129,8 +129,8 @@ export function DownloadsTab({ resources, resourcesState }) {
         loading={resourcesState === "loading"}
         sticky
         pagination={{
-          pageSizeOptions: [12,24,60,120],
-          defaultPageSize: 12,
+          pageSizeOptions: [12, 24, 60, 120],
+          defaultPageSize: 24,
           position: ["topCenter", "bottomCenter"],
           size: "small",
           current: pg,

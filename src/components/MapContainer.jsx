@@ -83,7 +83,6 @@ export function MapContainer() {
     };
 
     if (!map) {
-      console.log("map initialized");
       initializeMap({ setMap, MapContainer });
     }
   }, [map, bounds, setBounds, zoom, setMap]);

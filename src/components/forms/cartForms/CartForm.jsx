@@ -13,7 +13,6 @@ export function CartForm() {
   const cart = useRecoilValue(cartAtom);
   const [form] = Form.useForm();
   const [step, setStep] = useState(0);
-  const [responseState, setResponseState] = useState(null);
   const steps = [
     {
       title: "Cart",
@@ -108,7 +107,7 @@ export function CartForm() {
       if (dataOrder.description) {
         orders += `   Description: ${dataOrder.description}\n`;
       }
-      return orders
+      return orders;
     });
     const formVals = {
       Name: `${postData["First Name"]} ${postData["Last Name"]}`,
@@ -160,7 +159,10 @@ export function CartForm() {
         <br />
         <br />
         {steps.map((s, i) => (
-          <div style={i === step ? { display: "block" } : { display: "none" }}>
+          <div
+            key={`${s.title}_${i}`}
+            style={i === step ? { display: "block" } : { display: "none" }}
+          >
             {s.content}
           </div>
         ))}

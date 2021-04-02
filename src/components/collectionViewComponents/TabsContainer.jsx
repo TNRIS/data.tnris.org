@@ -89,7 +89,7 @@ export default function CollectionTabsContainer({ collection }) {
                 )}
               </Spin>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="WMS Link" key="2" style={{ height: "100%" }}>
+            <Tabs.TabPane tab="Service Links" key="2" style={{ height: "100%" }}>
               WMS Link
             </Tabs.TabPane>
             <Tabs.TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>

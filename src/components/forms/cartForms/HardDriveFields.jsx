@@ -18,7 +18,6 @@ const disabledOption = (deliveryValue) => {
 export function HardDriveFields({ form }) {
   const selectable = disabledOption(form.getFieldValue("Delivery Method"));
 
-  console.log(selectable);
   return (
     <>
       <Form.Item

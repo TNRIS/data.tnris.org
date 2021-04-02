@@ -5,8 +5,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 export function ReviewSubmit({ form }) {
   const recaptchaRef = useRef();
   function setFormRecaptcha(recaptcha) {
-    console.log(form, recaptcha);
-    form.setFieldsValue({ "recaptcha": recaptcha });
+    form.setFieldsValue({ recaptcha: recaptcha });
   }
   return (
     <div>

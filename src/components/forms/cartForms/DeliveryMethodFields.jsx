@@ -7,15 +7,14 @@ const deliveryOptions = [
   { label: "Pickup", value: "PICKUP" },
 ];
 
-export function DeliveryMethodFields({form}) {
-    console.log(form)
+export function DeliveryMethodFields({ form }) {
   return (
     <>
       <Form.Item
         name="Delivery Method"
         help="Listed shipping costs assume TNRIS provided hard drive. This price will vary if delivered on customer supplied hard drive.
         "
-        rules={[{required: true}]}
+        rules={[{ required: true }]}
       >
         <Radio.Group>
           {deliveryOptions.map((v, i) => (

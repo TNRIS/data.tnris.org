@@ -16,6 +16,7 @@ export function CartItemList() {
         <Collapse>
           {Object.keys(cart).map((itemKey, index) => (
             <Collapse.Panel
+              key={itemKey}
               header={
                 <Link to={`/collection?c=${cart[itemKey].collection_id}`}>
                   {cart[itemKey].name}
