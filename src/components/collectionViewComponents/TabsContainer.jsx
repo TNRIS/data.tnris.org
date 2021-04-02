@@ -48,12 +48,6 @@ export default function CollectionTabsContainer({ collection }) {
   );
 
   useEffect(() => {
-    console.log(collectionState)
-    console.log(AreaTypesContents)
-    // if (AreaTypesContents) {
-    //   console.log(AreaTypesContents)
-    // }
-    console.log(resourcesContents)
     if(map && collectionContents.the_geom){
       highlightCoverage(map, collectionContents.the_geom);
       zoomToFeatures(map, collectionContents.the_geom);
@@ -74,7 +68,7 @@ export default function CollectionTabsContainer({ collection }) {
     resourcesContents
   ]);
 
-  // Sets
+  // Sets the active tab in the state
   const handleTabChange = (key) => {
     setActiveTab(key);
   }

@@ -4,10 +4,11 @@ import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   highlightAreaType,
-  removeHighlightAreaType,
-  highlightDownloadArea,
-  removeHighlightedDownloadArea,
+  removeHighlightedAreaType
 } from "../../utilities/mapHelpers/highlightHelpers";
+import {
+  hideLayer,
+  showLayer} from "../../utilities/mapHelpers/layerVisibilityHelpers";
 import { shingledJaccard } from "../../utilities/searchFunctions";
 
 export function DownloadsTab({
@@ -62,92 +63,72 @@ export function DownloadsTab({
       );
       setPg(1);
     }
-  };
+  }
 
+  // Add the area type layers when the component mounts
   useEffect(() => {
-    console.log(`tab selected: ${activeTab}`)
-    console.log(opts);
-    console.log(areaTypesState, areaTypes);
-    
     // Add map sources and layers for each
     // area type geojson that has features 
     for (let [k, v] of Object.entries(areaTypes)) {
       if (v["features"].length) {
-        console.log(k)
-        if (!map.getSource("quad-source")) {
-          map.addSource(`${k}-source`, {
-            type: "geojson",
-            data: v,
-            promoteId: "area_type_id"
-          });
+        if (!map.getSource(`${k}-source`)) {
+          if (map.getSource("collection-coverage-source")) {
+            map.addSource(`${k}-source`, {
+              type: "geojson",
+              data: v,
+              promoteId: "area_type_id"
+            });
 
-          map.addLayer(
-            {
-              id: `${k}-outline`,
-              type: "line",
-              source: `${k}-source`,
-              minzoom: 2,
-              maxzoom: 24,
-              paint: {
-                "line-color": "#222",
-                "line-width": 1.0,
-                "line-opacity": 0.75,
-              },
-              layout: { visibility: "none" }
-            }
-          );
+            map.addLayer(
+              {
+                id: `${k}-outline`,
+                type: "line",
+                source: `${k}-source`,
+                minzoom: 2,
+                maxzoom: 24,
+                paint: {
+                  "line-color": "#222",
+                  "line-width": 1.0,
+                  "line-opacity": 0.75,
+                },
+                layout: { visibility: "none" }
+              }
+            );
 
-          map.addLayer(
-            {
-              id: `${k}-hover`,
-              type: "fill",
-              source: `${k}-source`,
-              minzoom: 2,
-              maxzoom: 24,
-              paint: {
-                // hover state is set here using a case expression
-                'fill-color': [
-                  'case',
-                  ['boolean', ['feature-state', 'hover'], false],
-                  "#ff00fa",
-                  "#999"
-                ],
-                'fill-opacity': .8
-              },
-              layout: { visibility: "none" }
-            }, `${k}-outline`
-          );
+            map.addLayer(
+              {
+                id: `${k}-hover`,
+                type: "fill",
+                source: `${k}-source`,
+                minzoom: 2,
+                maxzoom: 24,
+                paint: {
+                  // hover state is set here using a case expression
+                  "fill-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#ff00fa",
+                    "#999"
+                  ],
+                  "fill-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    .3,
+                    .1
+                  ],
+                },
+                layout: { visibility: "none" }
+              }, `${k}-outline`
+            );
+          }
         }
       }
     }
 
-    // let hoveredStateId = null;
-    // // When the user moves their mouse over the hover layer, we'll
-    // // update the feature state for the feature under the mouse.
-    // map.on("mousemove", `${areaTypeSelection}-hover`, function(e) {
-    //   map.getCanvas().style.cursor = 'pointer';
-    //   if (e.features.length > 0) {
-    //     if (hoveredStateId !== null) {
-    //       removeHighlightAreaType(areaTypeSelection, hoveredStateId, map)
-    //     }
-    //     hoveredStateId = e.features[0].id
-    //     highlightAreaType(areaTypeSelection, hoveredStateId, map)
-    //   }
-    // });
-
-    // // When the mouse leaves the hover layer, update the feature
-    // // state of the previously hovered feature.
-    // map.on('mouseleave', `${areaTypeSelection}-hover`, function () {
-    //   map.getCanvas().style.cursor = '';
-    //   if (hoveredStateId !== null) {
-    //     removeHighlightAreaType(areaTypeSelection, hoveredStateId, map)
-    //   }
-    //   hoveredStateId = null;
-    // });
-
+    // Clean up the area type layers when
+    // returning to the catalog view
     return () =>
       opts.forEach((v) => {
-        // map.setLayoutProperty(`${v}-outline`, "visibility", "none");
         if (map.getLayer(`${v}-outline`)) {
           map.removeLayer(`${v}-outline`);
         }
@@ -158,66 +139,48 @@ export function DownloadsTab({
           map.removeSource(`${v}-source`);
         }
       });
-  }, []);
+  });
 
-  // when the activeTab changes toggle the area type layer on and off
+  // When the activeTab changes toggle the
+  // area type layer on and off. The downloads
+  // tab key = "1".
   useEffect(() => {
-    console.log(map.getStyle())
     if (activeTab !== "1") {
-      if (map.getLayer(`${areaTypeSelection}-outline`)) {
-        map.setLayoutProperty(`${areaTypeSelection}-outline`, "visibility", "none");
-        map.setLayoutProperty(`${areaTypeSelection}-hover`, "visibility", "none");
-      }
+      hideLayer(areaTypeSelection, map);
     } else {
-      if (map.getLayer(`${areaTypeSelection}-outline`)) {
-        map.setLayoutProperty(`${areaTypeSelection}-outline`, "visibility", "visible");
-        map.setLayoutProperty(`${areaTypeSelection}-hover`, "visibility", "visible");
-      }
+      showLayer(areaTypeSelection, map);
     }
-  })
+  });
   
-  // when areaTypeSelection changes
+  // When areaTypeSelection changes
   useEffect(() => {
-    //set pagination to pg 1
+    // Set pagination to pg 1
     setPg(1);
-    //clear Downloads SearchBar
+    // Clear Downloads SearchBar
     setSearchInput(null);
-    //set results equal to resources sorted by area name
+    // Set results equal to resources sorted by area name
     setSearchResults((searchResults) =>
       [...resources[areaTypeSelection].results].sort((a, b) => sortFn(a, b))
     );
 
-    //for each of counties, quads, qquads, check if it is the current selection
-    //if not current selection, set visibility to none, else set to visible and
-    //filter
+    // For each counties, quads, qquads, check if it is the current selection,
+    // if not current selection, set visibility to none, else set to visible
     opts.forEach((v) => {
       if (v !== areaTypeSelection) {
-        console.log(v)
-        if (map.getLayer(`${v}-outline`)) {
-          map.setLayoutProperty(`${v}-outline`, "visibility", "none");
-          map.setLayoutProperty(`${v}-hover`, "visibility", "none");
-        }
+        hideLayer(v, map);
       } else {
-        console.log(`${v} was chosen`)
-        if (map.getLayer(`${v}-outline`)) {
-          map.setLayoutProperty(`${v}-outline`, "visibility", "visible");
-          map.setLayoutProperty(`${v}-hover`, "visibility", "visible");
-        }
-        // const rsrcAreas = [...resources[areaTypeSelection].results].map(
-        //   (v) => v.area_type_id
-        // );
-        // map.setFilter(`${v}-outline`, ["in", "area_type_id", ...rsrcAreas]);
+        showLayer(v, map);
       }
     });
 
     let hoveredStateId = null;
-    // When the user moves their mouse over the hover layer, we'll
-    // update the feature state for the feature under the mouse.
+    // When the user moves their mouse over the hover layer, update
+    // the feature state for the feature under the mouse.
     map.on("mousemove", `${areaTypeSelection}-hover`, function(e) {
       map.getCanvas().style.cursor = 'pointer';
       if (e.features.length > 0) {
         if (hoveredStateId !== null) {
-          removeHighlightAreaType(areaTypeSelection, hoveredStateId, map)
+          removeHighlightedAreaType(areaTypeSelection, hoveredStateId, map);
         }
         hoveredStateId = e.features[0].id
         highlightAreaType(areaTypeSelection, hoveredStateId, map)
@@ -229,24 +192,10 @@ export function DownloadsTab({
     map.on('mouseleave', `${areaTypeSelection}-hover`, function () {
       map.getCanvas().style.cursor = '';
       if (hoveredStateId !== null) {
-        removeHighlightAreaType(areaTypeSelection, hoveredStateId, map)
+        removeHighlightedAreaType(areaTypeSelection, hoveredStateId, map);
       }
       hoveredStateId = null;
     });
-
-    // return () =>
-    //   opts.forEach((v) => {
-    //     // map.setLayoutProperty(`${v}-outline`, "visibility", "none");
-    //     if (map.getLayer(`${v}-outline`)) {
-    //       map.removeLayer(`${v}-outline`);
-    //     }
-    //     if (map.getLayer(`${v}-hover`)) {
-    //       map.removeLayer(`${v}-hover`);
-    //     }
-    //     if (map.getSource(`${v}-source`)) {
-    //       map.removeSource(`${v}-source`);
-    //     }
-    //   });
   }, [areaTypeSelection, resources, opts, map]);
 
   return (
@@ -300,12 +249,16 @@ export function DownloadsTab({
         rowKey={"resource"}
         onRow={(record, index) => {
           return {
-            onMouseEnter: (e) =>
-              // highlightDownloadArea(record.area_type_id, map),
-              highlightAreaType(areaTypeSelection, record.area_type_id, map),
-            onMouseLeave: (e) =>
-              // removeHighlightedDownloadArea(record.area_type_id, map),
-              removeHighlightAreaType(areaTypeSelection, record.area_type_id, map),
+            onMouseEnter: () => {
+              highlightAreaType(
+                areaTypeSelection, record.area_type_id, map
+              )
+            },
+            onMouseLeave: () => {
+              removeHighlightedAreaType(
+                areaTypeSelection, record.area_type_id, map
+              )
+            },
           };
         }}
         dataSource={searchResults}

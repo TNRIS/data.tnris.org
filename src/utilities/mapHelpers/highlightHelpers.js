@@ -1,60 +1,10 @@
-// Highlight a selected area type in the map
-export const highlightAreaType = (areaType, areaTypeId, map) => {
-  if (map) {
-    map.setFeatureState(
-      { source: `${areaType}-source`, id: areaTypeId },
-      { hover: true }
-    );
-  }
-}
-
-// Remove the highlight from a selected area type in the map
-export const removeHighlightAreaType = (areaType, areaTypeId, map) => {
-  if (map) {
-    map.setFeatureState(
-      { source: `${areaType}-source`, id: areaTypeId },
-      { hover: false }
-    );
-  }
-}
-
-export const highlightDownloadArea = (areaTypeId, map) => {
-  if (map) {
-    const addFn = () => {
-      map.addLayer({
-        id: "dl-hover",
-        type: "line",
-        source: "area-type-source",
-        "source-layer": "area_type",
-        minzoom: 2,
-        maxzoom: 24,
-        paint: {
-          "line-color": "#111",
-          "line-width": 4.0,
-          "line-opacity": 1.0,
-        },
-        filter: ["all", ["==", "area_type_id", areaTypeId]],
-      });
-    };
-
-    if (areaTypeId) {
-      addFn();
-    }
-  }
-};
-
-export const removeHighlightedDownloadArea = (areaTypeId, map) => {
-  if (map && map.getLayer("dl-hover")) {
-    map.removeLayer("dl-hover");
-  }
-};
-
 export const removeHighlightCoverage = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {
     map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
   }
-};
+}
+
 export const highlightCoverage = (map, coverage) => {
   if (map && map.getSource("collection-coverage-source")) {
     map.removeLayer("collection-coverage-layer");
@@ -77,4 +27,28 @@ export const highlightCoverage = (map, coverage) => {
       },
     });
   }
-};
+}
+
+// Highlight a selected area type in the map
+export const highlightAreaType = (areaType, areaTypeId, map) => {
+  if (map) {
+    if (map.getSource(`${areaType}-source`)) {
+      map.setFeatureState(
+        { source: `${areaType}-source`, id: areaTypeId },
+        { hover: true }
+      );
+    }
+  }
+}
+
+// Remove the highlight from a selected area type in the map
+export const removeHighlightedAreaType = (areaType, areaTypeId, map) => {
+  if (map) {
+    if (map.getSource(`${areaType}-source`)) {
+      map.setFeatureState(
+        { source: `${areaType}-source`, id: areaTypeId },
+        { hover: false }
+      );
+    }
+  }
+}

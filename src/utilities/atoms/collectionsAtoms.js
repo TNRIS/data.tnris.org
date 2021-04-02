@@ -51,13 +51,11 @@ export const fetchAreaTypesByCollectionIdSelector = selectorFamily({
     try {
       const response = await Promise.all(mappedPromises);
       const returnObject = {};
-      console.log(response);
       AREA_TYPES.forEach((v, i) => {
         if (response[i]["features"].length) {
           returnObject[v] = response[i]
         }
       });
-      console.log(returnObject)
       return returnObject;
     } catch (e) {
       console.log(e);
