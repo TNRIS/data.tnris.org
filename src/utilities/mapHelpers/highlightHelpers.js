@@ -1,3 +1,23 @@
+// Highlight a selected area type in the map
+export const highlightAreaType = (areaType, areaTypeId, map) => {
+  if (map) {
+    map.setFeatureState(
+      { source: `${areaType}-source`, id: areaTypeId },
+      { hover: true }
+    );
+  }
+}
+
+// Remove the highlight from a selected area type in the map
+export const removeHighlightAreaType = (areaType, areaTypeId, map) => {
+  if (map) {
+    map.setFeatureState(
+      { source: `${areaType}-source`, id: areaTypeId },
+      { hover: false }
+    );
+  }
+}
+
 export const highlightDownloadArea = (areaTypeId, map) => {
   if (map) {
     const addFn = () => {
@@ -22,12 +42,12 @@ export const highlightDownloadArea = (areaTypeId, map) => {
     }
   }
 };
+
 export const removeHighlightedDownloadArea = (areaTypeId, map) => {
   if (map && map.getLayer("dl-hover")) {
     map.removeLayer("dl-hover");
   }
 };
-
 
 export const removeHighlightCoverage = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {

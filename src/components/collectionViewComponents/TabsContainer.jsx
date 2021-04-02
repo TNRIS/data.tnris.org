@@ -1,11 +1,12 @@
 // package imports
 import { PageHeader, Skeleton, Spin, Table, Tabs } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchCollectionByIdSelector,
   fetchResourcesByCollectionIdSelector,
+  fetchAreaTypesByCollectionIdSelector,
 } from "../../utilities/atoms/collectionsAtoms";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
@@ -18,22 +19,41 @@ import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
 
+const { TabPane } = Tabs;
+
 export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
   const collection_id = useQueryParam().get("c");
   const map = useRecoilValue(mapAtom);
+
+  const [activeTab, setActiveTab] = useState("0");
+  
   const {
     state: collectionState,
     contents: collectionContents,
   } = useRecoilValueLoadable(fetchCollectionByIdSelector(collection_id));
+
   const {
     state: resourcesState,
     contents: resourcesContents,
   } = useRecoilValueLoadable(
     fetchResourcesByCollectionIdSelector(collection_id)
   );
+
+  const {
+    state: AreaTypesState,
+    contents: AreaTypesContents,
+  } = useRecoilValueLoadable(
+    fetchAreaTypesByCollectionIdSelector(collection_id)
+  );
+
   useEffect(() => {
-    console.log(collectionContents)
+    console.log(collectionState)
+    console.log(AreaTypesContents)
+    // if (AreaTypesContents) {
+    //   console.log(AreaTypesContents)
+    // }
+    console.log(resourcesContents)
     if(map && collectionContents.the_geom){
       highlightCoverage(map, collectionContents.the_geom);
       zoomToFeatures(map, collectionContents.the_geom);
@@ -46,7 +66,18 @@ export default function CollectionTabsContainer({ collection }) {
       }
       return null
     };
-  }, [map, collectionContents]);
+  }, [
+    map,
+    AreaTypesContents,
+    collectionState,
+    collectionContents,
+    resourcesContents
+  ]);
+
+  // Sets
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+  }
 
   return (
     <div id="TabsContainer">
@@ -59,7 +90,10 @@ export default function CollectionTabsContainer({ collection }) {
       <div id={"TabContentContainer"}>
         {collectionState !== "loading" && collectionContents && (
           <Tabs
+            activeKey={activeTab}
+            onChange={handleTabChange}
             tabPosition={"top"}
+            animated={true}
             style={{
               display: "grid",
               gridTemplateColumns: "100%",
@@ -67,16 +101,19 @@ export default function CollectionTabsContainer({ collection }) {
             }}
             keyboard="true"
           >
-            <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
+            <TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
               <MetadataTab metadata={collectionContents} />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Downloads" key="1">
+            </TabPane>
+            <TabPane tab="Downloads" key="1">
               <Spin
                 spinning={resourcesState === "loading"}
                 tip="Large collection, please wait as resources load..."
               >
                 {resourcesState !== "loading" ? (
                   <DownloadsTab
+                    activeTab={activeTab}
+                    areaTypes={AreaTypesContents}
+                    areaTypesState={AreaTypesState}
                     resources={resourcesContents}
                     resourcesState={resourcesState}
                   />
@@ -86,16 +123,16 @@ export default function CollectionTabsContainer({ collection }) {
                   </Skeleton>
                 )}
               </Spin>
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="WMS Link" key="2" style={{ height: "100%" }}>
+            </TabPane>
+            <TabPane tab="WMS Link" key="2" style={{ height: "100%" }}>
               WMS Link
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>
+            </TabPane>
+            <TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>
               Custom Order
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Contact" key="4" style={{ height: "100%" }}>
+            </TabPane>
+            <TabPane tab="Contact" key="4" style={{ height: "100%" }}>
               Custom Order
-            </Tabs.TabPane>
+            </TabPane>
           </Tabs>
         )}
       </div>
