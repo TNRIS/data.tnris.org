@@ -241,6 +241,8 @@ export function DownloadsTab({
         loading={resourcesState === "loading"}
         sticky
         pagination={{
+          pageSizeOptions: [12, 24, 60, 120],
+          defaultPageSize: 24,
           position: ["topCenter", "bottomCenter"],
           size: "small",
           current: pg,

@@ -1,10 +1,10 @@
-import { Select } from "antd";
+import { Empty, Select, Spin } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeofilterSearchResults,
   geoFilterSearchText,
-  geoFilterSelectedResult,
+  geoFilterSelectedResult
 } from "../../utilities/atoms/geofilterAtoms";
 import { changeParams } from "../../utilities/changeParamsUtil";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
@@ -28,7 +28,7 @@ export function GeoFilterSearchBar(props) {
   //then, store the first result as the geoFilterSelection, which will trigger map render of feature
   if (geo) {
     setGeoSearchInputText(geo);
-    if (state !== "loading" && contents.features.length === 1) {
+    if (state !== "loading" && contents.features.length) {
       setGeoFilterSelection(contents.features[0]);
     }
   }
@@ -40,7 +40,10 @@ export function GeoFilterSearchBar(props) {
       searchValue={geoSearchInputText}
       // set geoFilterSearchText atom
       // when geoFilterSearchText changes, the fetch geoFilterResults selector automatically re-runs the query to nominatim
-      onSearch={(v) => setGeoSearchInputText(v)}
+      onSearch={(v) => {
+        setGeoSearchInputText(v);
+      }}
+      notFoundContent={state === "loading" ? <Spin size="small" /> : <Empty />}
       showArrow={false}
       filterOption={false}
       allowClear

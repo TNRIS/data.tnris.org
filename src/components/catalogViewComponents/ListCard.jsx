@@ -1,17 +1,17 @@
-import { multiPolygon } from "@turf/helpers";
 import { Card, Col, Row, Tag } from "antd";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   highlightCoverage,
-  removeHighlightCoverage,
+  removeHighlightCoverage
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 
 export function CatalogListCard({ collection }) {
   const map = useRecoilValue(mapAtom);
+  const hoverTimer = useRef(null);
 
   useEffect(() => {
     //remove highlight when listcard leaves dom
@@ -21,14 +21,22 @@ export function CatalogListCard({ collection }) {
   return (
     <Card
       onMouseEnter={() => {
-        highlightCoverage(map, collection.the_geom);
-        //zoomToFeatures(map, multiPolygon(collection?.the_geom))
+        hoverTimer.current = setTimeout(
+          () => {
+            highlightCoverage(map, collection.the_geom)
+            zoomToFeatures(map, collection.the_geom)
+          },
+          1000
+        );
       }}
-      onMouseLeave={() => removeHighlightCoverage(map)}
+      onMouseLeave={() => {
+        removeHighlightCoverage(map, collection.the_geom);
+        clearTimeout(hoverTimer.current);
+      }}
       size={"small"}
       hoverable
       height={"300px"}
-      extra={new Date().getFullYear(collection.acquisition_date)}
+      extra={new Date(collection.acquisition_date).getFullYear()}
       title={collection.name}
     >
       <Row gutter={[8, 0]}>

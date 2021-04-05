@@ -1,6 +1,7 @@
 import { Checkbox, Input, Row } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { CartIndicator } from "./CartIndicator";
 import { GeoFilterSearchBar } from "./GeoFilterSearchBar";
 import { KeywordSearchBar } from "./KeywordSearchBar";
 
@@ -31,7 +32,7 @@ export function SearchBars() {
   return (
     <div className={"CatalogSearchBar"}>
       <div className={"SearchBar"}>
-        <Input.Group compact>
+        <Input.Group>
           <KeywordSearchBar />
           <GeoFilterSearchBar style={{ width: "50%", minWidth: "300px" }} />
         </Input.Group>
@@ -56,6 +57,7 @@ export function HeaderContainer(props) {
         </div>
       </Row>
       <SearchBars />
+      <CartIndicator />
     </div>
   );
 }

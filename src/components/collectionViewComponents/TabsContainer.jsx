@@ -16,6 +16,8 @@ import {
   removeHighlightCoverage,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
+import { DataInquiryForm } from "../forms/DataInquiryForm";
+import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
 
@@ -47,17 +49,17 @@ export default function CollectionTabsContainer({ collection }) {
   );
 
   useEffect(() => {
-    if(map && collectionContents.the_geom){
+    if (map && collectionContents.the_geom) {
       highlightCoverage(map, collectionContents.the_geom);
       zoomToFeatures(map, collectionContents.the_geom);
     }
 
     return () => {
       if (map && map.getLayer("collection-coverage-layer")) {
-        removeHighlightCoverage();
-        return null
+        removeHighlightCoverage(map);
+        return null;
       }
-      return null
+      return null;
     };
   }, [
     map,
@@ -83,6 +85,7 @@ export default function CollectionTabsContainer({ collection }) {
       <div id={"TabContentContainer"}>
         {collectionState !== "loading" && collectionContents && (
           <Tabs
+            type="card"
             activeKey={activeTab}
             onChange={handleTabChange}
             tabPosition={"top"}
@@ -117,14 +120,25 @@ export default function CollectionTabsContainer({ collection }) {
                 )}
               </Spin>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="WMS Link" key="2" style={{ height: "100%" }}>
+            <Tabs.TabPane tab="Service Links" key="2" style={{ height: "100%" }}>
               WMS Link
             </Tabs.TabPane>
             <Tabs.TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>
-              Custom Order
+              {collectionState === "hasValue" && (
+                <OrderFormContainer collection={collectionContents} />
+              )}
             </Tabs.TabPane>
             <Tabs.TabPane tab="Contact" key="4" style={{ height: "100%" }}>
-              Custom Order
+              {collectionState === "hasValue" && (
+                <DataInquiryForm
+                  collectionId={collectionContents.collection_id}
+                  collectionName={collectionContents.name}
+                  collectionCategory={collectionContents.category}
+                  collectionAcquisitionDate={
+                    collectionContents.acquisition_date
+                  }
+                />
+              )}
             </Tabs.TabPane>
           </Tabs>
         )}
