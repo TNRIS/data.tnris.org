@@ -72,55 +72,53 @@ export function DownloadsTab({
     for (let [k, v] of Object.entries(areaTypes)) {
       if (v["features"].length) {
         if (!map.getSource(`${k}-source`)) {
-          if (map.getSource("collection-coverage-source")) {
-            map.addSource(`${k}-source`, {
-              type: "geojson",
-              data: v,
-              promoteId: "area_type_id"
-            });
+          map.addSource(`${k}-source`, {
+            type: "geojson",
+            data: v,
+            promoteId: "area_type_id"
+          });
 
-            map.addLayer(
-              {
-                id: `${k}-outline`,
-                type: "line",
-                source: `${k}-source`,
-                minzoom: 2,
-                maxzoom: 24,
-                paint: {
-                  "line-color": "#222",
-                  "line-width": 1.0,
-                  "line-opacity": 0.75,
-                },
-                layout: { visibility: "none" }
-              }
-            );
+          map.addLayer(
+            {
+              id: `${k}-outline`,
+              type: "line",
+              source: `${k}-source`,
+              minzoom: 2,
+              maxzoom: 24,
+              paint: {
+                "line-color": "#222",
+                "line-width": 1.0,
+                "line-opacity": 0.75,
+              },
+              layout: { visibility: "none" }
+            }
+          );
 
-            map.addLayer(
-              {
-                id: `${k}-hover`,
-                type: "fill",
-                source: `${k}-source`,
-                minzoom: 2,
-                maxzoom: 24,
-                paint: {
-                  // hover state is set here using a case expression
-                  "fill-color": [
-                    "case",
-                    ["boolean", ["feature-state", "hover"], false],
-                    "#ff00fa",
-                    "#999"
-                  ],
-                  "fill-opacity": [
-                    "case",
-                    ["boolean", ["feature-state", "hover"], false],
-                    .3,
-                    .1
-                  ],
-                },
-                layout: { visibility: "none" }
-              }, `${k}-outline`
-            );
-          }
+          map.addLayer(
+            {
+              id: `${k}-hover`,
+              type: "fill",
+              source: `${k}-source`,
+              minzoom: 2,
+              maxzoom: 24,
+              paint: {
+                // hover state is set here using a case expression
+                "fill-color": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  "#ff00fa",
+                  "#999"
+                ],
+                "fill-opacity": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  .3,
+                  .1
+                ],
+              },
+              layout: { visibility: "none" }
+            }, `${k}-outline`
+          );
         }
       }
     }

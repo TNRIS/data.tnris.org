@@ -16,19 +16,12 @@ export const recursiveCollectionFetcher = async (next, results) => {
 };
 
 export const recursiveAreaTypesFetcher = async (next, results) => {
-if (next) {
-  const r = await fetch(next, {
-    // TODO: Figure out these headers
-    // headers: {
-    //   "Content-Type": "application/json",
-    //   Accept: "application/json",
-    // },
-  });
-
-  const j = await r.json();
-  const concatResults = {...j, "results": results.results ? [...results.results, ...j.results] : j.results};
-  return recursiveAreaTypesFetcher(j.next, concatResults);
-} else {
-  return results;
-}
+  if (next) {
+    const r = await fetch(next);
+    const j = await r.json();
+    const concatResults = {...j, "results": results.results ? [...results.results, ...j.results] : j.results};
+    return recursiveAreaTypesFetcher(j.next, concatResults);
+  } else {
+    return results;
+  }
 };
