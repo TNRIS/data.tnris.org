@@ -19,7 +19,6 @@ import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
 
-const { TabPane } = Tabs;
 
 export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
@@ -95,10 +94,10 @@ export default function CollectionTabsContainer({ collection }) {
             }}
             keyboard="true"
           >
-            <TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
+            <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
               <MetadataTab metadata={collectionContents} />
-            </TabPane>
-            <TabPane tab="Downloads" key="1">
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Downloads" key="1">
               <Spin
                 spinning={resourcesState === "loading"}
                 tip="Large collection, please wait as resources load..."
@@ -117,16 +116,16 @@ export default function CollectionTabsContainer({ collection }) {
                   </Skeleton>
                 )}
               </Spin>
-            </TabPane>
-            <TabPane tab="WMS Link" key="2" style={{ height: "100%" }}>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="WMS Link" key="2" style={{ height: "100%" }}>
               WMS Link
-            </TabPane>
-            <TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>
               Custom Order
-            </TabPane>
-            <TabPane tab="Contact" key="4" style={{ height: "100%" }}>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Contact" key="4" style={{ height: "100%" }}>
               Custom Order
-            </TabPane>
+            </Tabs.TabPane>
           </Tabs>
         )}
       </div>
