@@ -137,7 +137,7 @@ export function DownloadsTab({
           map.removeSource(`${v}-source`);
         }
       });
-  });
+  }, [areaTypes, map, opts]);
 
   // When the activeTab changes toggle the
   // area type layer on and off. The downloads
