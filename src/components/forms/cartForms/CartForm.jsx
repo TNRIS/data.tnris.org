@@ -1,5 +1,5 @@
 import { Button, Form, Progress, Row } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { cartAtom } from "../../../utilities/atoms/cartAtoms";
 import { CartItemList } from "./CartItemList";
@@ -66,6 +66,12 @@ export function CartForm() {
       validateFields: [],
     },
   ];
+
+  useEffect(() => {
+    if(Object.keys(cart).length === 1 || !cart){
+      setStep(0)
+    }
+  }, [cart, setStep])
   //decrement step
   const nextStep = () => {
     setStep((step) => step + 1);
@@ -184,7 +190,11 @@ export function CartForm() {
           ) : (
             <Button
               onClick={() => validateAction(nextStep)}
-              disabled={step >= steps.length - 1}
+              disabled={
+                step >= steps.length - 1 ||
+                !cart ||
+                Object.keys(cart).length === 0
+              }
             >
               Next
             </Button>
