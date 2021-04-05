@@ -39,7 +39,7 @@ export function HardDriveFields({ form }) {
                     key={`${v}_${i}`}
                     value={v.value}
                     style={{ display: "block" }}
-                    disabled={selectable.includes(i)}
+                    disabled={!selectable.includes(i)}
                   >
                     {v.label}
                   </Radio>

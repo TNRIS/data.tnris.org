@@ -184,7 +184,11 @@ export function CartForm() {
           ) : (
             <Button
               onClick={() => validateAction(nextStep)}
-              disabled={step >= steps.length - 1}
+              disabled={
+                step >= steps.length - 1 ||
+                !cart ||
+                Object.keys(cart).length === 0
+              }
             >
               Next
             </Button>
