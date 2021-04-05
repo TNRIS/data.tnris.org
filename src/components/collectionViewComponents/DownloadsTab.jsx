@@ -148,7 +148,7 @@ export function DownloadsTab({
     } else {
       showLayer(areaTypeSelection, map);
     }
-  });
+  }, [activeTab, areaTypeSelection, map]);
   
   // When areaTypeSelection changes
   useEffect(() => {
