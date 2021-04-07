@@ -68,10 +68,10 @@ export function CartForm() {
   ];
 
   useEffect(() => {
-    if(Object.keys(cart).length === 1 || !cart){
-      setStep(0)
+    if (Object.keys(cart).length === 1 || !cart) {
+      setStep(0);
     }
-  }, [cart, setStep])
+  }, [cart, setStep]);
   //decrement step
   const nextStep = () => {
     setStep((step) => step + 1);
@@ -175,7 +175,7 @@ export function CartForm() {
         <br />
         <Row justify="space-between">
           <Button onClick={() => prevStep()} disabled={step < 1}>
-            Previous
+            {steps[step - 1] ? steps[step - 1].title : null}
           </Button>
           {step === steps.length - 2 ? (
             <Button
@@ -196,7 +196,7 @@ export function CartForm() {
                 Object.keys(cart).length === 0
               }
             >
-              Next
+              {steps[step + 1] ? steps[step + 1].title : "Next"}
             </Button>
           )}
         </Row>
