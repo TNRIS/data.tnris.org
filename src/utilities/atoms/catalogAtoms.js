@@ -97,7 +97,7 @@ export const catalogDateRangeSelector = selector({
   get: ({ get }) => {
     const urlParams = get(searchString)
     const dr = new URLSearchParams(urlParams).get("dates")
-    const drToArray = dr ? dr.split(",") : null
+    const drToArray = dr ? dr.split(",").map(v => `01-01-${v}`) : null
     if(drToArray){
       return `&acquisition_date__gte=${drToArray[0]}&acquisition_date__lte=${drToArray[1]}`
     }
