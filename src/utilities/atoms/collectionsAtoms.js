@@ -2,7 +2,7 @@ import { selectorFamily } from "recoil";
 import { AREA_TYPES } from "../constants/areaTypes";
 import {
   recursiveCollectionFetcher,
-  recursiveAreaTypesFetcher
+  recursiveAreaTypesFetcher,
 } from "../recursiveFetcher";
 
 export const fetchCollectionByIdSelector = selectorFamily({
@@ -11,7 +11,14 @@ export const fetchCollectionByIdSelector = selectorFamily({
     const response = await fetch(
       `http://localhost:8000/api/v1/collections/${collection_id}`
     );
-    return response.json();
+    if (!response.ok) {
+      const historicalresponse = await fetch(
+        `http://localhost:8000/api/v1/historical/collections/${collection_id}`
+      );
+      return historicalresponse.json();
+    } else {
+      return response.json();
+    }
   },
 });
 
@@ -29,7 +36,7 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
       const response = await Promise.all(mappedPromises);
       const returnObject = {};
       AREA_TYPES.forEach((v, i) => {
-        returnObject[v] = response[i]
+        returnObject[v] = response[i];
       });
       return returnObject;
     } catch (e) {
@@ -53,7 +60,7 @@ export const fetchAreaTypesByCollectionIdSelector = selectorFamily({
       const returnObject = {};
       AREA_TYPES.forEach((v, i) => {
         if (response[i]["features"].length) {
-          returnObject[v] = response[i]
+          returnObject[v] = response[i];
         }
       });
       return returnObject;
