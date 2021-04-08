@@ -29,6 +29,8 @@ export function DateRange() {
               onChange={(v) => {
                 setMin((min) => v[0]);
                 setMax((max) => v[1]);
+              }}
+              onAfterChange={(v) => {
                 history.push({
                   search: changeParams(
                     [{ key: "dates", value: `${v[0]},${v[1]}`, ACTION: "set" }],
