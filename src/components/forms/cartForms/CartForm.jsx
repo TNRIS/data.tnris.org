@@ -175,6 +175,7 @@ export function CartForm() {
         <br />
         <Row justify="space-between">
           <Button onClick={() => prevStep()} disabled={step < 1}>
+            {steps[step - 1] ? <span>&#171;&nbsp;</span> : null}
             {steps[step - 1] ? steps[step - 1].title : null}
           </Button>
           {step === steps.length - 2 ? (
@@ -197,6 +198,7 @@ export function CartForm() {
               }
             >
               {steps[step + 1] ? steps[step + 1].title : "Next"}
+              <span>&nbsp; &#187;</span>
             </Button>
           )}
         </Row>
