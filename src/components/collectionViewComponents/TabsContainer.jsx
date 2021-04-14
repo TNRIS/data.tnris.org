@@ -12,8 +12,8 @@ import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import {
-  highlightCoverage,
-  removeHighlightCoverage,
+  addCoverageLayer,
+  removeCoverageLayer,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
@@ -50,23 +50,20 @@ export default function CollectionTabsContainer({ collection }) {
 
   useEffect(() => {
     if (map && collectionContents.the_geom) {
-      highlightCoverage(map, collectionContents.the_geom);
+      addCoverageLayer(map, collectionContents.the_geom);
       zoomToFeatures(map, collectionContents.the_geom);
     }
 
     return () => {
       if (map && map.getLayer("collection-coverage-layer")) {
-        removeHighlightCoverage(map);
+        removeCoverageLayer(map);
         return null;
       }
       return null;
     };
   }, [
     map,
-    AreaTypesContents,
-    collectionState,
-    collectionContents,
-    resourcesContents
+    collectionContents
   ]);
 
   // Sets the active tab in the state
