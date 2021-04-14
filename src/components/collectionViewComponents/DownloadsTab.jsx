@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
-  highlightAreaType,
-  removeHighlightedAreaType
+  highlightSelectedAreaType,
+  unHighlightSelectedAreaType
 } from "../../utilities/mapHelpers/highlightHelpers";
 import {
   hideLayer,
@@ -113,7 +113,7 @@ export function DownloadsTab({
                   "case",
                   ["boolean", ["feature-state", "hover"], false],
                   .3,
-                  .1
+                  .05
                 ],
               },
               layout: { visibility: "none" }
@@ -144,11 +144,15 @@ export function DownloadsTab({
   // tab key = "1".
   useEffect(() => {
     if (activeTab !== "1") {
-      hideLayer(areaTypeSelection, map);
+      hideLayer(`${areaTypeSelection}-outline`, map);
+      hideLayer(`${areaTypeSelection}-hover`, map);
+      showLayer("collection-coverage-layer", map);
     } else {
-      showLayer(areaTypeSelection, map);
+      showLayer(`${areaTypeSelection}-outline`, map);
+      showLayer(`${areaTypeSelection}-hover`, map);
+      hideLayer("collection-coverage-layer", map);
     }
-  }, [activeTab, areaTypeSelection, map]);
+  });
   
   // When areaTypeSelection changes
   useEffect(() => {
@@ -161,13 +165,15 @@ export function DownloadsTab({
       [...resources[areaTypeSelection].results].sort((a, b) => sortFn(a, b))
     );
 
-    // For each counties, quads, qquads, check if it is the current selection,
-    // if not current selection, set visibility to none, else set to visible
+    // For each counties, quads, qquads, if not current selection,
+    // set visibility to none, else set to visible
     opts.forEach((v) => {
       if (v !== areaTypeSelection) {
-        hideLayer(v, map);
+        hideLayer(`${v}-outline`, map);
+        hideLayer(`${v}-source`, map);
       } else {
-        showLayer(v, map);
+        showLayer(`${v}-outline`, map);
+        showLayer(`${v}-source`, map);
       }
     });
 
@@ -175,13 +181,13 @@ export function DownloadsTab({
     // When the user moves their mouse over the hover layer, update
     // the feature state for the feature under the mouse.
     map.on("mousemove", `${areaTypeSelection}-hover`, function(e) {
-      map.getCanvas().style.cursor = 'pointer';
+      map.getCanvas().style.cursor = "pointer";
       if (e.features.length > 0) {
         if (hoveredStateId !== null) {
-          removeHighlightedAreaType(areaTypeSelection, hoveredStateId, map);
+          unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
         }
-        hoveredStateId = e.features[0].id
-        highlightAreaType(areaTypeSelection, hoveredStateId, map)
+        hoveredStateId = e.features[0].id;
+        highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
       }
     });
 
@@ -190,7 +196,7 @@ export function DownloadsTab({
     map.on('mouseleave', `${areaTypeSelection}-hover`, function () {
       map.getCanvas().style.cursor = '';
       if (hoveredStateId !== null) {
-        removeHighlightedAreaType(areaTypeSelection, hoveredStateId, map);
+        unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
       }
       hoveredStateId = null;
     });
@@ -250,12 +256,12 @@ export function DownloadsTab({
         onRow={(record, index) => {
           return {
             onMouseEnter: () => {
-              highlightAreaType(
+              highlightSelectedAreaType(
                 areaTypeSelection, record.area_type_id, map
               )
             },
             onMouseLeave: () => {
-              removeHighlightedAreaType(
+              unHighlightSelectedAreaType(
                 areaTypeSelection, record.area_type_id, map
               )
             },

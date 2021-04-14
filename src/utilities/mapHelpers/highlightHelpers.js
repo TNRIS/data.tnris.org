@@ -1,11 +1,11 @@
-export const removeHighlightCoverage = (map) => {
+export const removeCoverageLayer = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {
     map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
   }
 }
 
-export const highlightCoverage = (map, coverage) => {
+export const addCoverageLayer = (map, coverage) => {
   if (map && map.getSource("collection-coverage-source")) {
     map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
@@ -30,7 +30,7 @@ export const highlightCoverage = (map, coverage) => {
 }
 
 // Highlight a selected area type in the map
-export const highlightAreaType = (areaType, areaTypeId, map) => {
+export const highlightSelectedAreaType = (areaType, areaTypeId, map) => {
   if (map) {
     if (map.getSource(`${areaType}-source`)) {
       map.setFeatureState(
@@ -42,7 +42,7 @@ export const highlightAreaType = (areaType, areaTypeId, map) => {
 }
 
 // Remove the highlight from a selected area type in the map
-export const removeHighlightedAreaType = (areaType, areaTypeId, map) => {
+export const unHighlightSelectedAreaType = (areaType, areaTypeId, map) => {
   if (map) {
     if (map.getSource(`${areaType}-source`)) {
       map.setFeatureState(

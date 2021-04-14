@@ -4,8 +4,8 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
-  highlightCoverage,
-  removeHighlightCoverage
+  addCoverageLayer,
+  removeCoverageLayer
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 
@@ -15,7 +15,7 @@ export function CatalogListCard({ collection }) {
 
   useEffect(() => {
     //remove highlight when listcard leaves dom
-    return () => removeHighlightCoverage(map);
+    return () => removeCoverageLayer(map);
   }, [map]);
 
   return (
@@ -23,14 +23,14 @@ export function CatalogListCard({ collection }) {
       onMouseEnter={() => {
         hoverTimer.current = setTimeout(
           () => {
-            highlightCoverage(map, collection.the_geom)
+            addCoverageLayer(map, collection.the_geom)
             zoomToFeatures(map, collection.the_geom)
           },
-          1000
+          500
         );
       }}
       onMouseLeave={() => {
-        removeHighlightCoverage(map, collection.the_geom);
+        removeCoverageLayer(map, collection.the_geom);
         clearTimeout(hoverTimer.current);
       }}
       size={"small"}

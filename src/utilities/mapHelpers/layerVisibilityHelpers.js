@@ -1,21 +1,15 @@
-export const hideLayer = (layerBaseName, map) => {
-  if (map.getLayer(`${layerBaseName}-outline`)) {
+export const hideLayer = (layerName, map) => {
+  if (map.getLayer(layerName)) {
       map.setLayoutProperty(
-        `${layerBaseName}-outline`, "visibility", "none"
-      );
-      map.setLayoutProperty(
-        `${layerBaseName}-hover`, "visibility", "none"
+        layerName, "visibility", "none"
       );
     }
 }
 
-export const showLayer = (layerBaseName, map) => {
-  if (map.getLayer(`${layerBaseName}-outline`)) {
+export const showLayer = (layerName, map) => {
+  if (map.getLayer(layerName)) {
       map.setLayoutProperty(
-        `${layerBaseName}-outline`, "visibility", "visible"
-      );
-      map.setLayoutProperty(
-        `${layerBaseName}-hover`, "visibility", "visible"
+        layerName, "visibility", "visible"
       );
     }
 }
