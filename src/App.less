@@ -129,12 +129,12 @@
 
     #TabContentContainer {
       display: contents;
-
+      .ant-tabs-nav {
+        margin-bottom: 0;
+      }
       .ant-tabs-content-holder {
+        background: white;
         overflow: hidden auto;
-        border: solid 1px @border-color-base;
-        border-radius: @border-radius-base;
-
         .search, #MetadataTabContentContainer {
           padding: @padding-xs;
         }
