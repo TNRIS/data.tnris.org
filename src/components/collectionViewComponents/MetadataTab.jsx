@@ -67,7 +67,7 @@ export function MetadataTab({ metadata }) {
 //////////////////////////////////////////////////////////////////////////////////////////
 function ContemporaryMeta({ metadata }) {
   return (
-    <div style={{ display: "grid", gap: ".25rem"}}>
+    <div style={{ display: "grid", gap: ".25rem" }}>
       <CollectionDescription about={metadata.description} />
       <Collapse>
         <Collapse.Panel
@@ -79,7 +79,7 @@ function ContemporaryMeta({ metadata }) {
                 margin: 0,
               }}
             >
-              metadata
+              detailed metadata
             </h3>
           }
         >
@@ -120,7 +120,7 @@ function ContemporaryMeta({ metadata }) {
 }
 function HistoricMeta({ metadata }) {
   return (
-    <div style={{ display: "grid", gap: ".25rem"}}>
+    <div style={{ display: "grid", gap: ".25rem" }}>
       <CollectionDescription about={metadata.about} />
       <HistoricScanStatus status={metadata.fully_scanned} />
       <Collapse>
@@ -201,11 +201,7 @@ export function CollectionDescription({ about }) {
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         description
       </h3>
-      <Typography.Paragraph
-        ellipsis={{ rows: 2, expandable: true, symbol: "more" }}
-      >
-        {about}
-      </Typography.Paragraph>
+      <div dangerouslySetInnerHTML={{ __html: about }} />
     </Card>
   );
 }
