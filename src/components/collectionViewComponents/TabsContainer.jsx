@@ -76,6 +76,7 @@ export default function CollectionTabsContainer({ collection }) {
       {collectionContents && (
         <PageHeader
           title={collectionContents.name}
+          extra={<span>{new Date(collectionContents.acquisition_date).getFullYear()}</span>}
           onBack={() => (history.length > 0 ? history.goBack() : null)}
         />
       )}
