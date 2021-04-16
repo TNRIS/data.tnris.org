@@ -32,7 +32,11 @@ export function FilterBar() {
         >
           <Button>
             <FilterCountBadge filterSet={set[0]}>
-              <Badge>{set[0].replace("_", " ")}</Badge>
+              <Badge>
+                <span style={{ textTransform: "capitalize" }}>
+                  {set[0].replace("_", " ")}
+                </span>
+              </Badge>
             </FilterCountBadge>
           </Button>
         </Popover>
@@ -46,7 +50,9 @@ export function FilterBar() {
       >
         <Button>
           <FilterCountBadge>
-            <Badge>date range</Badge>
+            <Badge>
+              <span style={{ textTransform: "capitalize" }}>date range</span>
+            </Badge>
           </FilterCountBadge>
         </Button>
       </Popover>
@@ -63,7 +69,9 @@ export function ToggleAllOptions({ set }) {
   const selected = useQueryParam().get(set[0]);
 
   const indeterminate =
-    selected && !!selected.split(",").length && selected.split(",").length < set[1].length;
+    selected &&
+    !!selected.split(",").length &&
+    selected.split(",").length < set[1].length;
 
   const allSelected =
     selected &&
