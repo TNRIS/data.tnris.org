@@ -6,9 +6,9 @@ export const zoomToFeatures = (map, features, padding = 100) => {
     try{
       switch(features.type){
         case "MultiPolygon":
-          return map.fitBounds(bbox(multiPolygon(features.coordinates)))
+          return map.fitBounds(bbox(multiPolygon(features.coordinates)), { padding: padding})
         case "Polygon":
-          return map.fitBounds(bbox(polygon(features.coordinates)))
+          return map.fitBounds(bbox(polygon(features.coordinates)), { padding: padding })
         default:
           return null
       }
