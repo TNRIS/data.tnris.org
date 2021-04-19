@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Card,
   Collapse,
@@ -52,6 +53,7 @@ const fields = {
 };
 
 export function MetadataTab({ metadata }) {
+  console.log(metadata);
   return (
     <div id="MetadataTabContentContainer">
       {metadata && metadata.category.includes("Historic_Imagery") ? (
@@ -103,7 +105,7 @@ function ContemporaryMeta({ metadata }) {
             ))}
         </Collapse.Panel>
       </Collapse>
-
+      <CollectionMapService metadata={metadata} />
       <CollectionSupplementalDownloads metadata={metadata} />
       <Card size="small">
         <HyperLink
@@ -157,6 +159,10 @@ function HistoricMeta({ metadata }) {
             ))}
         </Collapse.Panel>
       </Collapse>
+      <CollectionMapService metadata={metadata} />
+      {metadata.scanned_index_ls4_links && (
+        <ScannedIndexes metadata={metadata} />
+      )}
       {metadata.products && <HistoricProducts products={metadata.products} />}
       <CollectionSupplementalDownloads metadata={metadata} />
       <AboutHistoric />
@@ -306,6 +312,73 @@ export function CollectionSocialShare({ metadata }) {
     </Card>
   );
 }
+export function CollectionMapService({ metadata }) {
+  const serviceLink = () => {
+    switch (true) {
+      case metadata.wms_link.includes("feature"):
+        return "https://feature.tnris.org/arcgis/services";
+      case metadata.wms_link.includes("imagery"):
+        return "https://features.tnris.org/arcgis/services";
+      default:
+        return "https://webservices.tnris.org/arcgis/services";
+    }
+  };
+  return (
+    <>
+      {metadata.wms_link && metadata.popup_link && (
+        <Card size="small">
+          <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
+            online mapping services
+          </h3>
+          <Row>
+            <p>
+              This dataset is available as an online mapping service. An OGC WMS
+              service and an ArcGIS service are available. To connect to the WMS
+              service in your software, please copy the unique url provided in
+              the box below. To access the TNRIS ArcGIS Server, please use the
+              following url in your ESRI software and select from the list of
+              available services:
+            </p>{" "}
+            <a href={() => serviceLink()}>{() => serviceLink()}</a>
+            <Alert
+              showIcon
+              type="info"
+              message={
+                <span>
+                  For questions regarding the use of one of these services in
+                  your software package, please consult the software
+                  help/support information.
+                </span>
+              }
+            />
+            <Typography.Paragraph
+              style={{
+                border: "solid 1px #ccc",
+                padding: ".25rem .5rem",
+                borderRadius: ".25rem",
+                overflowWrap: "anywhere",
+              }}
+              copyable={{
+                tooltips: ["Click to copy citation", "You copied this link"],
+              }}
+            >
+              {<span>{metadata.wms_link}</span>}
+            </Typography.Paragraph>
+            <br />
+            <Button
+              color="primary"
+              type="primary"
+              href={metadata.popup_link}
+              target="_blank"
+            >
+              Open ArcGIS Map Preview
+            </Button>
+          </Row>
+        </Card>
+      )}
+    </>
+  );
+}
 //////////////////////////////////////////////
 //// Components for Historical Collections
 //////////////////////////////////////////////
@@ -322,7 +395,7 @@ export function HistoricScanStatus({ status }) {
   );
 }
 export function HistoricProducts({ products }) {
-  const productsAsJSON = JSON.parse("["+products+"]");
+  const productsAsJSON = JSON.parse("[" + products + "]");
   const uniqueProducts = productsAsJSON.reduce((r, e) => {
     r[e.medium + "_" + e.print_type] = {
       medium: e.medium,
@@ -330,6 +403,7 @@ export function HistoricProducts({ products }) {
     };
     return r;
   }, {});
+  console.log(uniqueProducts);
 
   return (
     <Card size="small">
@@ -382,18 +456,68 @@ export function AboutHistoric() {
   );
 }
 
+export function ScannedIndexes({ metadata }) {
+  const idxAsJson = JSON.parse("[" + metadata.scanned_index_ls4_links + "]");
+
+  return (
+    <Card size="small">
+      <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
+        scanned indexes
+      </h3>
+      <p>
+        This Historic Imagery dataset has scanned indexes (.tif format)
+        available for download. Use the scanned indexes to view this
+        collection's spatial extent and the identification numbers of the
+        individual frames which comprise it.
+      </p>
+      <Alert
+        showIcon
+        type="info"
+        message={
+          <span>
+            Frames shown within each index sheet may or may not be availabile
+            due to incomplete collections within the archive.
+          </span>
+        }
+      />
+      <List
+        bordered
+        dataSource={idxAsJson}
+        itemLayout={"horizontal"}
+        renderItem={(item) => (
+          <List.Item extra={<a href={item.link}>Download</a>}>
+            <List.Item.Meta
+              title={
+                "Sheet " +
+                item.sheet +
+                " " +
+                metadata.source_abbreviation +
+                " " +
+                item.year
+              }
+              description={item.size}
+            />
+          </List.Item>
+        )}
+      />
+    </Card>
+  );
+}
+//////////////////////////////////////////
+///////// Components for Lidar Collections
+//////////////////////////////////////////
 export function AboutLidar() {
   return (
     <Card size="small">
       <p>
-        Lidar data for Texas is available online through the use of{" "}
+        Lidar data for Texas is available online through the use of
         <a href="https://rapidlasso.com/lastools/">LASTools</a>, an open-source
         collection of tools for lidar data viewing and manipulation.
       </p>
-      Click{" "}
+      Click
       <a href="https://cdn.tnris.org/data/lidar/tnris-lidar_48_vector.zip">
         here
-      </a>{" "}
+      </a>
       to download a complete index of all available lidar data at TNRIS.
     </Card>
   );

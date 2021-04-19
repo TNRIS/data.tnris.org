@@ -21,14 +21,13 @@ import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";
 import { DownloadsTab } from "./DownloadsTab";
 import { MetadataTab } from "./MetadataTab";
 
-
 export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
   const collection_id = useQueryParam().get("c");
   const map = useRecoilValue(mapAtom);
 
   const [activeTab, setActiveTab] = useState("0");
-  
+
   const {
     state: collectionState,
     contents: collectionContents,
@@ -61,86 +60,96 @@ export default function CollectionTabsContainer({ collection }) {
       }
       return null;
     };
-  }, [
-    map,
-    collectionContents
-  ]);
+  }, [map, collectionContents]);
 
   // Sets the active tab in the state
   const handleTabChange = (key) => {
     setActiveTab(key);
-  }
+  };
 
   return (
-    <div id="TabsContainer">
-      {collectionContents && (
-        <PageHeader
-          title={collectionContents.name}
-          extra={<span>{new Date(collectionContents.acquisition_date).getFullYear()}</span>}
-          onBack={() => (history.length > 0 ? history.goBack() : null)}
-        />
-      )}
-      <div id={"TabContentContainer"}>
-        {collectionState !== "loading" && collectionContents && (
-          <Tabs
-            type="card"
-            activeKey={activeTab}
-            onChange={handleTabChange}
-            tabPosition={"top"}
-            animated={true}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "100%",
-              gridTemplateRows: "auto 1fr",
-            }}
-            keyboard="true"
-          >
-            <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
-              <MetadataTab metadata={collectionContents} />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Downloads" key="1">
-              <Spin
-                spinning={resourcesState === "loading"}
-                tip="Large collection, please wait as resources load..."
-              >
-                {resourcesState !== "loading" ? (
-                  <DownloadsTab
-                    activeTab={activeTab}
-                    areaTypes={AreaTypesContents}
-                    areaTypesState={AreaTypesState}
-                    resources={resourcesContents}
-                    resourcesState={resourcesState}
-                  />
-                ) : (
-                  <Skeleton>
-                    <Table />
-                  </Skeleton>
+    <>
+      <div id="TabsContainer">
+        {collectionContents && (
+          <PageHeader
+            title={collectionContents.name}
+            extra={
+              <span>
+                {String(
+                  new Date(collectionContents.acquisition_date).getFullYear()
                 )}
-              </Spin>
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Service Links" key="2" style={{ height: "100%" }}>
-              WMS Link
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Custom Order" key="3" style={{ height: "100%" }}>
-              {collectionState === "hasValue" && (
-                <OrderFormContainer collection={collectionContents} />
-              )}
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Contact" key="4" style={{ height: "100%" }}>
-              {collectionState === "hasValue" && (
-                <DataInquiryForm
-                  collectionId={collectionContents.collection_id}
-                  collectionName={collectionContents.name}
-                  collectionCategory={collectionContents.category}
-                  collectionAcquisitionDate={
-                    collectionContents.acquisition_date
-                  }
-                />
-              )}
-            </Tabs.TabPane>
-          </Tabs>
+              </span>
+            }
+            onBack={() => (history.length > 0 ? history.goBack() : null)}
+          />
         )}
+        <div id={"TabContentContainer"}>
+          <Spin
+            spinning={collectionState === "loading"}
+            tip={"collection data loading..."}
+          />
+          {collectionState !== "loading" && collectionContents && (
+            <Tabs
+              type="card"
+              activeKey={activeTab}
+              onChange={handleTabChange}
+              tabPosition={"top"}
+              animated={true}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "100%",
+                gridTemplateRows: "auto 1fr",
+              }}
+              keyboard="true"
+            >
+              <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
+                <MetadataTab metadata={collectionContents} />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Downloads" key="1">
+                <Spin
+                  spinning={resourcesState === "loading"}
+                  tip="Large collection, please wait as resources load..."
+                >
+                  {resourcesState !== "loading" ? (
+                    <DownloadsTab
+                      activeTab={activeTab}
+                      areaTypes={AreaTypesContents}
+                      areaTypesState={AreaTypesState}
+                      resources={resourcesContents}
+                      resourcesState={resourcesState}
+                    />
+                  ) : (
+                    <Skeleton>
+                      <Table />
+                    </Skeleton>
+                  )}
+                </Spin>
+              </Tabs.TabPane>
+              <Tabs.TabPane
+                tab="Custom Order"
+                key="2"
+                style={{ height: "100%" }}
+              >
+                {collectionState === "hasValue" && (
+                  <OrderFormContainer collection={collectionContents} />
+                )}
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Contact" key="3" style={{ height: "100%" }}>
+                {collectionState === "hasValue" && (
+                  <DataInquiryForm
+                    collectionId={collectionContents.collection_id}
+                    collectionName={collectionContents.name}
+                    collectionCategory={collectionContents.category}
+                    collectionAcquisitionDate={
+                      collectionContents.acquisition_date
+                    }
+                  />
+                )}
+              </Tabs.TabPane>
+            </Tabs>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
