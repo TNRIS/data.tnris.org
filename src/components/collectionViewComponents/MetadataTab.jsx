@@ -322,11 +322,15 @@ export function HistoricScanStatus({ status }) {
   );
 }
 export function HistoricProducts({ products }) {
-  const productsAsJSON = JSON.parse(products);
-  console.log(productsAsJSON);
-  const filteredProducts = Object.keys(productsAsJSON).filter((v) =>
-    ["medium", "print_type"].includes(v)
-  );
+  const productsAsJSON = JSON.parse("["+products+"]");
+  const uniqueProducts = productsAsJSON.reduce((r, e) => {
+    r[e.medium + "_" + e.print_type] = {
+      medium: e.medium,
+      print_type: e.print_type,
+    };
+    return r;
+  }, {});
+
   return (
     <Card size="small">
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>products</h3>
@@ -336,19 +340,19 @@ export function HistoricProducts({ products }) {
         and print type. The available printed photograph products for this
         dataset are listed below.
       </p>
-      {filteredProducts && filteredProducts.length > 0 && (
+      {uniqueProducts && productsAsJSON.length > 0 && (
         <Descriptions layout="vertical" bordered size="small">
-          {filteredProducts.map((v, i) => {
+          {Object.keys(uniqueProducts).map((v, i) => {
             return (
               <Descriptions.Item
                 label={
                   <h4 style={{ fontVariant: "", fontWeight: "800" }}>
-                    {v.replace("_", " ")}
+                    {uniqueProducts[v].medium.replace("_", " ")}
                   </h4>
                 }
                 key={v + "_" + i}
               >
-                <p>{productsAsJSON[v]}</p>
+                <p>{uniqueProducts[v].print_type}</p>
               </Descriptions.Item>
             );
           })}
