@@ -1,24 +1,22 @@
 // package imports
-import { PageHeader, Skeleton, Spin, Table, Tabs } from "antd";
+import { PageHeader, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
-  fetchCollectionByIdSelector,
-  fetchResourcesByCollectionIdSelector,
-  fetchAreaTypesByCollectionIdSelector,
+  fetchAreaTypesByCollectionIdSelector, fetchCollectionByIdSelector
 } from "../../utilities/atoms/collectionsAtoms";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import {
   addCoverageLayer,
-  removeCoverageLayer,
+  removeCoverageLayer
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
 import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";
-import { DownloadsTab } from "./DownloadsTab";
+import { DownloadAreasList } from "./DownloadAreasList";
 import { MetadataTab } from "./MetadataTab";
 
 export default function CollectionTabsContainer({ collection }) {
@@ -34,19 +32,12 @@ export default function CollectionTabsContainer({ collection }) {
   } = useRecoilValueLoadable(fetchCollectionByIdSelector(collection_id));
 
   const {
-    state: resourcesState,
-    contents: resourcesContents,
-  } = useRecoilValueLoadable(
-    fetchResourcesByCollectionIdSelector(collection_id)
-  );
-
-  const {
     state: AreaTypesState,
     contents: AreaTypesContents,
   } = useRecoilValueLoadable(
     fetchAreaTypesByCollectionIdSelector(collection_id)
   );
-
+    
   useEffect(() => {
     if (map && collectionContents.the_geom) {
       addCoverageLayer(map, collectionContents.the_geom);
@@ -106,24 +97,20 @@ export default function CollectionTabsContainer({ collection }) {
                 <MetadataTab metadata={collectionContents} />
               </Tabs.TabPane>
               <Tabs.TabPane tab="Downloads" key="1">
-                <Spin
-                  spinning={resourcesState === "loading"}
-                  tip="Large collection, please wait as resources load..."
-                >
-                  {resourcesState !== "loading" ? (
-                    <DownloadsTab
-                      activeTab={activeTab}
-                      areaTypes={AreaTypesContents}
-                      areaTypesState={AreaTypesState}
-                      resources={resourcesContents}
-                      resourcesState={resourcesState}
-                    />
-                  ) : (
-                    <Skeleton>
-                      <Table />
-                    </Skeleton>
-                  )}
-                </Spin>
+                {AreaTypesState === "loading" && (
+                  <Spin
+                    spinning={AreaTypesState === "loading"}
+                    tip={"Loading collection resources..."}
+                  />
+                )}
+                {AreaTypesState !== "loading" && (
+                  <DownloadAreasList
+                    collectionId={collectionContents.collection_id}
+                    activeTab={activeTab}
+                    areaTypes={AreaTypesContents}
+                    areaTypesState={AreaTypesState}
+                  />
+                )}
               </Tabs.TabPane>
               <Tabs.TabPane
                 tab="Custom Order"

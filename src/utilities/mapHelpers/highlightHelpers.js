@@ -52,3 +52,4 @@ export const unHighlightSelectedAreaType = (areaType, areaTypeId, map) => {
     }
   }
 }
+

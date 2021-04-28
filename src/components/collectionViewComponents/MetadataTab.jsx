@@ -53,7 +53,6 @@ const fields = {
 };
 
 export function MetadataTab({ metadata }) {
-  console.log(metadata);
   return (
     <div id="MetadataTabContentContainer">
       {metadata && metadata.category.includes("Historic_Imagery") ? (
@@ -403,7 +402,6 @@ export function HistoricProducts({ products }) {
     };
     return r;
   }, {});
-  console.log(uniqueProducts);
 
   return (
     <Card size="small">
