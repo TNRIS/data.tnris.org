@@ -32,6 +32,7 @@ export function DownloadAreasList({
   const [selectedAreas, setSelectedAreas] = useRecoilState(
     collectionAreasMapSelectionAtom
   );
+  const [areaHover, setAreaHover] = useState();
 
   // Add the area type layers when the component mounts
   useEffect(() => {
@@ -90,7 +91,7 @@ export function DownloadAreasList({
             },
             `${k}-outline`
           );
-          // Add layer for selectedAreas highlight  
+          // Add layer for selectedAreas highlight
           map.addLayer(
             {
               id: `${k}-select`,
@@ -109,7 +110,7 @@ export function DownloadAreasList({
           );
           // Add listener to add area to selectedAreas atom on click
           map.on("click", `${k}-hover`, function (e) {
-            console.log("area clicked");
+            //console.log("area clicked");
             setSelectedAreas((current) => {
               if (current.includes(e.features[0].properties.area_type_id)) {
                 return current.filter(
@@ -181,6 +182,8 @@ export function DownloadAreasList({
     // When the user moves their mouse over the hover layer, update
     // the feature state for the feature under the mouse.
     map.on("mousemove", `${areaTypeSelection}-hover`, function (e) {
+      setAreaHover(e.features[0].properties.area_type_id);
+
       map.getCanvas().style.cursor = "pointer";
       // add tooltip with area name
       let name = e.features[0].properties.area_type_name;
@@ -194,13 +197,16 @@ export function DownloadAreasList({
         highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
       }
     });
-    map.on("mouseenter", `${areaTypeSelection}-hover`, function(e){})
+    map.on("mouseenter", `${areaTypeSelection}-hover`, function (e) {
+      setAreaHover(e.features[0].properties.area_type_id);
+    });
     // When the mouse leaves the hover layer, update the feature
     // state of the previously hovered feature.
     map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
       map.getCanvas().style.cursor = "";
       //remove popup
       popup.remove();
+      setAreaHover(null);
       if (hoveredStateId !== null) {
         unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
       }
@@ -231,6 +237,7 @@ export function DownloadAreasList({
       ]);
     }
   }, [map, selectedAreas, areaTypeSelection]);
+
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -308,6 +315,7 @@ export function DownloadAreasList({
           <List bordered style={{ marginTop: "1rem" }}>
             {selectedAreas.map((v) => (
               <DownloadAreaResources
+                hovered={areaHover && areaHover === v}
                 collectionId={collectionId}
                 areaTypeId={v}
               />

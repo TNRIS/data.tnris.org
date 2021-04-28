@@ -61,3 +61,8 @@ export const collectionAreasMapSelectionAtom = atom({
   default: []
 })
 
+export const collectionAreasMapHoverAtom = atom({
+  key: "collectionAreasMapHoverAtom",
+  default: []
+})
+

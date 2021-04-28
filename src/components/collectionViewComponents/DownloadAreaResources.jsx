@@ -1,4 +1,8 @@
-import { DeleteRowOutlined, DownloadOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  DeleteRowOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 import { Button, List, Skeleton, Spin } from "antd";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
@@ -6,7 +10,7 @@ import {
   fetchResourcesByCollectionIdAndAreaTypeIDSelector,
 } from "../../utilities/atoms/collectionsAtoms";
 
-export function DownloadAreaResources({ areaTypeId, collectionId }) {
+export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
   const setSelectedAreas = useSetRecoilState(collectionAreasMapSelectionAtom);
   const {
     state: resourcesState,
@@ -49,11 +53,12 @@ export function DownloadAreaResources({ areaTypeId, collectionId }) {
                 )
               }
               type="outlined"
-              icon={<DeleteRowOutlined />}
+              icon={<CloseOutlined />}
               shape="circle"
               style={{ marginLeft: "1rem" }}
             />
           }
+          style={{ border: hovered ? "solid black 1px" : "inherit" }}
         >
           <List.Item.Meta
             title={
