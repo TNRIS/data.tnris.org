@@ -46,7 +46,7 @@ export function DownloadAreasList({
             data: v,
             promoteId: "area_type_id",
           });
-
+          // Add base outline layer for areas
           map.addLayer({
             id: `${k}-outline`,
             type: "line",
@@ -60,7 +60,8 @@ export function DownloadAreasList({
             },
             layout: { visibility: "none" },
           });
-
+          // Add hover layer for hover highlight
+          // Controlled by feature state
           map.addLayer(
             {
               id: `${k}-hover`,
@@ -89,7 +90,7 @@ export function DownloadAreasList({
             },
             `${k}-outline`
           );
-
+          // Add layer for selectedAreas highlight  
           map.addLayer(
             {
               id: `${k}-select`,
@@ -106,7 +107,7 @@ export function DownloadAreasList({
             },
             `${k}-hover`
           );
-
+          // Add listener to add area to selectedAreas atom on click
           map.on("click", `${k}-hover`, function (e) {
             console.log("area clicked");
             setSelectedAreas((current) => {
@@ -145,7 +146,6 @@ export function DownloadAreasList({
       });
     };
   }, [areaTypes, map, opts, setSelectedAreas]);
-
   // When the activeTab changes toggle the
   // area type layer on and off. The downloads
   // tab key = "1".
@@ -182,9 +182,10 @@ export function DownloadAreasList({
     // the feature state for the feature under the mouse.
     map.on("mousemove", `${areaTypeSelection}-hover`, function (e) {
       map.getCanvas().style.cursor = "pointer";
+      // add tooltip with area name
       let name = e.features[0].properties.area_type_name;
-      console.log(e);
       popup.setLngLat(e.lngLat).setHTML(name).addTo(map);
+      // toggle highlight with hover-state
       if (e.features.length > 0) {
         if (hoveredStateId !== null) {
           unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
@@ -198,6 +199,7 @@ export function DownloadAreasList({
     // state of the previously hovered feature.
     map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
       map.getCanvas().style.cursor = "";
+      //remove popup
       popup.remove();
       if (hoveredStateId !== null) {
         unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
