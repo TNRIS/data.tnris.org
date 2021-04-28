@@ -227,7 +227,7 @@ export function DownloadAreasList({
     if (selectedAreas.length > 0) {
       // set filter to layer of aretypeselection
       // filter to highlight selectedAreas
-      console.log(selectedAreas);
+      //console.log(selectedAreas);
       map.setFilter(`${areaTypeSelection}-select`, [
         "match",
         ["get", "area_type_id"],
@@ -272,7 +272,7 @@ export function DownloadAreasList({
           }}
         >
           {opts.map((v) => (
-            <Select.Option value={v.type}>
+            <Select.Option key={`select-area-type-${v.type}`} value={v.type}>
               {`${v.type} (${v.count})`}
             </Select.Option>
           ))}
@@ -312,9 +312,10 @@ export function DownloadAreasList({
 
       <div>
         {selectedAreas && selectedAreas.length > 0 && (
-          <List bordered style={{ marginTop: "1rem" }}>
+          <List style={{ marginTop: "1rem" }}>
             {selectedAreas.map((v) => (
               <DownloadAreaResources
+                key={`resources_${v}`}
                 hovered={areaHover && areaHover === v}
                 collectionId={collectionId}
                 areaTypeId={v}

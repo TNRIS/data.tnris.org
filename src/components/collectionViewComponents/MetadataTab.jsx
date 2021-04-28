@@ -1,3 +1,4 @@
+import { DownloadOutlined } from "@ant-design/icons";
 import {
   Alert,
   Button,
@@ -259,7 +260,7 @@ export function CollectionSupplementalDownloads({ metadata }) {
             bordered
             dataSource={items}
             renderItem={(item) => (
-              <List.Item extra={<a href={`${item[1]}`}>Download</a>}>
+              <List.Item extra={<Button type="link" icon={<DownloadOutlined />} href={`${item[1]}`}>Download</Button>}>
                 <label
                   style={{ textTransform: "capitalize", fontWeight: "500" }}
                 >
@@ -335,10 +336,10 @@ export function CollectionMapService({ metadata }) {
               service and an ArcGIS service are available. To connect to the WMS
               service in your software, please copy the unique url provided in
               the box below. To access the TNRIS ArcGIS Server, please use the
-              following url in your ESRI software and select from the list of
-              available services:
-            </p>{" "}
-            <a href={() => serviceLink()}>{() => serviceLink()}</a>
+              following url in your ESRI software and select from the <a href={serviceLink()}>list of
+              available services</a>.
+            </p>
+            
             <Alert
               showIcon
               type="info"
@@ -359,6 +360,7 @@ export function CollectionMapService({ metadata }) {
               }}
               copyable={{
                 tooltips: ["Click to copy citation", "You copied this link"],
+                text: metadata.wms_link
               }}
             >
               {<span>{metadata.wms_link}</span>}
@@ -483,7 +485,7 @@ export function ScannedIndexes({ metadata }) {
         dataSource={idxAsJson}
         itemLayout={"horizontal"}
         renderItem={(item) => (
-          <List.Item extra={<a href={item.link}>Download</a>}>
+          <List.Item extra={<Button type="link" icon={<DownloadOutlined />} href={item.link}>Download</Button>}>
             <List.Item.Meta
               title={
                 "Sheet " +

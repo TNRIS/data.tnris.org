@@ -1,17 +1,19 @@
 // package imports
-import { PageHeader, Spin, Tabs } from "antd";
+import { PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
+import { List } from "antd/lib/form/Form";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
-  fetchAreaTypesByCollectionIdSelector, fetchCollectionByIdSelector
+  fetchAreaTypesByCollectionIdSelector,
+  fetchCollectionByIdSelector,
 } from "../../utilities/atoms/collectionsAtoms";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
 import {
   addCoverageLayer,
-  removeCoverageLayer
+  removeCoverageLayer,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
@@ -23,7 +25,6 @@ export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
   const collection_id = useQueryParam().get("c");
   const map = useRecoilValue(mapAtom);
-
   const [activeTab, setActiveTab] = useState("0");
 
   const {
@@ -37,7 +38,7 @@ export default function CollectionTabsContainer({ collection }) {
   } = useRecoilValueLoadable(
     fetchAreaTypesByCollectionIdSelector(collection_id)
   );
-    
+
   useEffect(() => {
     if (map && collectionContents.the_geom) {
       addCoverageLayer(map, collectionContents.the_geom);
@@ -52,6 +53,15 @@ export default function CollectionTabsContainer({ collection }) {
       return null;
     };
   }, [map, collectionContents]);
+
+  useEffect(() => {
+    const scrollEl = document.getElementsByClassName(
+      "ant-tabs-content-holder"
+    )[0];
+    if (scrollEl) {
+      scrollEl.scrollTo(0, 0);
+    }
+  }, [activeTab]);
 
   // Sets the active tab in the state
   const handleTabChange = (key) => {
@@ -101,7 +111,21 @@ export default function CollectionTabsContainer({ collection }) {
                   <Spin
                     spinning={AreaTypesState === "loading"}
                     tip={"Loading collection resources..."}
-                  />
+                  >
+                    <Skeleton>
+                      <List>
+                        <List.Item>
+                          <Row></Row>
+                        </List.Item>
+                        <List.Item>
+                          <Row></Row>
+                        </List.Item>
+                        <List.Item>
+                          <Row></Row>
+                        </List.Item>
+                      </List>
+                    </Skeleton>
+                  </Spin>
                 )}
                 {AreaTypesState !== "loading" && (
                   <DownloadAreasList

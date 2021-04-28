@@ -7,6 +7,7 @@ import { CatalogListCard } from "./ListCard";
 import { ViewMapSwitch } from "./ViewMapSwitch";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { FilterBar } from "./filterBarComponents/FilterBar";
+import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 
 export function CatalogList() {
   const map = useQueryParam().get("map");
@@ -52,7 +53,7 @@ export function CatalogList() {
           )}
           {contents.results && contents.results.length === 0 && (
             <Empty description={"No results found for that search query"}>
-              <Button type="outline">Clear Search</Button>
+              <ClearAllFilters />
             </Empty>
           )}
         </Spin>

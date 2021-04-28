@@ -1,9 +1,5 @@
-import {
-  CloseOutlined,
-  DeleteRowOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
-import { Button, List, Skeleton, Spin } from "antd";
+import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
+import { Button, Empty, List, Skeleton, Spin } from "antd";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
   collectionAreasMapSelectionAtom,
@@ -41,55 +37,63 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
           </Skeleton>
         </Spin>
       )}
-      {resourcesState === "hasValue" && (
-        <List.Item
-          extra={
-            <Button
-              onClick={() =>
-                setSelectedAreas((current) =>
-                  current.filter(
-                    (v) => v !== resourcesContents.results[0].area_type_id
+      {resourcesState === "hasValue" && resourcesContents.results && resourcesContents.results.length === 0 && (
+        <Empty description="There aren't any resources to download for this area in this collection."/>
+      )}
+      {resourcesState === "hasValue" && resourcesContents.results && resourcesContents.results.length > 0 && (
+        <List bordered>
+          <List.Item
+            extra={
+              <Button
+                onClick={() =>
+                  setSelectedAreas((current) =>
+                    current.filter(
+                      (v) => v !== resourcesContents.results[0].area_type_id
+                    )
                   )
-                )
+                }
+                type="outlined"
+                icon={<CloseOutlined />}
+                shape="circle"
+                style={{ marginLeft: "1rem" }}
+              />
+            }
+            style={{ border: hovered ? "solid black 1px" : "inherit" }}
+          >
+            <List.Item.Meta
+              title={
+                <strong>
+                  {resourcesContents.results[0].area_type_name +
+                    " " +
+                    resourcesContents.results[0].area_type}
+                </strong>
               }
-              type="outlined"
-              icon={<CloseOutlined />}
-              shape="circle"
-              style={{ marginLeft: "1rem" }}
+              description={
+                <List size="small" bordered>
+                  {resourcesContents.results.map((v, i) => (
+                    <List.Item
+                      key={v.resource_id}
+                      extra={
+                        <Button
+                          icon={<DownloadOutlined />}
+                          type={"link"}
+                          href={v.resource}
+                        >
+                          Download{" "}
+                          {`(~${(v.filesize / 1000000)
+                            .toFixed(2)
+                            .toString()}mb)`}
+                        </Button>
+                      }
+                    >
+                      <List.Item.Meta title={v.resource_type_name} />
+                    </List.Item>
+                  ))}
+                </List>
+              }
             />
-          }
-          style={{ border: hovered ? "solid black 1px" : "inherit" }}
-        >
-          <List.Item.Meta
-            title={
-              <strong>
-                {resourcesContents.results[0].area_type_name +
-                  " " +
-                  resourcesContents.results[0].area_type}
-              </strong>
-            }
-            description={
-              <List size="small" bordered>
-                {resourcesContents.results.map((v, i) => (
-                  <List.Item
-                    key={v.resource_id}
-                    extra={
-                      <Button
-                        icon={<DownloadOutlined />}
-                        type={"link"}
-                        href={v.resource}
-                      >
-                        Download
-                      </Button>
-                    }
-                  >
-                    <List.Item.Meta title={v.resource_type_name} />
-                  </List.Item>
-                ))}
-              </List>
-            }
-          />
-        </List.Item>
+          </List.Item>
+        </List>
       )}
     </>
   );

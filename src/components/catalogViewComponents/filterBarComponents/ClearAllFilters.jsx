@@ -11,7 +11,9 @@ export function ClearAllFilters() {
     "file_type",
     "dates",
     "sort",
+    "geo",
     "pg",
+    "s",
   ];
 
   return (
