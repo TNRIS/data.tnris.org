@@ -68,7 +68,7 @@ export function CartForm() {
   ];
 
   useEffect(() => {
-    if (Object.keys(cart).length === 1 || !cart) {
+    if (cart && (Object.keys(cart).length === 1 || !cart)) {
       setStep(0);
     }
   }, [cart, setStep]);
