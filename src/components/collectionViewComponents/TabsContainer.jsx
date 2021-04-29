@@ -62,7 +62,7 @@ export default function CollectionTabsContainer({ collection }) {
       scrollEl.scrollTo(0, 0);
     }
   }, [activeTab]);
-
+  
   // Sets the active tab in the state
   const handleTabChange = (key) => {
     setActiveTab(key);
@@ -127,7 +127,7 @@ export default function CollectionTabsContainer({ collection }) {
                     </Skeleton>
                   </Spin>
                 )}
-                {AreaTypesState !== "loading" && (
+                {AreaTypesState !== "loading" && AreaTypesContents &&  (
                   <DownloadAreasList
                     collectionId={collectionContents.collection_id}
                     activeTab={activeTab}

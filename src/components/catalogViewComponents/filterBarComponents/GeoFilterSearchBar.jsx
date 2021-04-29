@@ -5,9 +5,9 @@ import {
   fetchGeofilterSearchResults,
   geoFilterSearchText,
   geoFilterSelectedResult
-} from "../../utilities/atoms/geofilterAtoms";
-import { changeParams } from "../../utilities/changeParamsUtil";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+} from "../../../utilities/atoms/geofilterAtoms";
+import { changeParams } from "../../../utilities/changeParamsUtil";
+import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
 export function GeoFilterSearchBar(props) {
   const history = useHistory();

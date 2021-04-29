@@ -238,7 +238,6 @@ export function DownloadAreasList({
     }
   }, [map, selectedAreas, areaTypeSelection]);
 
-
   return (
     <div style={{ padding: "1rem" }}>
       <Alert

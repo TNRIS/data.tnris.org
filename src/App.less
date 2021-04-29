@@ -16,7 +16,7 @@
   //box-shadow: @shadow-1-down;
   display: inline-flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: .5rem 1rem;
   background-image: linear-gradient(115deg, #1e8dc1 20%, #2A2B2E 20%);
 
@@ -37,16 +37,12 @@
       }
     }
   }
-
-  .CatalogSearchBar {
-    display: grid;
-    grid-row: wrap;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    max-width: @screen-md;
-  }
 }
 
+.CatalogSearchBar {
+  padding: @padding-md @padding-md 0 @padding-md;
+  max-width: @screen-md;
+}
 .FilterRow {
   display: flex;
   gap: 0.25rem;

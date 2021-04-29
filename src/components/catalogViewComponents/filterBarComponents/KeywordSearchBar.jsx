@@ -1,8 +1,8 @@
 import { Input } from "antd";
 import { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { changeParams } from "../../utilities/changeParamsUtil";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { changeParams } from "../../../utilities/changeParamsUtil";
+import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 
 export function KeywordSearchBar() {
   const history = useHistory();

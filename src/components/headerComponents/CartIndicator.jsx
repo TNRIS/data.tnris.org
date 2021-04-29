@@ -16,7 +16,7 @@ export function CartIndicator() {
       <Button
         onClick={() => setCartOpen((open) => !open)}
         icon={<ShoppingCartOutlined />}
-        type="button"
+        type="link"
       >
         Cart
       </Button>

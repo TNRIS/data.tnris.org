@@ -1,13 +1,15 @@
-import { Button, Col, Empty, PageHeader, Row, Spin } from "antd";
+import { Col, Empty, Input, PageHeader, Row, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import { CatalogListCard } from "./ListCard";
-import { ViewMapSwitch } from "./ViewMapSwitch";
-import { CatalogPaginationControls } from "./PaginationControls";
-import { FilterBar } from "./filterBarComponents/FilterBar";
+import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
+import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
+import { FilterBar } from "./filterBarComponents/FilterBar";
+import { CatalogListCard } from "./ListCard";
+import { CatalogPaginationControls } from "./PaginationControls";
+import { ViewMapSwitch } from "./ViewMapSwitch";
 
 export function CatalogList() {
   const map = useQueryParam().get("map");
@@ -18,9 +20,14 @@ export function CatalogList() {
   return (
     <Col id={"CatalogViewContainer"}>
       <div>
+        <Input.Group className="CatalogSearchBar">
+          <KeywordSearchBar />
+          <GeoFilterSearchBar style={{ width: "50%", minWidth: "300px" }} />
+        </Input.Group>
         <div className={"FilterRow"}>
           <FilterBar />
         </div>
+
         <PageHeader
           subTitle={<ViewMapSwitch />}
           extra={<CatalogPaginationControls />}
