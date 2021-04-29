@@ -70,7 +70,7 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
               }
               description={
                 <List size="small" bordered>
-                  {resourcesContents.results.map((v, i) => (
+                  {[...resourcesContents.results].sort((a,b) => a.resource_type_name > b.resource_type_name ? 1 : -1).map((v, i) => (
                     <List.Item
                       key={v.resource_id}
                       extra={
