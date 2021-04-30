@@ -26,7 +26,7 @@ export function CatalogListCard({ collection }) {
             addCoverageLayer(map, collection.the_geom)
             zoomToFeatures(map, collection.the_geom)
           },
-          500
+          1000
         );
       }}
       onMouseLeave={() => {

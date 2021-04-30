@@ -20,7 +20,7 @@ export const recursiveCollectionFetcher = async (next, results) => {
 
 export const recursiveAreaTypesFetcher = async (next, results) => {
   if (next) {
-    const r = await fetch(next, { mode: "no-cors" });
+    const r = await fetch(next);
     const j = await r.json();
     const concatResults = {
       ...j,

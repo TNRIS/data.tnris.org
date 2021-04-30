@@ -36,6 +36,18 @@ export function DownloadAreasList({
 
   // Add the area type layers when the component mounts
   useEffect(() => {
+    function handleHoverClick(e) {
+      //console.log("area clicked");
+      setSelectedAreas((current) => {
+        if (current.includes(e.features[0].properties.area_type_id)) {
+          return current.filter(
+            (f) => f !== e.features[0].properties.area_type_id
+          );
+        } else {
+          return [...current, e.features[0].properties.area_type_id];
+        }
+      });
+    }
     // Add map sources and layers for each
     // area type geojson that has features
     //console.log(areaTypes);
@@ -109,18 +121,7 @@ export function DownloadAreasList({
             `${k}-hover`
           );
           // Add listener to add area to selectedAreas atom on click
-          map.on("click", `${k}-hover`, function (e) {
-            //console.log("area clicked");
-            setSelectedAreas((current) => {
-              if (current.includes(e.features[0].properties.area_type_id)) {
-                return current.filter(
-                  (v) => v !== e.features[0].properties.area_type_id
-                );
-              } else {
-                return [...current, e.features[0].properties.area_type_id];
-              }
-            });
-          });
+          map.on("click", `${k}-hover`, handleHoverClick);
         }
       }
     }
@@ -138,12 +139,11 @@ export function DownloadAreasList({
         if (map.getLayer(`${v.type}-select`)) {
           map.removeLayer(`${v.type}-select`);
         }
-        if (map.getLayer(`map-select`)) {
-          map.removeLayer(`map-select`);
-        }
         if (map.getSource(`${v.type}-source`)) {
           map.removeSource(`${v.type}-source`);
         }
+        // remove listener when navigating away from collection view
+        map.off("click", `${v.type}-hover`, handleHoverClick);
       });
     };
   }, [areaTypes, map, opts, setSelectedAreas]);
