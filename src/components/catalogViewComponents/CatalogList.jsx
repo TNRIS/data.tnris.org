@@ -22,7 +22,7 @@ export function CatalogList() {
       <div>
         <Input.Group className="CatalogSearchBar">
           <KeywordSearchBar />
-          <GeoFilterSearchBar style={{ width: "50%", minWidth: "300px" }} />
+          <GeoFilterSearchBar />
         </Input.Group>
         <div className={"FilterRow"}>
           <FilterBar />
@@ -47,7 +47,7 @@ export function CatalogList() {
                       sm={{ span: 24 }}
                       md={{ span: map === "true" ? 24 : 12 }}
                       lg={{ span: map === "true" ? 24 : 8 }}
-                      xxl={{ span: map === "true" ? 24 : 6 }}
+                      xxl={{ span: map === "true" ? 12 : 6 }}
                       key={v.collection_id}
                     >
                       <Link to={`/collection?c=${v.collection_id}`}>

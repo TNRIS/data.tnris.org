@@ -12,6 +12,7 @@ import {
   hideLayer,
   showLayer,
 } from "../../utilities/mapHelpers/layerVisibilityHelpers";
+import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DownloadAreaResources } from "./DownloadAreaResources";
 
 export function DownloadAreasList({
@@ -197,9 +198,7 @@ export function DownloadAreasList({
         highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
       }
     });
-    map.on("mouseenter", `${areaTypeSelection}-hover`, function (e) {
-      setAreaHover(e.features[0].properties.area_type_id);
-    });
+
     // When the mouse leaves the hover layer, update the feature
     // state of the previously hovered feature.
     map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
@@ -237,6 +236,10 @@ export function DownloadAreasList({
       ]);
     }
   }, [map, selectedAreas, areaTypeSelection]);
+
+  useEffect(() => {
+    zoomToFeatures(map, areaTypes[areaTypeSelection], 100)
+  }, [areaTypeSelection, map, areaTypes, activeTab])
 
   return (
     <div style={{ padding: "1rem" }}>

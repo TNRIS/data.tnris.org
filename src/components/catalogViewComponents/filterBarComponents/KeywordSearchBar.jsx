@@ -1,5 +1,5 @@
 import { Input } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
@@ -10,11 +10,16 @@ export function KeywordSearchBar() {
   const param = useQueryParam().get("s");
   const [searchbar, setSearchbar] = useState(param);
 
+  useEffect(() => {
+    // Clear searchbar text if param is null
+    if (!param) {
+      setSearchbar(null);
+    }
+  }, [param, setSearchbar]);
   return (
     <>
       <Input.Search
         allowClear
-        style={{ width: "50%", minWidth: "300px" }}
         placeholder="Search collections by keyword"
         value={searchbar}
         onChange={(e) => {
@@ -50,6 +55,7 @@ export function KeywordSearchBar() {
             ),
           })
         }
+        className="KeywordSearchBar"
       />
     </>
   );

@@ -40,14 +40,36 @@
 }
 
 .CatalogSearchBar {
+  display: inline-block;
   padding: @padding-md @padding-md 0 @padding-md;
-  max-width: @screen-md;
+  max-width: 100%;
+
+  .KeywordSearchBar {
+    width: 50%;
+    min-width: 200px;
+  }
+  .GeoFilterSearchBar {
+    width: 50%;
+    min-width: 200px;
+  }
+  @media (max-width: @screen-lg) {
+    width: 100%;
+    min-width: 100%;
+    max-width: 400px;
+    .KeywordSearchBar {
+      width: 100%;
+      padding: calc(@padding-xs/2) 0px
+    }
+    .GeoFilterSearchBar {
+      width: 100%;
+    }
+  } 
 }
 .FilterRow {
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  padding: 1rem;
+  padding: @padding-xs @padding-md @padding-md @padding-md;
 }
 
 .content {
