@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   addCoverageLayer,
-  removeCoverageLayer
+  removeCoverageLayer,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 
@@ -21,13 +21,10 @@ export function CatalogListCard({ collection }) {
   return (
     <Card
       onMouseEnter={() => {
-        hoverTimer.current = setTimeout(
-          () => {
-            addCoverageLayer(map, collection.the_geom)
-            zoomToFeatures(map, collection.the_geom)
-          },
-          1000
-        );
+        hoverTimer.current = setTimeout(() => {
+          addCoverageLayer(map, collection.the_geom);
+          zoomToFeatures(map, collection.the_geom);
+        }, 1000);
       }}
       onMouseLeave={() => {
         removeCoverageLayer(map, collection.the_geom);
@@ -36,8 +33,14 @@ export function CatalogListCard({ collection }) {
       size={"small"}
       hoverable
       height={"300px"}
-      extra={new Date(collection.acquisition_date).getFullYear()}
-      title={collection.name}
+      title={
+        <span>
+          {collection.name}{" "}
+          <small style={{ paddingLeft: "1vw" }}>
+            <em>{new Date(collection.acquisition_date).getFullYear()}</em>
+          </small>
+        </span>
+      }
     >
       <Row gutter={[8, 0]}>
         <Col span={6}>

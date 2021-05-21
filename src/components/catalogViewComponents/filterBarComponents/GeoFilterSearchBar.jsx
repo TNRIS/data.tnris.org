@@ -62,6 +62,12 @@ export function GeoFilterSearchBar(props) {
     }
   }, [geo, setGeoFilterSelection, setGeoSearchInputText]);
 
+  useEffect(() => {
+    if(geoFilterSelection){
+      // Zoom to bounds of selection
+      map.fitBounds(geoFilterSelection.bbox);
+    }
+  }, [geoFilterSelection, map])
   return (
     <Select
       showSearch
@@ -99,7 +105,6 @@ export function GeoFilterSearchBar(props) {
             ),
           });
           setGeoFilterSelection(contents.features[v]);
-          zoomToFeatures(map, contents.features[v]);
         }
       }}
       className="GeoFilterSearchBar"

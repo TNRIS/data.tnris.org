@@ -30,7 +30,7 @@ export function FilterBar() {
             </Col>
           }
         >
-          <Button>
+          <Button shape="round">
             <FilterCountBadge filterSet={set[0]}>
               <Badge>
                 <span style={{ textTransform: "capitalize" }}>
@@ -48,7 +48,7 @@ export function FilterBar() {
         placement="bottomLeft"
         content={<DateRange />}
       >
-        <Button>
+        <Button shape="round">
           <FilterCountBadge>
             <Badge>
               <span style={{ textTransform: "capitalize" }}>date range</span>

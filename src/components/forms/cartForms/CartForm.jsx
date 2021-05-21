@@ -132,7 +132,7 @@ export function CartForm() {
     };
     console.log(formVals);
     return formVals;
-    /* const url = "http://localhost:8000/api/v1/contact/submit";
+    /* const url = "https://api.tnris.org/api/v1/contact/submit";
     const payload = {
       method: "POST",
       headers: {

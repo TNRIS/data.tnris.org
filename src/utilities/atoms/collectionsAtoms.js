@@ -8,11 +8,11 @@ export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",
   get: (collection_id) => async ({ get }) => {
     const response = await fetch(
-      `http://localhost:8000/api/v1/collections/${collection_id}`
+      `https://api.tnris.org/api/v1/collections/${collection_id}`
     );
     if (!response.ok) {
       const historicalresponse = await fetch(
-        `http://localhost:8000/api/v1/historical/collections/${collection_id}`
+        `https://api.tnris.org/api/v1/historical/collections/${collection_id}`
       );
       return historicalresponse.json();
     } else {
@@ -50,7 +50,7 @@ export const fetchResourcesByCollectionIdAndAreaTypeIDSelector = selectorFamily(
   key: "fetchResourcesByCollectionIdAndAreaTypeIDSelector",
   get: ({collectionId, areaTypeId}) => async ({ get }) => {
     const response = await fetch(
-      `http://localhost:8000/api/v1/resources?collection_id=${collectionId}&area_type_id=${areaTypeId}`
+      `https://api.tnris.org/api/v1/resources?collection_id=${collectionId}&area_type_id=${areaTypeId}`
     );
     return response.json();
   }

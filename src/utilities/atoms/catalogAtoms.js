@@ -155,7 +155,7 @@ export const fetchCatalogCollectionsSelector = selector({
     const ordering = get(catalogSortSelector);
     const bbox = get(catalogBBoxSelector);
     const response = await fetch(
-      `http://localhost:8000/api/v1/collections_catalog/?${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}${ordering}`,
+      `https://api.tnris.org/api/v1/collections_catalog/?${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}${ordering}`,
       {
         headers: {
           "Content-Type": "application/json",
