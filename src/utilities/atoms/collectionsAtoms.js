@@ -1,6 +1,8 @@
-import { selectorFamily } from "recoil";
+import { atom, selectorFamily } from "recoil";
 import { AREA_TYPES } from "../constants/areaTypes";
-import { recursiveFetcher } from "../recursiveFetcher";
+import {
+  recursiveAreaTypesFetcher,
+} from "../recursiveFetcher";
 
 export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",
@@ -8,16 +10,23 @@ export const fetchCollectionByIdSelector = selectorFamily({
     const response = await fetch(
       `https://api.tnris.org/api/v1/collections/${collection_id}`
     );
-    return response.json();
+    if (!response.ok) {
+      const historicalresponse = await fetch(
+        `https://api.tnris.org/api/v1/historical/collections/${collection_id}`
+      );
+      return historicalresponse.json();
+    } else {
+      return response.json();
+    }
   },
 });
 
-export const fetchResourcesByCollectionIdSelector = selectorFamily({
-  key: "fetchResourcesByCollectionIdSelector",
+export const fetchAreaTypesByCollectionIdSelector = selectorFamily({
+  key: "fetchAreaTypesByCollectionIdSelector",
   get: (collection_id) => async ({ get }) => {
     const mappedPromises = AREA_TYPES.map((areatype) =>
-      recursiveFetcher(
-        `https://api.tnris.org/api/v1/resources/?collection_id=${collection_id}&area_type=${areatype}`,
+      recursiveAreaTypesFetcher(
+        `https://mapserver.tnris.org/?map=/tnris_mapfiles/download_areas.map&SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=collection_query&outputformat=geojson&SRSNAME=EPSG:4326&AreaType=${areatype}&Collection=${collection_id}`,
         []
       )
     );
@@ -25,10 +34,35 @@ export const fetchResourcesByCollectionIdSelector = selectorFamily({
     try {
       const response = await Promise.all(mappedPromises);
       const returnObject = {};
-      AREA_TYPES.forEach((v, i) => (returnObject[v] = response[i]));
+      AREA_TYPES.forEach((v, i) => {
+        if (response[i]["features"].length) {
+          returnObject[v] = response[i];
+        }
+      });
       return returnObject;
     } catch (e) {
       console.log(e);
     }
   },
 });
+
+export const fetchResourcesByCollectionIdAndAreaTypeIDSelector = selectorFamily({
+  key: "fetchResourcesByCollectionIdAndAreaTypeIDSelector",
+  get: ({collectionId, areaTypeId}) => async ({ get }) => {
+    const response = await fetch(
+      `https://api.tnris.org/api/v1/resources?collection_id=${collectionId}&area_type_id=${areaTypeId}`
+    );
+    return response.json();
+  }
+})
+
+export const collectionAreasMapSelectionAtom = atom({
+  key: "collectionAreasMapSelectionAtom",
+  default: []
+})
+
+export const collectionAreasMapHoverAtom = atom({
+  key: "collectionAreasMapHoverAtom",
+  default: []
+})
+

@@ -12,7 +12,7 @@ export function LeftPanelRouter() {
 
   useEffect(() => {
     if ( (!page) && pathname === "/") {
-      history.push({
+      history.replace({
         search: changeParams([
           {key:"pg", value: 1, ACTION: "set"},
           {key:"inc", value: 24, ACTION: "set"},

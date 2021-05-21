@@ -1,14 +1,17 @@
 import { Badge, Button, Checkbox, Col, Popover, Row } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { catalogFiltersOptions } from "../../utilities/atoms/catalogFilterAtoms";
-import { changeParams } from "../../utilities/changeParamsUtil";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { catalogFiltersOptions } from "../../../utilities/atoms/catalogFilterAtoms";
+import { changeParams } from "../../../utilities/changeParamsUtil";
+import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import { ClearAllFilters } from "./ClearAllFilters";
+import { DateRange } from "./DateRange";
+import { Sort } from "./Sort";
 
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
   return (
-    <>
+    <Row justify="start" style={{ gap: ".25rem" }}>
       {Object.entries(filterOptions).map((set, i) => (
         <Popover
           key={set[0] + "+" + i}
@@ -27,28 +30,82 @@ export function FilterBar() {
             </Col>
           }
         >
-          <Button>
+          <Button shape="round">
             <FilterCountBadge filterSet={set[0]}>
-              <Badge>{set[0].replace("_", " ")}</Badge>
+              <Badge>
+                <span style={{ textTransform: "capitalize" }}>
+                  {set[0].replace("_", " ")}
+                </span>
+              </Badge>
             </FilterCountBadge>
           </Button>
         </Popover>
       ))}
-    </>
+
+      <Popover
+        key={"datepicker"}
+        trigger={"click"}
+        placement="bottomLeft"
+        content={<DateRange />}
+      >
+        <Button shape="round">
+          <FilterCountBadge>
+            <Badge>
+              <span style={{ textTransform: "capitalize" }}>date range</span>
+            </Badge>
+          </FilterCountBadge>
+        </Button>
+      </Popover>
+
+      <Sort />
+
+      <ClearAllFilters />
+    </Row>
   );
 }
 export function ToggleAllOptions({ set }) {
+  const history = useHistory();
+  const { search } = useLocation();
   const selected = useQueryParam().get(set[0]);
-  console.log(set[1], selected);
+
+  const indeterminate =
+    selected &&
+    !!selected.split(",").length &&
+    selected.split(",").length < set[1].length;
+
+  const allSelected =
+    selected &&
+    !!selected.split(",").length &&
+    selected.split(",").sort().toString() === set[1].sort().toString();
+
+  const onCheckAllChange = () => {
+    if (allSelected) {
+      history.push({
+        search: changeParams(
+          [{ key: set[0], value: null, ACTION: "delete" }],
+          search
+        ),
+      });
+    } else {
+      history.push({
+        search: changeParams(
+          [{ key: set[0], value: set[1].toString(), ACTION: "set" }],
+          search
+        ),
+      });
+    }
+  };
   return (
     <>
       <hr />
       <Row>
-        <Button>
-          { selected && selected.split(",").sort().toString() === set[1].sort().toString()
-            ? "Clear selection"
-            : "Select all"}
-        </Button>
+        <Checkbox
+          indeterminate={indeterminate}
+          checked={allSelected}
+          onChange={onCheckAllChange}
+        >
+          {allSelected ? "Uncheck All" : "Check All"}
+        </Checkbox>
       </Row>
     </>
   );

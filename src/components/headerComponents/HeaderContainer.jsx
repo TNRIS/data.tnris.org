@@ -1,8 +1,7 @@
-import { Checkbox, Input, Row } from "antd";
+import { Checkbox, Row } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { GeoFilterSearchBar } from "./GeoFilterSearchBar";
-import { KeywordSearchBar } from "./KeywordSearchBar";
+import { CartIndicator } from "./CartIndicator";
 
 // a component that returns a stateful checkbox, state being stored in a designated atomFamily
 // filterAtomFamily is a pointer to an atomFamily in which to store key-value pairs
@@ -27,19 +26,6 @@ export function FilterOption({ filterKey, value, filterAtomFamily }) {
   );
 }
 
-export function SearchBars() {
-  return (
-    <div className={"CatalogSearchBar"}>
-      <div className={"SearchBar"}>
-        <Input.Group compact>
-          <KeywordSearchBar />
-          <GeoFilterSearchBar style={{ width: "50%", minWidth: "300px" }} />
-        </Input.Group>
-      </div>
-    </div>
-  );
-}
-
 export function HeaderContainer(props) {
   return (
     <div className="HeaderBar">
@@ -48,14 +34,14 @@ export function HeaderContainer(props) {
           <Link to="/">
             <img
               className="TnrisLogo"
-              src="https://data.tnris.org/static/media/tnris_logo.1b5d784b.svg"
+              //src="https://data.tnris.org/static/media/tnris_logo.1b5d784b.svg"
               alt="TNRIS Logo"
               title="tnris.org"
             />
           </Link>
         </div>
       </Row>
-      <SearchBars />
+      <CartIndicator />
     </div>
   );
 }

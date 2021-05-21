@@ -1,12 +1,15 @@
-import { Button, Col, Empty, PageHeader, Row, Spin } from "antd";
+import { Col, Empty, Input, PageHeader, Row, Spin } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
+import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
+import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
+import { FilterBar } from "./filterBarComponents/FilterBar";
 import { CatalogListCard } from "./ListCard";
-import { ViewMapSwitch } from "./ViewMapSwitch";
 import { CatalogPaginationControls } from "./PaginationControls";
-import { FilterBar } from "./FilterBar";
+import { ViewMapSwitch } from "./ViewMapSwitch";
 
 export function CatalogList() {
   const map = useQueryParam().get("map");
@@ -17,9 +20,14 @@ export function CatalogList() {
   return (
     <Col id={"CatalogViewContainer"}>
       <div>
+        <Input.Group className="CatalogSearchBar">
+          <KeywordSearchBar />
+          <GeoFilterSearchBar />
+        </Input.Group>
         <div className={"FilterRow"}>
           <FilterBar />
         </div>
+
         <PageHeader
           subTitle={<ViewMapSwitch />}
           extra={<CatalogPaginationControls />}
@@ -39,7 +47,7 @@ export function CatalogList() {
                       sm={{ span: 24 }}
                       md={{ span: map === "true" ? 24 : 12 }}
                       lg={{ span: map === "true" ? 24 : 8 }}
-                      xxl={{ span: map === "true" ? 24 : 6 }}
+                      xxl={{ span: map === "true" ? 12 : 6 }}
                       key={v.collection_id}
                     >
                       <Link to={`/collection?c=${v.collection_id}`}>
@@ -52,7 +60,7 @@ export function CatalogList() {
           )}
           {contents.results && contents.results.length === 0 && (
             <Empty description={"No results found for that search query"}>
-              <Button type="outline">Clear Search</Button>
+              <ClearAllFilters />
             </Empty>
           )}
         </Spin>

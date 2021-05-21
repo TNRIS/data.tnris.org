@@ -1,10 +1,5 @@
 import { atom } from "recoil";
 
-export const sort = atom({
-  key: "sort",
-  default: "newest",
-});
-
 export const catalogFiltersOptions = atom({
   key: "catalogFilters",
   default: {

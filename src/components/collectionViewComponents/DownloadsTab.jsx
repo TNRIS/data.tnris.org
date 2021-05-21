@@ -1,14 +1,25 @@
 import { Input, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
+import { Popup } from "maplibre-gl";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
-  highlightDownloadArea,
-  removeHighlightedDownloadArea,
+  highlightSelectedAreaType,
+  unHighlightSelectedAreaType,
 } from "../../utilities/mapHelpers/highlightHelpers";
+import {
+  hideLayer,
+  showLayer,
+} from "../../utilities/mapHelpers/layerVisibilityHelpers";
 import { shingledJaccard } from "../../utilities/searchFunctions";
 
-export function DownloadsTab({ resources, resourcesState }) {
+export function DownloadsTab({
+  activeTab,
+  areaTypes,
+  areaTypesState,
+  resources,
+  resourcesState,
+}) {
   const map = useRecoilValue(mapAtom);
   function sortFn(a, b) {
     return a.area_type_name === b.area_type_name
@@ -56,34 +67,149 @@ export function DownloadsTab({ resources, resourcesState }) {
     }
   };
 
-  // when areaTypeSelection changes
+  // Add the area type layers when the component mounts
   useEffect(() => {
-    //set pagination to pg 1
+    // Add map sources and layers for each
+    // area type geojson that has features
+    for (let [k, v] of Object.entries(areaTypes)) {
+      if (v["features"].length) {
+        if (!map.getSource(`${k}-source`)) {
+          map.addSource(`${k}-source`, {
+            type: "geojson",
+            data: v,
+            promoteId: "area_type_id",
+          });
+
+          map.addLayer({
+            id: `${k}-outline`,
+            type: "line",
+            source: `${k}-source`,
+            minzoom: 2,
+            maxzoom: 24,
+            paint: {
+              "line-color": "#222",
+              "line-width": 1.0,
+              "line-opacity": 0.75,
+            },
+            layout: { visibility: "none" },
+          });
+
+          map.addLayer(
+            {
+              id: `${k}-hover`,
+              type: "fill",
+              source: `${k}-source`,
+              minzoom: 2,
+              maxzoom: 24,
+              paint: {
+                // hover state is set here using a case expression
+                "fill-color": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  "#ff00fa",
+                  "#999",
+                ],
+                "fill-opacity": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  0.3,
+                  0.05,
+                ],
+              },
+              layout: { visibility: "none" },
+            },
+            `${k}-outline`
+          );
+        }
+        if (map.getLayer(`${k}-outline`)) {
+          map.on("click", `${k}-hover`, function (e) {
+            new Popup()
+              .setLngLat(e.lngLat)
+              .setHTML(("<div>testing 123</div>"))
+              .addTo(map);
+            return console.log(e);
+          });
+        }
+      }
+    }
+
+    // Clean up the area type layers when
+    // returning to the catalog view
+    return () =>
+      opts.forEach((v) => {
+        if (map.getLayer(`${v}-outline`)) {
+          map.removeLayer(`${v}-outline`);
+        }
+        if (map.getLayer(`${v}-hover`)) {
+          map.removeLayer(`${v}-hover`);
+        }
+        if (map.getSource(`${v}-source`)) {
+          map.removeSource(`${v}-source`);
+        }
+      });
+  }, [areaTypes, map, opts]);
+
+  // When the activeTab changes toggle the
+  // area type layer on and off. The downloads
+  // tab key = "1".
+  useEffect(() => {
+    if (activeTab !== "1") {
+      hideLayer(`${areaTypeSelection}-outline`, map);
+      hideLayer(`${areaTypeSelection}-hover`, map);
+      showLayer("collection-coverage-layer", map);
+    } else {
+      showLayer(`${areaTypeSelection}-outline`, map);
+      showLayer(`${areaTypeSelection}-hover`, map);
+      hideLayer("collection-coverage-layer", map);
+    }
+  });
+
+  // When areaTypeSelection changes
+  useEffect(() => {
+    // Set pagination to pg 1
     setPg(1);
-    //clear Downloads SearchBar
+    // Clear Downloads SearchBar
     setSearchInput(null);
-    //set results equal to resources sorted by area name
+    // Set results equal to resources sorted by area name
     setSearchResults((searchResults) =>
       [...resources[areaTypeSelection].results].sort((a, b) => sortFn(a, b))
     );
-    //for each of counties, quads, qquads, check if it is the current selection
-    //if not current selection, set visibility to none, else set to visible and filter
+
+    // For each counties, quads, qquads, if not current selection,
+    // set visibility to none, else set to visible
     opts.forEach((v) => {
       if (v !== areaTypeSelection) {
-        map.setLayoutProperty(`${v}-outline`, "visibility", "none");
+        hideLayer(`${v}-outline`, map);
+        hideLayer(`${v}-source`, map);
       } else {
-        map.setLayoutProperty(`${v}-outline`, "visibility", "visible");
-        const rsrcAreas = [...resources[areaTypeSelection].results].map(
-          (v) => v.area_type_id
-        );
-        map.setFilter(`${v}-outline`, ["in", "area_type_id", ...rsrcAreas]);
+        showLayer(`${v}-outline`, map);
+        showLayer(`${v}-source`, map);
       }
     });
 
-    return () =>
-      opts.forEach((v) => {
-        map.setLayoutProperty(`${v}-outline`, "visibility", "none");
-      });
+    let hoveredStateId = null;
+    // When the user moves their mouse over the hover layer, update
+    // the feature state for the feature under the mouse.
+    map.on("mousemove", `${areaTypeSelection}-hover`, function (e) {
+      map.getCanvas().style.cursor = "pointer";
+      if (e.features.length > 0) {
+        if (hoveredStateId !== null) {
+          unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+        }
+        hoveredStateId = e.features[0].id;
+        highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+      }
+    });
+
+    // When the mouse leaves the hover layer, update the feature
+    // state of the previously hovered feature.
+    map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
+      map.getCanvas().style.cursor = "";
+      if (hoveredStateId !== null) {
+        unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+      }
+      hoveredStateId = null;
+    });
   }, [areaTypeSelection, resources, opts, map]);
 
   return (
@@ -129,6 +255,8 @@ export function DownloadsTab({ resources, resourcesState }) {
         loading={resourcesState === "loading"}
         sticky
         pagination={{
+          pageSizeOptions: [12, 24, 60, 120],
+          defaultPageSize: 24,
           position: ["topCenter", "bottomCenter"],
           size: "small",
           current: pg,
@@ -137,10 +265,20 @@ export function DownloadsTab({ resources, resourcesState }) {
         rowKey={"resource"}
         onRow={(record, index) => {
           return {
-            onMouseEnter: (e) =>
-              highlightDownloadArea(record.area_type_id, map),
-            onMouseLeave: (e) =>
-              removeHighlightedDownloadArea(record.area_type_id, map),
+            onMouseEnter: () => {
+              highlightSelectedAreaType(
+                areaTypeSelection,
+                record.area_type_id,
+                map
+              );
+            },
+            onMouseLeave: () => {
+              unHighlightSelectedAreaType(
+                areaTypeSelection,
+                record.area_type_id,
+                map
+              );
+            },
           };
         }}
         dataSource={searchResults}

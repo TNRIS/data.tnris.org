@@ -1,6 +1,7 @@
-import { Col, Dropdown, Menu, Popover, Row, Space } from "antd";
+import { Button, Col, Dropdown, Menu, Modal, Row } from "antd";
 import { Footer } from "antd/lib/layout/layout";
-import React from "react";
+import React, { useState } from "react";
+import { GeneralContactForm } from "./forms/GeneralContactForm";
 
 const footerLinks = {
   Legal: {
@@ -28,10 +29,12 @@ const footerLinks = {
 };
 
 export function FooterContainer(props) {
+  const [showContactForm, setShowContactForm] = useState(false);
+
   return (
     <Footer style={{ padding: "0px 8vw" }} className="footer">
       <Row justify="center">
-        <Col xs={{ span: 24 }} md={{ span: 16 }} lg={{ span: 8 }}>
+        <Col xs={{ span: 24 }} md={{ span: 16 }} lg={{ span: 12 }}>
           <Row justify="space-between">
             {Object.keys(footerLinks).map((v, i) => (
               <Dropdown
@@ -40,7 +43,17 @@ export function FooterContainer(props) {
                 overlay={
                   <>
                     {typeof footerLinks[v] === "string" && (
-                        <div style={{ background: "#222", color: "white", maxWidth: "200px", padding: "1rem", borderRadius: ".25rem"}}>{footerLinks[v]}</div>
+                      <div
+                        style={{
+                          background: "#222",
+                          color: "white",
+                          maxWidth: "200px",
+                          padding: "1rem",
+                          borderRadius: ".25rem",
+                        }}
+                      >
+                        {footerLinks[v]}
+                      </div>
                     )}
                     {typeof footerLinks[v] === "object" && (
                       <Menu key={`menu_${i}__${v}`} title={v} theme="dark">
@@ -57,9 +70,30 @@ export function FooterContainer(props) {
                 <div className="footerLink">{v}</div>
               </Dropdown>
             ))}
+            <Button
+              type="text"
+              className="footerLink"
+              onClick={() => setShowContactForm(true)}
+            >
+              Contact
+            </Button>
           </Row>
         </Col>
       </Row>
+      <Modal
+        title="Contact TNRIS"
+        footer={null}
+        centered
+        visible={showContactForm}
+        onCancel={() => setShowContactForm(false)}
+        destroyOnClose={true}
+      >
+        {showContactForm && (
+          <GeneralContactForm
+            onSuccessConfirm={() => setShowContactForm(false)}
+          />
+        )}
+      </Modal>
     </Footer>
   );
 }

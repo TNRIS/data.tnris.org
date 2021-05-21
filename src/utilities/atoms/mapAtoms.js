@@ -5,8 +5,3 @@ export const mapAtom = atom({
   default: null,
   dangerouslyAllowMutability: true,
 });
-
-export const mapHoverAreaId = atom({
-  key: "mapHoverAreaId",
-  default: null
-})

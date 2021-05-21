@@ -15,11 +15,13 @@
 .HeaderBar {
   //box-shadow: @shadow-1-down;
   display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem 1rem;
   background-image: linear-gradient(115deg, #1e8dc1 20%, #2A2B2E 20%);
 
   .BrandBar {
     min-width: 25%;
-    padding: 0.25rem;
     grid-area: header;
     .HeaderLogo {
       display: flex;
@@ -27,7 +29,7 @@
       color: white;
       width: fit-content;
       .TnrisLogo {
-        width: 3.6rem;
+        width: 4rem;
       }
 
       a {
@@ -35,26 +37,47 @@
       }
     }
   }
-
-  .CatalogSearchBar {
-    display: grid;
-    grid-row: wrap;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    max-width: @screen-md;
-  }
 }
 
+.CatalogSearchBar {
+  display: inline-block;
+  padding: @padding-md @padding-md 0 @padding-md;
+  max-width: 100%;
+
+  .KeywordSearchBar {
+    width: 50%;
+    min-width: 200px;
+    max-width: 360px;
+  }
+  .GeoFilterSearchBar {
+    width: 50%;
+    min-width: 200px;
+    max-width: 360px;
+  }
+  @media (max-width: @screen-md) {
+    width: 100%;
+    min-width: 100%;
+    max-width: 360px;
+    .KeywordSearchBar {
+      width: 100%;
+      padding: calc(@padding-xs/2) 0px
+    }
+    .GeoFilterSearchBar {
+      width: 100%;
+    }
+  } 
+}
 .FilterRow {
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  padding: 1rem;
+  padding: @padding-xs @padding-md @padding-md @padding-md;
 }
 
 .content {
   grid-area: content;
   overflow: hidden;
+  position: relative;
 }
 
 .footer {
@@ -67,8 +90,9 @@
     color: white;
   }
   .footerLink {
-    color: "white";
+    color: white;
     padding: @padding-md; 
+    cursor: pointer;
   }
 }
 
@@ -121,24 +145,20 @@
     grid-template-rows: auto 1fr;
     grid-template-columns: 100%;
     height: 100%;
-    padding: 0.5rem;
+    padding: @padding-sm;
 
     #TabContentContainer {
       display: contents;
-
+      .ant-tabs-nav {
+        margin-bottom: 0;
+      }
       .ant-tabs-content-holder {
+        background: white;
         overflow: hidden auto;
-        border: solid 1px @border-color-base;
-        border-radius: @border-radius-base;
-
         .search, #MetadataTabContentContainer {
           padding: @padding-xs;
         }
       }
     }
   }
-}
-
-.ResourceListItem {
-  border: @border-style-base @border-width-base @border-color-base;
 }
