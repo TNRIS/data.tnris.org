@@ -11,7 +11,7 @@ import { Sort } from "./Sort";
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
   return (
-    <Row justify="start" style={{ gap: ".25rem" }}>
+    <Row justify="start" className="FilterBar">
       {Object.entries(filterOptions).map((set, i) => (
         <Popover
           key={set[0] + "+" + i}
