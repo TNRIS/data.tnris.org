@@ -1,16 +1,9 @@
-// TODO:
-// 1. Create Form component
-// 2. Add baseForm as child
-// 3. Depending on collection passed as prop, determine what fields to render
-// 4. Serialize form into schema for cart in localStorage
-// 5. Create atom to manage localStorage
-// 6. Store in localStorage
-
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Alert, Button, Form } from "antd";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { cartAtom, cartOpenAtom } from "../../../utilities/atoms/cartAtoms";
+import { uploadFilesToS3 } from "../../../utilities/formHelpers/fileUploadHelpers";
 import { BaseFields } from "./BaseFields";
 import { HistoricFields } from "./HistoricFields";
 import { LidarFields } from "./LidarFields";
@@ -20,12 +13,23 @@ export function OrderFormContainer({ collection }) {
   const setCartOpen = useSetRecoilState(cartOpenAtom);
   const [form] = Form.useForm();
   const formRef = useRef();
-  const parseFormDataToCartItem = (f) => {
+  const [uploadStatus, setUploadStatus] = useState(null);
+
+  const parseFormDataToCartItem = async (f) => {
+    let files = null;
+    if (f.Type === "Screenshot" || f.Type === "Mapfile") {
+      files = await uploadFilesToS3(
+        collection.collection_id,
+        f.Description,
+        f.Type,
+        setUploadStatus
+      );
+    }
     const cartItem = {
       collection_id: collection.collection_id,
       name: collection.name,
       coverage: f.Coverage,
-      description: f.Description,
+      description: files && files.length ? files : f.Description,
       type: f.Type,
       formats: f.Format ? f.Format.toString() : undefined,
     };
@@ -74,10 +78,10 @@ export function OrderFormContainer({ collection }) {
           ref={formRef}
           name="order-form"
           layout="vertical"
-          onFinish={(v) =>
+          onFinish={async (v) =>
             setCart({
               ...cart,
-              [collection.collection_id]: parseFormDataToCartItem(v),
+              [collection.collection_id]: await parseFormDataToCartItem(v),
             })
           }
           scrollToFirstError
@@ -89,6 +93,7 @@ export function OrderFormContainer({ collection }) {
           )}
 
           <br />
+
           <Form.Item>
             <Button
               block
@@ -96,8 +101,10 @@ export function OrderFormContainer({ collection }) {
               htmlType="submit"
               icon={<ShoppingCartOutlined />}
               type="primary"
+              loading={!!uploadStatus}
             >
-              Add to Cart
+              {uploadStatus && <div>{uploadStatus.status}</div>}
+              {!uploadStatus && <span>Add to Cart</span>}
             </Button>
           </Form.Item>
         </Form>

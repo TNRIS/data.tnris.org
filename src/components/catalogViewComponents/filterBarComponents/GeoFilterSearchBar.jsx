@@ -10,7 +10,6 @@ import {
 import { mapAtom } from "../../../utilities/atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
-import { zoomToFeatures } from "../../../utilities/mapHelpers/zoomHelpers";
 
 export function GeoFilterSearchBar(props) {
   const history = useHistory();

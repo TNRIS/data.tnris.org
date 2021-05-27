@@ -63,7 +63,7 @@ export function BaseFields({ form }) {
         }
       >
         {({ getFieldValue }) => (
-          <DescriptionUpload description={getFieldValue("Type")} />
+          <DescriptionUpload description={getFieldValue("Type")}/>
         )}
       </Form.Item>
     </>

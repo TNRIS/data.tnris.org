@@ -22,7 +22,7 @@ export const addCoverageLayer = (map, coverage) => {
       minzoom: 2,
       maxzoom: 24,
       paint: {
-        "fill-color": "#1e8dc1",
+        "fill-color": "#73808c",
         "fill-opacity": 0.25,
       },
     });

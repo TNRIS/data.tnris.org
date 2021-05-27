@@ -68,7 +68,7 @@ export function DownloadAreasList({
             minzoom: 2,
             maxzoom: 24,
             paint: {
-              "line-color": "#222",
+              "line-color": "#73808c",
               "line-width": 1.0,
               "line-opacity": 0.75,
             },
@@ -88,8 +88,8 @@ export function DownloadAreasList({
                 "fill-color": [
                   "case",
                   ["boolean", ["feature-state", "hover"], false],
-                  "#ff00fa",
-                  "#999",
+                  "#73808c",
+                  "#73808c",
                 ],
                 "fill-opacity": [
                   "case",
@@ -114,7 +114,7 @@ export function DownloadAreasList({
               maxzoom: 24,
               paint: {
                 // hover state is set here using a case expression
-                "fill-color": "#ff00fa",
+                "fill-color": "#73808c",
                 "fill-opacity": 0.5,
               },
               filter: ["match", ["get", "area_type_id"], "", true, false],

@@ -1,12 +1,32 @@
-import { Form, Input, Upload } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Upload } from "antd";
+import { useState } from "react";
+
+const ShpTxt = () => (
+  <>
+    <p className="ant-upload-hint">
+      Only zipfiles (.zip) accepted. Select a shapefile (.shp) or KML (.kml)
+      within a compressed zipfile to upload. Maximum allowed file size is 20 MB.
+      <br />
+      <a href="http://geojson.io/">Don't have a shapefile? Draw one here!</a>
+    </p>
+  </>
+);
+const ImgTxt = () => (
+  <>
+    <p className="ant-upload-hint">
+      Select a .png, .jpg, or .jpeg image to upload. Multiple (5 max) images are
+      accepted. Maximum allowed file size is 5 MB.
+    </p>
+  </>
+);
 
 export function DescriptionUpload({ description }) {
   switch (description) {
     case "Shapefile":
-      return <ShapefileField />;
+      return <FileUploadField description={description} />;
     case "Screenshot":
-      return <ScreenshotField />;
+      return <FileUploadField description={description} />;
     case "Text":
       return <TextField />;
     default:
@@ -14,52 +34,55 @@ export function DescriptionUpload({ description }) {
   }
 }
 
-const ShapefileField = () => (
-  <Form.Item
-    label={"Upload shapefile"}
-    name={["Description"]}
-    rules={[{ required: true }]}
-  >
-    <Upload.Dragger>
-      <p className="ant-upload-drag-icon">
-        <InboxOutlined />
-      </p>
-      <p className="ant-upload-text">
-        Click or drag a .kml or .shp file to this area to upload
-      </p>
-      <p className="ant-upload-hint">
-        Only zipfiles (.zip) accepted. Select a Shapefile or KML within a
-        compressed zipfile to upload. Maximum allowed file size is 20 MB. <a href="http://geojson.io/">Don't
-        have a shapefile? Draw one here!</a>
-      </p>
-    </Upload.Dragger>
-  </Form.Item>
-);
+const FileUploadField = ({ description }) => {
+  const [fileList, setFileList] = useState([]);
 
-const ScreenshotField = () => (
-  <Form.Item
-    label={"Upload screenshot"}
-    name={["Description"]}
-    rules={[{ required: true }]}
-  >
-    <Upload.Dragger>
-      <p className="ant-upload-drag-icon">
-        <InboxOutlined />
-      </p>
-      <p className="ant-upload-text">
-        Click or drag .png or .jpeg file to this area to upload
-      </p>
-      <p className="ant-upload-hint">
-        Select a .png, .jpg, or .jpeg image to upload. Multiple images are
-        accepted. Maximum allowed file size is 5 MB.
-      </p>
-    </Upload.Dragger>
-  </Form.Item>
-);
+  const onRemove = (file) => {
+    setFileList((currentFileList) => {
+      const idx = currentFileList.indexOf(file);
+      const newList = currentFileList.slice();
+      newList.splice(idx, 1);
+      return newList;
+    });
+  };
+  const beforeUpload = async (file) => {
+    setFileList((currentFileList) => {
+      return [...currentFileList, file];
+    });
+  };
+
+  return (
+    <Form.Item
+      label={"Upload description"}
+      name={["Description"]}
+      rules={[{ required: true }]}
+      getValueFromEvent={({ fileList }) => {
+        console.log(fileList);
+        return fileList;
+      }}
+    >
+      <Upload
+        fileList={fileList}
+        customRequest={() => null}
+        beforeUpload={beforeUpload}
+        onRemove={onRemove}
+        accept={
+          description === "Shapefile"
+            ? ".zip,.rar,.7zip"
+            : "image/png, image/jpeg"
+        }
+        maxCount={description === "Shapefile" ? 1 : 5}
+      >
+        <Button icon={<UploadOutlined />}>Select File</Button>
+        {description === "Shapefile" ? <ShpTxt /> : <ImgTxt />}
+      </Upload>
+    </Form.Item>
+  );
+};
 
 const TextField = () => (
   <Form.Item
-    label={"Describe the data you need"}
+    label={"Describe the data you need in words"}
     name={["Description"]}
     rules={[{ required: true }]}
     help="Please describe the portion of data you need in the text box. Providing as much detail as possible will vastly improve the response and turn around time of your order."
