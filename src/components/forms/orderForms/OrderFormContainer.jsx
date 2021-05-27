@@ -101,7 +101,6 @@ export function OrderFormContainer({ collection }) {
               htmlType="submit"
               icon={<ShoppingCartOutlined />}
               type="primary"
-              loading={!!uploadStatus}
             >
               {uploadStatus && <div>{uploadStatus.status}</div>}
               {!uploadStatus && <span>Add to Cart</span>}
