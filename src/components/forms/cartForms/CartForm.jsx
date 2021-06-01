@@ -1,7 +1,7 @@
 import { Button, Form, Progress, Row } from "antd";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { cartAtom } from "../../../utilities/atoms/cartAtoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { cartAtom, cartOpenAtom } from "../../../utilities/atoms/cartAtoms";
 import { CartItemList } from "./CartItemList";
 import { DeliveryMethodFields } from "./DeliveryMethodFields";
 import { HardDriveFields } from "./HardDriveFields";
@@ -10,7 +10,8 @@ import { PricingSummary } from "./PricingSummary";
 import { RequestorDetailsFields } from "./RequestorDetailsFields";
 import { ReviewSubmit } from "./ReviewSubmit";
 export function CartForm() {
-  const cart = useRecoilValue(cartAtom);
+  const [cart, setCart] = useRecoilState(cartAtom);
+  const setCartOpen = useSetRecoilState(cartOpenAtom);
   const [form] = Form.useForm();
   const [step, setStep] = useState(0);
   const steps = [
@@ -111,7 +112,14 @@ export function CartForm() {
         orders += `   Identified By: ${dataOrder.type}\n`;
       }
       if (dataOrder.description) {
-        orders += `   Description: ${dataOrder.description}\n`;
+        const opts = {
+          string: `   Description: ${dataOrder.description}\n`,
+          object: `   Description Files:\n ${dataOrder.description
+            .map((v, i) => `\t(${i + 1}) File: ${v.filename}\n${v.link}\n`)
+            .toString()}`,
+        };
+
+        orders += opts[typeof dataOrder.description];
       }
       return orders;
     });
@@ -130,9 +138,8 @@ export function CartForm() {
       form_id: "data-tnris-org-order",
       recaptcha: postData["recaptcha"],
     };
-    console.log(formVals);
-    return formVals;
-    /* const url = "https://api.tnris.org/api/v1/contact/submit";
+
+    const url = "https://api.tnris.org/api/v1/contact/submit";
     const payload = {
       method: "POST",
       headers: {
@@ -142,8 +149,29 @@ export function CartForm() {
     };
     const response = await fetch(url, payload);
     const json = await response.json();
-    setResponseState(await json);
-    return await json; */
+    //console.log(json);
+    let setTOut;
+    let clearTOut = () => {
+      clearTimeout(setTOut);
+    };
+    if (json.status === "success") {
+      setStep(steps.length - 1);
+      setTOut = () =>
+        setTimeout(() => {
+          form.resetFields();
+          setStep(0);
+          setCart({});
+        }, 5 * 1000);
+
+      setTOut();
+      setCartOpen(false);    
+      clearTOut();
+
+    } else {
+      setStep(1);
+    }
+    
+    return await json;
   };
   function onSubmit(data) {
     submitOrderCartForm(data);

@@ -40,7 +40,7 @@ export function CartItem({ cartItem }) {
         {typeof cartItem.description === "object" && (
           <ul>
             {cartItem.description.map((v, i) => (
-              <li key={`attachment_${v.filename}`}>
+              <li key={`attachment_${v.filename}_${i}`}>
                 <a href={v.link}>{v.filename}, &nbsp;</a>
               </li>
             ))}

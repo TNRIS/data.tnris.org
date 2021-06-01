@@ -90,7 +90,7 @@ export function DataInquiryForm({
             validateMessages={validationMessages}
             onFinish={(v) => {
               setResponseState(submitContactForm(v));
-              console.log(v);
+              //console.log(v);
             }}
             name="data-ntis-org-inquiry"
             layout="vertical"
