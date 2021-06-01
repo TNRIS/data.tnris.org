@@ -1,5 +1,5 @@
 import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Button, Empty, List, Skeleton, Spin } from "antd";
+import { Button, Card, Col, Empty, List, Row, Skeleton, Spin } from "antd";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
   collectionAreasMapSelectionAtom,
@@ -8,15 +8,13 @@ import {
 
 export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
   const setSelectedAreas = useSetRecoilState(collectionAreasMapSelectionAtom);
-  const {
-    state: resourcesState,
-    contents: resourcesContents,
-  } = useRecoilValueLoadable(
-    fetchResourcesByCollectionIdAndAreaTypeIDSelector({
-      collectionId: collectionId,
-      areaTypeId: areaTypeId,
-    })
-  );
+  const { state: resourcesState, contents: resourcesContents } =
+    useRecoilValueLoadable(
+      fetchResourcesByCollectionIdAndAreaTypeIDSelector({
+        collectionId: collectionId,
+        areaTypeId: areaTypeId,
+      })
+    );
 
   return (
     <>
@@ -37,43 +35,57 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
           </Skeleton>
         </Spin>
       )}
-      {resourcesState === "hasValue" && resourcesContents.results && resourcesContents.results.length === 0 && (
-        <Empty description="There aren't any resources to download for this area in this collection."/>
-      )}
-      {resourcesState === "hasValue" && resourcesContents.results && resourcesContents.results.length > 0 && (
-        <List bordered>
-          <List.Item
-            extra={
-              <Button
-                onClick={() =>
-                  setSelectedAreas((current) =>
-                    current.filter(
-                      (v) => v !== resourcesContents.results[0].area_type_id
-                    )
-                  )
-                }
-                type="outlined"
-                icon={<CloseOutlined />}
-                shape="circle"
-                style={{ marginLeft: "1rem" }}
-              />
-            }
-            style={{ border: hovered ? "solid black 1px" : "inherit" }}
-          >
-            <List.Item.Meta
-              title={
+      {resourcesState === "hasValue" &&
+        resourcesContents.results &&
+        resourcesContents.results.length === 0 && (
+          <Empty description="There aren't any resources to download for this area in this collection." />
+        )}
+      {resourcesState === "hasValue" &&
+        resourcesContents.results &&
+        resourcesContents.results.length > 0 && (
+          <Card bordered size="small">
+            <Row
+              justify="space-between"
+              align="top"
+              style={{ borderBottom: "solid 1px lightgrey", padding: ".25rem 0rem" }}
+            >
+              <Col span={22}>
                 <strong>
                   {resourcesContents.results[0].area_type_name +
                     " " +
                     resourcesContents.results[0].area_type}
                 </strong>
-              }
-              description={
-                <List size="small" bordered>
-                  {[...resourcesContents.results].sort((a,b) => a.resource_type_name > b.resource_type_name ? 1 : -1).map((v, i) => (
-                    <List.Item
+              </Col>
+              <Col span={2}>
+                <Button
+                  onClick={() =>
+                    setSelectedAreas((current) =>
+                      current.filter(
+                        (v) => v !== resourcesContents.results[0].area_type_id
+                      )
+                    )
+                  }
+                  type="outlined"
+                  icon={<CloseOutlined />}
+                  shape="circle"
+                  style={{ marginLeft: "1rem" }}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                {[...resourcesContents.results]
+                  .sort((a, b) =>
+                    a.resource_type_name > b.resource_type_name ? 1 : -1
+                  )
+                  .map((v, i) => (
+                    <Row
                       key={v.resource_id}
-                      extra={
+                      align="middle"
+                      justify="space-between"
+                    >
+                      <Col span={16}>{v.resource_type_name}</Col>
+                      <Col span={8}>
                         <Button
                           icon={<DownloadOutlined />}
                           type={"link"}
@@ -84,17 +96,13 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
                             .toFixed(2)
                             .toString()}mb)`}
                         </Button>
-                      }
-                    >
-                      <List.Item.Meta title={v.resource_type_name} />
-                    </List.Item>
+                      </Col>
+                    </Row>
                   ))}
-                </List>
-              }
-            />
-          </List.Item>
-        </List>
-      )}
+              </Col>
+            </Row>
+          </Card>
+        )}
     </>
   );
 }
