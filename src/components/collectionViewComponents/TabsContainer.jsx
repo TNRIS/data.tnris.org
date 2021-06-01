@@ -1,6 +1,6 @@
 // package imports
 import { PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
-import { List } from "antd/lib/form/Form";
+import { List } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";

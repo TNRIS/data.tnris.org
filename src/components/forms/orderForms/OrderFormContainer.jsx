@@ -1,6 +1,6 @@
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Alert, Button, Form } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { cartAtom, cartOpenAtom } from "../../../utilities/atoms/cartAtoms";
 import { uploadFilesToS3 } from "../../../utilities/formHelpers/fileUploadHelpers";
@@ -14,6 +14,20 @@ export function OrderFormContainer({ collection }) {
   const [form] = Form.useForm();
   const formRef = useRef();
   const [uploadStatus, setUploadStatus] = useState(null);
+
+  useEffect(() => {
+    let nullifyStatusOnTimer;
+    const cleanupStatusOnTimeout = () => {
+      clearTimeout(nullifyStatusOnTimer)
+    };
+
+    if(uploadStatus !== null){
+      nullifyStatusOnTimer = () => setTimeout(() => setUploadStatus(null), 5000)
+      nullifyStatusOnTimer()
+      cleanupStatusOnTimeout()
+    }
+    //console.log(uploadStatus)
+  }, [uploadStatus])
 
   const parseFormDataToCartItem = async (f) => {
     let files = null;

@@ -9,6 +9,7 @@ import {
   List,
   Row,
   Tag,
+  Tooltip,
   Typography,
 } from "antd";
 import { Link } from "react-router-dom";
@@ -260,7 +261,17 @@ export function CollectionSupplementalDownloads({ metadata }) {
             bordered
             dataSource={items}
             renderItem={(item) => (
-              <List.Item extra={<Button type="link" icon={<DownloadOutlined />} href={`${item[1]}`}>Download</Button>}>
+              <List.Item
+                extra={
+                  <Button
+                    type="link"
+                    icon={<DownloadOutlined />}
+                    href={`${item[1]}`}
+                  >
+                    Download
+                  </Button>
+                }
+              >
                 <label
                   style={{ textTransform: "capitalize", fontWeight: "500" }}
                 >
@@ -290,24 +301,40 @@ export function CollectionSocialShare({ metadata }) {
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         share this collection
       </h3>
-      <Row justify="start" style={{ gap: ".5rem" }}>
-        <FacebookShareButton url={shareUrl} quote={shareTitle} hashtag="#TNRIS">
-          <FacebookIcon size="40" />
-        </FacebookShareButton>
-        <RedditShareButton url={shareUrl} title={shareTitle}>
-          <RedditIcon size="40" />
-        </RedditShareButton>
-        <TwitterShareButton
-          url={shareUrl}
-          title={tweetTitle}
-          className="share-button"
-          hashtags={["TNRIS", "DataHolodeck"]}
-        >
-          <TwitterIcon size="40" />
-        </TwitterShareButton>
-        <EmailShareButton url={shareUrl} subject={shareTitle} body={shareCombo}>
-          <EmailIcon size="40" />
-        </EmailShareButton>
+      <Row justify="start" gutter={8}>
+        <Tooltip placement="topRight" title="Share on Facebook">
+          <FacebookShareButton
+            url={shareUrl}
+            quote={shareTitle}
+            hashtag="#TNRIS"
+          >
+            <FacebookIcon size="40" />
+          </FacebookShareButton>
+        </Tooltip>
+        <Tooltip placement="topRight" title="Share on Reddit">
+          <RedditShareButton url={shareUrl} title={shareTitle}>
+            <RedditIcon size="40" />
+          </RedditShareButton>
+        </Tooltip>
+        <Tooltip placement="topRight" title="Share on Twitter">
+          <TwitterShareButton
+            url={shareUrl}
+            title={tweetTitle}
+            className="share-button"
+            hashtags={["TNRIS", "DataHolodeck"]}
+          >
+            <TwitterIcon size="40" />
+          </TwitterShareButton>
+        </Tooltip>
+        <Tooltip placement="topRight" title="Share on Email">
+          <EmailShareButton
+            url={shareUrl}
+            subject={shareTitle}
+            body={shareCombo}
+          >
+            <EmailIcon size="40" />
+          </EmailShareButton>
+        </Tooltip>
       </Row>
     </Card>
   );
@@ -336,10 +363,10 @@ export function CollectionMapService({ metadata }) {
               service and an ArcGIS service are available. To connect to the WMS
               service in your software, please copy the unique url provided in
               the box below. To access the TNRIS ArcGIS Server, please use the
-              following url in your ESRI software and select from the <a href={serviceLink()}>list of
-              available services</a>.
+              following url in your ESRI software and select from the{" "}
+              <a href={serviceLink()}>list of available services</a>.
             </p>
-            
+
             <Alert
               showIcon
               type="info"
@@ -360,7 +387,7 @@ export function CollectionMapService({ metadata }) {
               }}
               copyable={{
                 tooltips: ["Click to copy citation", "You copied this link"],
-                text: metadata.wms_link
+                text: metadata.wms_link,
               }}
             >
               {<span>{metadata.wms_link}</span>}
@@ -485,7 +512,13 @@ export function ScannedIndexes({ metadata }) {
         dataSource={idxAsJson}
         itemLayout={"horizontal"}
         renderItem={(item) => (
-          <List.Item extra={<Button type="link" icon={<DownloadOutlined />} href={item.link}>Download</Button>}>
+          <List.Item
+            extra={
+              <Button type="link" icon={<DownloadOutlined />} href={item.link}>
+                Download
+              </Button>
+            }
+          >
             <List.Item.Meta
               title={
                 "Sheet " +
