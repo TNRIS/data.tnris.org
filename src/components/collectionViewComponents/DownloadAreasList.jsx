@@ -163,7 +163,8 @@ export function DownloadAreasList({
       showLayer(`${areaTypeSelection}-select`, map);
       hideLayer("collection-coverage-layer", map);
     }
-  });
+  }, [activeTab, areaTypeSelection, map]);
+  
   useEffect(() => {
     // For each counties, quads, qquads, if not current selection,
     // set visibility to none, else set to visible
@@ -238,8 +239,8 @@ export function DownloadAreasList({
   }, [map, selectedAreas, areaTypeSelection]);
 
   useEffect(() => {
-    zoomToFeatures(map, areaTypes[areaTypeSelection], 100)
-  }, [areaTypeSelection, map, areaTypes, activeTab])
+    zoomToFeatures(map, areaTypes[areaTypeSelection], 100);
+  }, [areaTypeSelection, map, areaTypes, activeTab]);
 
   return (
     <div style={{ padding: "1rem" }}>

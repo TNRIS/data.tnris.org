@@ -43,11 +43,18 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
       {resourcesState === "hasValue" &&
         resourcesContents.results &&
         resourcesContents.results.length > 0 && (
-          <Card bordered size="small">
+          <Card
+            bordered
+            size="small"
+            style={{ border: hovered ? "solid black 1px" : "inherit" }}
+          >
             <Row
               justify="space-between"
               align="top"
-              style={{ borderBottom: "solid 1px lightgrey", padding: ".25rem 0rem" }}
+              style={{
+                borderBottom: "solid 1px lightgrey",
+                padding: ".25rem 0rem",
+              }}
             >
               <Col span={22}>
                 <strong>
