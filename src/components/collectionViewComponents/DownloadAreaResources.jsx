@@ -56,14 +56,14 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
                 padding: ".25rem 0rem",
               }}
             >
-              <Col span={22}>
+              <Col>
                 <strong>
                   {resourcesContents.results[0].area_type_name +
                     " " +
                     resourcesContents.results[0].area_type}
                 </strong>
               </Col>
-              <Col span={2}>
+              <Col>
                 <Button
                   onClick={() =>
                     setSelectedAreas((current) =>
@@ -79,35 +79,25 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
                 />
               </Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                {[...resourcesContents.results]
-                  .sort((a, b) =>
-                    a.resource_type_name > b.resource_type_name ? 1 : -1
-                  )
-                  .map((v, i) => (
-                    <Row
-                      key={v.resource_id}
-                      align="middle"
-                      justify="space-between"
+            {[...resourcesContents.results]
+              .sort((a, b) =>
+                a.resource_type_name > b.resource_type_name ? 1 : -1
+              )
+              .map((v, i) => (
+                <Row key={v.resource_id} align="middle" justify="space-between">
+                  <Col>{v.resource_type_name}</Col>
+                  <Col>
+                    <Button
+                      icon={<DownloadOutlined />}
+                      type={"link"}
+                      href={v.resource}
                     >
-                      <Col span={16}>{v.resource_type_name}</Col>
-                      <Col span={8}>
-                        <Button
-                          icon={<DownloadOutlined />}
-                          type={"link"}
-                          href={v.resource}
-                        >
-                          Download{" "}
-                          {`(~${(v.filesize / 1000000)
-                            .toFixed(2)
-                            .toString()}mb)`}
-                        </Button>
-                      </Col>
-                    </Row>
-                  ))}
-              </Col>
-            </Row>
+                      Download{" "}
+                      {`(~${(v.filesize / 1000000).toFixed(2).toString()}mb)`}
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
           </Card>
         )}
     </>

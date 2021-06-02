@@ -227,7 +227,7 @@ export function DownloadAreasList({
     if (selectedAreas.length > 0) {
       // set filter to layer of aretypeselection
       // filter to highlight selectedAreas
-      //console.log(selectedAreas);
+      // console.log(selectedAreas);
       map.setFilter(`${areaTypeSelection}-select`, [
         "match",
         ["get", "area_type_id"],
