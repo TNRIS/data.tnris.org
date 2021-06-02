@@ -43,7 +43,7 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
       {resourcesState === "hasValue" &&
         resourcesContents.results &&
         resourcesContents.results.length > 0 && (
-          <Card bordered size="small" style={{ border: hovered ? "solid black 1px" : "inherit" }}>
+          <Card bordered size="small">
             <Row
               justify="space-between"
               align="top"
