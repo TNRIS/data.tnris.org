@@ -11,8 +11,8 @@ export function ViewMapSwitch() {
   const map = useQueryParam().get("map");
   return (
     <Switch
-      checkedChildren="hide map"
-      unCheckedChildren="show map"
+      checkedChildren="Hide Map"
+      unCheckedChildren="Show Map"
       defaultChecked={false}
       checked={map === "true"}
       onClick={() =>

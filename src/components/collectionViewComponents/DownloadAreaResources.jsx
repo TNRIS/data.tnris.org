@@ -74,7 +74,6 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
                   }
                   type="outlined"
                   icon={<CloseOutlined />}
-                  shape="circle"
                   style={{ marginLeft: "1rem" }}
                 />
               </Col>
