@@ -1,3 +1,4 @@
+import TexasIcon from "../../static/texas_icon.png"
 // Define custom map control to reset the map to its
 // initial extent
 export class NavigateToExtentControl {
@@ -25,7 +26,7 @@ export class NavigateToExtentControl {
     el.type = 'button';
     el.title = 'Reset extent to statewide';
     el.setAttribute('aria-label', 'Reset extent to statewide');
-    el.textContent = 'home';
+    el.innerHTML = `<img src=${TexasIcon} style="width: 1rem; height: 1rem;" />`
     el.addEventListener('click', (e) => {
       this._map.easeTo({
       center: [-99.7, 31.33],

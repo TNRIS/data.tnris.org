@@ -1,3 +1,4 @@
+import { DownOutlined } from "@ant-design/icons";
 import { Badge, Button, Checkbox, Col, Popover, Row } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -34,7 +35,8 @@ export function FilterBar() {
             <FilterCountBadge filterSet={set[0]}>
               <Badge>
                 <span style={{ textTransform: "capitalize" }}>
-                  {set[0].replace("_", " ")}
+                  {set[0].replace("_", " ")}{" "}
+                  <DownOutlined style={{ fontSize: "10px" }} />
                 </span>
               </Badge>
             </FilterCountBadge>
@@ -51,7 +53,10 @@ export function FilterBar() {
         <Button shape="round">
           <FilterCountBadge>
             <Badge>
-              <span style={{ textTransform: "capitalize" }}>date range</span>
+              <span style={{ textTransform: "capitalize" }}>
+                date range{" "}
+                <DownOutlined size="10px" style={{ fontSize: "10px" }} />
+              </span>
             </Badge>
           </FilterCountBadge>
         </Button>
