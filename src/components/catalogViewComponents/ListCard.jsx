@@ -1,13 +1,16 @@
 import { Card, Col, Row, Tag } from "antd";
 import { useEffect, useRef } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import {
+  LazyLoadComponent
+} from "react-lazy-load-image-component";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   addCoverageLayer,
-  removeCoverageLayer,
+  removeCoverageLayer
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
+import { LazyBackgroundImage } from "../LazyBackgroundImage";
 
 export function CatalogListCard({ collection }) {
   const map = useRecoilValue(mapAtom);
@@ -33,6 +36,19 @@ export function CatalogListCard({ collection }) {
       size={"small"}
       hoverable
       height={"300px"}
+      cover={
+        <LazyLoadComponent threshold={100} useIntersectionObserver={true}>
+          <LazyBackgroundImage
+            src={collection.thumbnail_image}
+            style={{
+              minHeight: "100px",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
+          />
+        </LazyLoadComponent>
+      }
       title={
         <span>
           {collection.name}{" "}
@@ -43,7 +59,7 @@ export function CatalogListCard({ collection }) {
       }
     >
       <Row gutter={[8, 0]}>
-        <Col span={6}>
+        {/* <Col span={6}>
           <LazyLoadImage
             alt={`${collection.name} thumbnail`}
             width={"100%"}
@@ -60,8 +76,8 @@ export function CatalogListCard({ collection }) {
               />
             }
           />
-        </Col>
-        <Col span={18}>
+        </Col> */}
+        <Col span={24}>
           <Row>Categories</Row>
           <Row>
             {collection.category &&
