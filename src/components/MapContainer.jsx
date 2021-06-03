@@ -42,7 +42,7 @@ export function MapContainer() {
       );
       // Instantiate custom navigation control and add it to the map
       const navigateToExtentControl = new NavigateToExtentControl(map);
-      map.addControl(navigateToExtentControl, 'top-left');
+      map.addControl(navigateToExtentControl, 'top-right');
 
       map.on("moveend", () => {
         setBounds(JSON.stringify(map.getBounds()));
