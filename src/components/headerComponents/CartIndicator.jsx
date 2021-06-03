@@ -14,6 +14,8 @@ export function CartIndicator() {
       count={cart ? Object.keys(cart).length : 0}
     >
       <Button
+        color="white"
+        style={{ color: "white" }}
         onClick={() => setCartOpen((open) => !open)}
         icon={<ShoppingCartOutlined />}
         type="link"

@@ -26,12 +26,12 @@ export function Sort() {
         });
         
       }}
-      bordered={false}
+      bordered={true}
     >
-      <Select.Option value="NEWEST">Newest</Select.Option>
-      <Select.Option value="OLDEST">Oldest</Select.Option>
-      <Select.Option value="AZ">A to Z</Select.Option>
-      <Select.Option value="ZA">Z to A</Select.Option>
+      <Select.Option value="NEWEST">Sort By:  Newest</Select.Option>
+      <Select.Option value="OLDEST">Sort By:  Oldest</Select.Option>
+      <Select.Option value="AZ">Sort By:  A to Z</Select.Option>
+      <Select.Option value="ZA">Sort By:  Z to A</Select.Option>
     </Select>
   );
 }
