@@ -17,8 +17,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  padding: .5rem 1rem;
-  background-image: linear-gradient(115deg, #1e8dc1 20%, #2A2B2E 20%);
+  padding: 0.5rem 1rem;
+  background: #2a2b2e;
+  border-bottom: solid 2px @primary-color;
 
   .BrandBar {
     min-width: 25%;
@@ -43,6 +44,7 @@
   display: inline-block;
   padding: @padding-md @padding-md 0 @padding-md;
   max-width: 100%;
+  background: #2a2b2e;
 
   .KeywordSearchBar {
     width: 50%;
@@ -60,18 +62,19 @@
     max-width: 360px;
     .KeywordSearchBar {
       width: 100%;
-      padding: calc(@padding-xs/2) 0px
+      padding: calc(@padding-xs / 2) 0px;
     }
     .GeoFilterSearchBar {
       width: 100%;
     }
-  } 
+  }
 }
 .FilterRow {
   display: flex;
   gap: @padding-xs;
   align-items: center;
   padding: @padding-xs @padding-md @padding-md @padding-md;
+  background: #2a2b2e;
 }
 .FilterBar {
   gap: @padding-xs;
@@ -93,7 +96,7 @@
   }
   .footerLink {
     color: white;
-    padding: @padding-xs; 
+    padding: @padding-xs;
     cursor: pointer;
   }
 }
@@ -138,6 +141,10 @@
       #CatalogListContainer {
         height: 100%;
         overflow: hidden auto;
+
+        .CatalogCardMetaTagContainer {
+          padding-bottom: @padding-sm;
+        }
       }
     }
   }
@@ -157,13 +164,13 @@
       .ant-tabs-content-holder {
         background: white;
         overflow: hidden auto;
-        .search, #MetadataTabContentContainer {
+        .search,
+        #MetadataTabContentContainer {
           padding: @padding-xs;
         }
       }
     }
   }
 }
-
 
 // Ant Design Patches

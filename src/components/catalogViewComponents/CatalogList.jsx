@@ -10,6 +10,31 @@ import { FilterBar } from "./filterBarComponents/FilterBar";
 import { CatalogListCard } from "./ListCard";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { ViewMapSwitch } from "./ViewMapSwitch";
+import { useEffect, useState } from "react";
+
+export function LazyBackground(props) {
+  const [source, setSource] = useState(null);
+
+  useEffect(() => {
+    const { src } = props;
+
+    const imageLoader = new Image();
+    imageLoader.src = src;
+
+    imageLoader.onload = () => {
+      setSource({ src });
+    };
+  }, [props]);
+
+  return (
+    <div
+      {...props}
+      style={{
+        backgroundImage: `url(${source || props.placeholder})`,
+      }}
+    />
+  );
+}
 
 export function CatalogList() {
   const map = useQueryParam().get("map");
@@ -44,10 +69,11 @@ export function CatalogList() {
                 {contents.results.length > 0 &&
                   contents?.results?.map((v) => (
                     <Col
-                      sm={{ span: 24 }}
+                      xs={{ span: 24 }}
+                      sm={{ span: 12 }}
                       md={{ span: map === "true" ? 24 : 12 }}
                       lg={{ span: map === "true" ? 24 : 8 }}
-                      xxl={{ span: map === "true" ? 12 : 6 }}
+                      xxl={{ span: map === "true" ? 8 : 4 }}
                       key={v.collection_id}
                     >
                       <Link to={`/collection?c=${v.collection_id}`}>
