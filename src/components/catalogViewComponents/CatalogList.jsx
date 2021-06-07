@@ -56,6 +56,7 @@ export function CatalogList() {
         <PageHeader
           subTitle={<ViewMapSwitch />}
           extra={<CatalogPaginationControls />}
+          className="CatalogHeaderControlPanel"
         />
       </div>
       <div id={"CatalogListContainer"}>
@@ -65,23 +66,18 @@ export function CatalogList() {
         >
           {contents.results && contents.results.length > 0 && (
             <>
-              <Row gutter={[8, 8]} style={{ padding: "8px" }}>
+              <div
+                className="CatalogGrid"
+              >
                 {contents.results.length > 0 &&
                   contents?.results?.map((v) => (
-                    <Col
-                      xs={{ span: 24 }}
-                      sm={{ span: 12 }}
-                      md={{ span: map === "true" ? 24 : 12 }}
-                      lg={{ span: map === "true" ? 24 : 8 }}
-                      xxl={{ span: map === "true" ? 8 : 4 }}
-                      key={v.collection_id}
-                    >
+                    <div key={v.collection_id}>
                       <Link to={`/collection?c=${v.collection_id}`}>
                         <CatalogListCard collection={v} />
                       </Link>
-                    </Col>
+                    </div>
                   ))}
-              </Row>
+              </div>
             </>
           )}
           {contents.results && contents.results.length === 0 && (

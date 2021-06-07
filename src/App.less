@@ -130,6 +130,16 @@
     @media (min-width: @screen-lg) {
       height: 100%;
     }
+    .CatalogHeaderControlPanel {
+      border-bottom: "solid 1px grey";
+      box-shadow: @shadow-1-down;
+    }
+    .CatalogGrid {
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
 
     #CatalogViewContainer {
       display: grid;
@@ -141,9 +151,11 @@
       #CatalogListContainer {
         height: 100%;
         overflow: hidden auto;
-
+        .CatalogCard {
+          height: 100%;
+        }
         .CatalogCardMetaTagContainer {
-          padding-bottom: @padding-sm;
+          padding: 0 0.125rem 0.25rem 0;
         }
       }
     }
