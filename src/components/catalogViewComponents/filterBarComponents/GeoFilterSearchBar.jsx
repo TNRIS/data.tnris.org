@@ -70,7 +70,7 @@ export function GeoFilterSearchBar(props) {
   return (
     <Select
       showSearch
-      placeholder="Search location"
+      placeholder="Search collections by location"
       searchValue={geoSearchInputText}
       // set geoFilterSearchText atom
       // when geoFilterSearchText changes, the fetch geoFilterResults selector automatically re-runs the query to nominatim

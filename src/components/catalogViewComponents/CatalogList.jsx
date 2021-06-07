@@ -1,16 +1,15 @@
-import { Col, Empty, Input, PageHeader, Row, Spin } from "antd";
+import { Col, Empty, Input, PageHeader, Spin } from "antd";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
-import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 import { FilterBar } from "./filterBarComponents/FilterBar";
+import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
+import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { ViewMapSwitch } from "./ViewMapSwitch";
-import { useEffect, useState } from "react";
 
 export function LazyBackground(props) {
   const [source, setSource] = useState(null);
@@ -37,7 +36,6 @@ export function LazyBackground(props) {
 }
 
 export function CatalogList() {
-  const map = useQueryParam().get("map");
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
@@ -56,6 +54,7 @@ export function CatalogList() {
         <PageHeader
           subTitle={<ViewMapSwitch />}
           extra={<CatalogPaginationControls />}
+          className="CatalogHeaderControlPanel"
         />
       </div>
       <div id={"CatalogListContainer"}>
@@ -65,23 +64,16 @@ export function CatalogList() {
         >
           {contents.results && contents.results.length > 0 && (
             <>
-              <Row gutter={[8, 8]} style={{ padding: "8px" }}>
+              <div className="CatalogGrid">
                 {contents.results.length > 0 &&
                   contents?.results?.map((v) => (
-                    <Col
-                      xs={{ span: 24 }}
-                      sm={{ span: 12 }}
-                      md={{ span: map === "true" ? 24 : 12 }}
-                      lg={{ span: map === "true" ? 24 : 8 }}
-                      xxl={{ span: map === "true" ? 8 : 4 }}
-                      key={v.collection_id}
-                    >
+                    <div key={v.collection_id}>
                       <Link to={`/collection?c=${v.collection_id}`}>
                         <CatalogListCard collection={v} />
                       </Link>
-                    </Col>
+                    </div>
                   ))}
-              </Row>
+              </div>
             </>
           )}
           {contents.results && contents.results.length === 0 && (

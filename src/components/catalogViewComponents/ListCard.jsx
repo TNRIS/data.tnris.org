@@ -1,13 +1,11 @@
 import { Card, Col, Row, Tag } from "antd";
 import { useEffect, useRef } from "react";
-import {
-  LazyLoadComponent
-} from "react-lazy-load-image-component";
+import { LazyLoadComponent } from "react-lazy-load-image-component";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   addCoverageLayer,
-  removeCoverageLayer
+  removeCoverageLayer,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { LazyBackgroundImage } from "../LazyBackgroundImage";
@@ -57,40 +55,29 @@ export function CatalogListCard({ collection }) {
           </small>
         </span>
       }
+      className="CatalogCard"
     >
       <Row gutter={[8, 0]}>
-        {/* <Col span={6}>
-          <LazyLoadImage
-            alt={`${collection.name} thumbnail`}
-            width={"100%"}
-            src={collection.thumbnail_image}
-            threshold={100}
-            placeholder={
-              <img
-                alt={`Loading...`}
-                style={{
-                  width: "80px",
-                  height: "45px",
-                  background: "#efefef",
-                }}
-              />
-            }
-          />
-        </Col> */}
-        <Col span={24}>
+        <Col span={24} className="CatalogCardMetaTagContainer">
           <Row>Categories</Row>
           <Row>
             {collection.category &&
-              collection.category
-                .split(",")
-                .map((v) => <Tag key={v}>{v.replace("_", " ")}</Tag>)}
+              collection.category.split(",").map((v) => (
+                <Tag color="blue" key={v}>
+                  {v.replace("_", " ")}
+                </Tag>
+              ))}
           </Row>
+        </Col>
+        <Col span={24} className="CatalogCardMetaTagContainer">
           <Row>Availability</Row>
           <Row>
             {collection.availability && (
-              <Tag>{collection.availability.replace("_", " ")}</Tag>
+              <Tag color="green">
+                {collection.availability.replace("_", " ")}
+              </Tag>
             )}
-            {collection.wms_link && <Tag>WMS</Tag>}
+            {collection.wms_link && <Tag color="green">WMS</Tag>}
           </Row>
         </Col>
       </Row>

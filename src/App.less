@@ -41,20 +41,18 @@
 }
 
 .CatalogSearchBar {
-  display: inline-block;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 400px));
+  gap: @padding-xs;
   padding: @padding-md @padding-md 0 @padding-md;
   max-width: 100%;
   background: #2a2b2e;
 
   .KeywordSearchBar {
-    width: 50%;
-    min-width: 200px;
-    max-width: 360px;
+    width: 100%;
   }
   .GeoFilterSearchBar {
-    width: 50%;
-    min-width: 200px;
-    max-width: 360px;
+    width: 100%;
   }
   @media (max-width: @screen-md) {
     width: 100%;
@@ -130,6 +128,16 @@
     @media (min-width: @screen-lg) {
       height: 100%;
     }
+    .CatalogHeaderControlPanel {
+      border-bottom: "solid 1px grey";
+      box-shadow: @shadow-1-down;
+    }
+    .CatalogGrid {
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
 
     #CatalogViewContainer {
       display: grid;
@@ -141,9 +149,11 @@
       #CatalogListContainer {
         height: 100%;
         overflow: hidden auto;
-
+        .CatalogCard {
+          height: 100%;
+        }
         .CatalogCardMetaTagContainer {
-          padding-bottom: @padding-sm;
+          padding: 0 0.125rem 0.25rem 0;
         }
       }
     }

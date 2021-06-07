@@ -50,10 +50,10 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
           >
             <Row
               justify="space-between"
-              align="top"
+              align="middle"
               style={{
-                borderBottom: "solid 1px lightgrey",
-                padding: ".25rem 0rem",
+                background: "#73808c40",
+                padding: ".125rem .25rem",
               }}
             >
               <Col>
