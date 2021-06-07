@@ -41,20 +41,18 @@
 }
 
 .CatalogSearchBar {
-  display: inline-block;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 400px));
+  gap: @padding-xs;
   padding: @padding-md @padding-md 0 @padding-md;
   max-width: 100%;
   background: #2a2b2e;
 
   .KeywordSearchBar {
-    width: 50%;
-    min-width: 200px;
-    max-width: 360px;
+    width: 100%;
   }
   .GeoFilterSearchBar {
-    width: 50%;
-    min-width: 200px;
-    max-width: 360px;
+    width: 100%;
   }
   @media (max-width: @screen-md) {
     width: 100%;

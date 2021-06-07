@@ -1,16 +1,15 @@
-import { Col, Empty, Input, PageHeader, Row, Spin } from "antd";
+import { Col, Empty, Input, PageHeader, Spin } from "antd";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
-import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 import { FilterBar } from "./filterBarComponents/FilterBar";
+import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
+import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { ViewMapSwitch } from "./ViewMapSwitch";
-import { useEffect, useState } from "react";
 
 export function LazyBackground(props) {
   const [source, setSource] = useState(null);
@@ -37,7 +36,6 @@ export function LazyBackground(props) {
 }
 
 export function CatalogList() {
-  const map = useQueryParam().get("map");
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
@@ -66,9 +64,7 @@ export function CatalogList() {
         >
           {contents.results && contents.results.length > 0 && (
             <>
-              <div
-                className="CatalogGrid"
-              >
+              <div className="CatalogGrid">
                 {contents.results.length > 0 &&
                   contents?.results?.map((v) => (
                     <div key={v.collection_id}>
