@@ -103,6 +103,8 @@
   height: 100%;
 
   .MapContainer {
+    display: grid;
+    grid-template-rows: auto 1fr;
     height: 100%;
     @media (max-width: @screen-lg) {
       height: 30%;
@@ -136,7 +138,7 @@
       padding: 8px;
       display: grid;
       gap: 8px;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
 
     #CatalogViewContainer {
@@ -149,11 +151,49 @@
       #CatalogListContainer {
         height: 100%;
         overflow: hidden auto;
+
         .CatalogCard {
           height: 100%;
+          overflow: hidden;
+          border-radius: @padding-xs;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            box-shadow: @card-shadow;
+            transform: scale(1.01);
+          }
+
+          .CollectionCardBackground {
+            height: 100%;
+            width: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .CollectionCardOverlay {
+              width: 100%;
+              height: 100%;
+              padding: 0.75rem;
+              background: #0000009c;
+              color: white;
+
+              .CollectionTitle {
+                color: white;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                font-weight: 600;
+                height: 3.6rem;
+              }
+            }
+          }
         }
         .CatalogCardMetaTagContainer {
-          padding: 0 0.125rem 0.25rem 0;
+          padding: 0 0.125rem 0.5rem 0;
         }
       }
     }

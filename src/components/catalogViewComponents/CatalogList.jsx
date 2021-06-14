@@ -1,6 +1,5 @@
 import { Col, Empty, Input, PageHeader, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
@@ -67,11 +66,7 @@ export function CatalogList() {
               <div className="CatalogGrid">
                 {contents.results.length > 0 &&
                   contents?.results?.map((v) => (
-                    <div key={v.collection_id}>
-                      <Link to={`/collection?c=${v.collection_id}`}>
-                        <CatalogListCard collection={v} />
-                      </Link>
-                    </div>
+                    <CatalogListCard collection={v} key={v.collection_id} />
                   ))}
               </div>
             </>

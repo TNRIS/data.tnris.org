@@ -1,6 +1,7 @@
-import { Card, Col, Row, Tag } from "antd";
+import { Col, Row, Tag } from "antd";
 import { useEffect, useRef } from "react";
 import { LazyLoadComponent } from "react-lazy-load-image-component";
+import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
@@ -20,67 +21,72 @@ export function CatalogListCard({ collection }) {
   }, [map]);
 
   return (
-    <Card
-      onMouseEnter={() => {
-        hoverTimer.current = setTimeout(() => {
-          addCoverageLayer(map, collection.the_geom);
-          zoomToFeatures(map, collection.the_geom);
-        }, 1000);
-      }}
-      onMouseLeave={() => {
-        removeCoverageLayer(map, collection.the_geom);
-        clearTimeout(hoverTimer.current);
-      }}
-      size={"small"}
-      hoverable
-      height={"300px"}
-      cover={
-        <LazyLoadComponent threshold={100} useIntersectionObserver={true}>
+    <Link to={`/collection?c=${collection.collection_id}`}>
+      <LazyLoadComponent
+        threshold={100}
+        useIntersectionObserver={true}
+        style={{
+          width: "100%",
+          height: "200px",
+        }}
+        placeholder={<div className="CatalogCard"></div>}
+      >
+        <div
+          className="CatalogCard"
+          onMouseEnter={() => {
+            hoverTimer.current = setTimeout(() => {
+              removeCoverageLayer(map, collection.the_geom);
+              addCoverageLayer(map, collection.the_geom);
+              zoomToFeatures(map, collection.the_geom);
+            }, 1000);
+          }}
+          onMouseLeave={() => {
+            clearTimeout(hoverTimer.current);
+          }}
+          size={"small"}
+        >
           <LazyBackgroundImage
+            className="CollectionCardBackground"
             src={collection.thumbnail_image}
-            style={{
-              minHeight: "100px",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-            }}
-          />
-        </LazyLoadComponent>
-      }
-      title={
-        <span>
-          {collection.name}{" "}
-          <small style={{ paddingLeft: "1vw" }}>
-            <em>{new Date(collection.acquisition_date).getFullYear()}</em>
-          </small>
-        </span>
-      }
-      className="CatalogCard"
-    >
-      <Row gutter={[8, 0]}>
-        <Col span={24} className="CatalogCardMetaTagContainer">
-          <Row>Categories</Row>
-          <Row>
-            {collection.category &&
-              collection.category.split(",").map((v) => (
-                <Tag color="blue" key={v}>
-                  {v.replace("_", " ")}
-                </Tag>
-              ))}
-          </Row>
-        </Col>
-        <Col span={24} className="CatalogCardMetaTagContainer">
-          <Row>Availability</Row>
-          <Row>
-            {collection.availability && (
-              <Tag color="green">
-                {collection.availability.replace("_", " ")}
-              </Tag>
-            )}
-            {collection.wms_link && <Tag color="green">WMS</Tag>}
-          </Row>
-        </Col>
-      </Row>
-    </Card>
+          >
+            <div className="CollectionCardOverlay">
+              <h3 title={collection.name} className={"CollectionTitle"}>
+                {collection.name}
+              </h3>
+
+              <Row gutter={[8, 0]}>
+                <Col span={24} className="CatalogCardMetaTagContainer">
+                  <Row>
+                    <Tag color="default">
+                      {new Date(collection.acquisition_date).getFullYear()}
+                    </Tag>
+                  </Row>
+                </Col>
+                <Col span={24} className="CatalogCardMetaTagContainer">
+                  <Row>
+                    {collection.category &&
+                      collection.category.split(",").map((v) => (
+                        <Tag color="blue" key={v}>
+                          {v.replace("_", " ")}
+                        </Tag>
+                      ))}
+                  </Row>
+                </Col>
+                <Col span={24} className="CatalogCardMetaTagContainer">
+                  <Row>
+                    {collection.availability &&
+                      collection.availability
+                        .split(",")
+                        .map((v) => (
+                          <Tag color="green">{v.replace("_", " ")}</Tag>
+                        ))}
+                  </Row>
+                </Col>
+              </Row>
+            </div>
+          </LazyBackgroundImage>
+        </div>
+      </LazyLoadComponent>
+    </Link>
   );
 }
