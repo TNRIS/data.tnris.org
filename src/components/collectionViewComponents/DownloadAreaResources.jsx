@@ -3,7 +3,7 @@ import { Button, Card, Col, Empty, List, Row, Skeleton, Spin } from "antd";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
   collectionAreasMapSelectionAtom,
-  fetchResourcesByCollectionIdAndAreaTypeIDSelector,
+  fetchResourcesByCollectionIdAndAreaTypeIDSelector
 } from "../../utilities/atoms/collectionsAtoms";
 
 export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {

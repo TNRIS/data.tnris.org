@@ -1,6 +1,4 @@
 // Package imports
-import Icon from "@ant-design/icons";
-import { Menu, Switch } from "antd";
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import React, { useEffect, useRef, useState } from "react";
@@ -13,38 +11,8 @@ import {
 import { mapAtom } from "../utilities/atoms/mapAtoms";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 import { NavigateToExtentControl } from "../utilities/mapHelpers/navigateToExtentControl.js";
+import { MapControlPanel } from "./MapControlPanel";
 
-export const LayersSVG = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    //xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    preserveAspectRatio="xMidYMid meet"
-    viewBox="73.45544554455445 61.07920792079216 40.72277227722773 40.742574257425815"
-    width="24"
-    height="24.01"
-    {...props}
-  >
-    <path
-      d="M82.47 70.11L111.18 70.11L111.18 98.82L82.47 98.82L82.47 70.11Z"
-      id="a1XNPlRvKb"
-    />
-    <path
-      d="M78.48 66.1L107.19 66.1L107.19 94.81L78.48 94.81L78.48 66.1Z"
-      id="iL7YJ25pt"
-    />
-    <path
-      d="M74.46 62.08L103.17 62.08L103.17 90.79L74.46 90.79L74.46 62.08Z"
-      id="b1KB8e6pIu"
-    />
-  </svg>
-);
-
-export const LayersIcon = (props) => (
-  <Icon {...props}>
-    <LayersSVG style={props.svgStyle} />
-  </Icon>
-);
 export function MapContainer() {
   const location = useLocation();
   const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
@@ -141,68 +109,7 @@ export function MapContainer() {
 
   return (
     <>
-      <Menu mode="horizontal" selectable={false}>
-        <Menu.SubMenu
-          key="1"
-          icon={
-            <LayersIcon
-              style={{ fontSize: "1.5rem" }}
-              svgStyle={{
-                stroke: "#1e8dc1",
-                fill: "none",
-                strokeWidth: "2px",
-              }}
-            />
-          }
-          title="LAYERS"
-        >
-          <Menu.Item
-            focusable={false}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            Satellite{" "}
-            <Switch
-              checkedChildren="ON"
-              unCheckedChildren="OFF"
-              checked="true"
-            />
-          </Menu.Item>
-          <Menu.Item
-            focusable={false}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            Index{" "}
-            <Switch
-              checkedChildren="ON"
-              unCheckedChildren="OFF"
-              checked="true"
-            />
-          </Menu.Item>
-          <Menu.Item
-            focusable={false}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            Preview{" "}
-            <Switch
-              checkedChildren="ON"
-              unCheckedChildren="OFF"
-              checked="true"
-            />
-          </Menu.Item>
-        </Menu.SubMenu>
-      </Menu>
+      <MapControlPanel />
       <div
         ref={(el) => (MapContainer.current = el)}
         className=""

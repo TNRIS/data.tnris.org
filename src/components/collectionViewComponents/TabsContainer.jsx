@@ -1,9 +1,12 @@
 // package imports
-import { PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
-import { List } from "antd";
+import { List, PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useRecoilValue, useRecoilValueLoadable } from "recoil";
+import {
+  useRecoilValue,
+  useRecoilValueLoadable,
+  useSetRecoilState,
+} from "recoil";
 import {
   fetchAreaTypesByCollectionIdSelector,
   fetchCollectionByIdSelector,
@@ -18,6 +21,7 @@ import {
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
 import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";
+import { layersAtom, sourcesAtom } from "../MapControlPanel";
 import { DownloadAreasList } from "./DownloadAreasList";
 import { MetadataTab } from "./MetadataTab";
 
@@ -25,19 +29,15 @@ export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
   const collection_id = useQueryParam().get("c");
   const map = useRecoilValue(mapAtom);
+  const setMapSources = useSetRecoilState(sourcesAtom);
+  const setMapLayers = useSetRecoilState(layersAtom);
   const [activeTab, setActiveTab] = useState("0");
 
-  const {
-    state: collectionState,
-    contents: collectionContents,
-  } = useRecoilValueLoadable(fetchCollectionByIdSelector(collection_id));
+  const { state: collectionState, contents: collectionContents } =
+    useRecoilValueLoadable(fetchCollectionByIdSelector(collection_id));
 
-  const {
-    state: AreaTypesState,
-    contents: AreaTypesContents,
-  } = useRecoilValueLoadable(
-    fetchAreaTypesByCollectionIdSelector(collection_id)
-  );
+  const { state: AreaTypesState, contents: AreaTypesContents } =
+    useRecoilValueLoadable(fetchAreaTypesByCollectionIdSelector(collection_id));
 
   useEffect(() => {
     if (map && collectionContents.the_geom) {
@@ -53,7 +53,94 @@ export default function CollectionTabsContainer({ collection }) {
       return null;
     };
   }, [map, collectionContents]);
+  // Add WMS / Preview Layers when map initialized and collectionContents retreived
+  useEffect(() => {
+    if (map && collectionContents) {
+      console.log(collectionContents);
+      if (collectionContents.wms_link) {
+        setMapSources((prev) => {
+          return {
+            ...prev,
+            "wms-preview": {
+              type: "vector",
+              tiles: [
+                collectionContents.wms_link +
+                  "&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=all&map.imagetype=mvt",
+              ],
+            },
+          };
+        });
+        setMapLayers((prev) => {
+          return [
+            ...prev,
+            {
+              id: "wms-preview-layer",
+              type: "raster",
+              source: "wms-preview",
+              layout: { visibility: "none" },
+              label: "Preview",
+            },
+          ];
+        });
+      }
+      /* if (collectionContents.index_service_url) {
+        setMapSources((prev) => {
+          return {
+            ...prev,
+            "wms-index": {
+              type: "vector",
+              tiles: [
+                collectionContents.index_service_url +
+                  "&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=all&map.imagetype=mvt",
+              ],
+            },
+          };
+        });
+        setMapLayers((prev) => {
+          return [
+            ...prev,
+            {
+              id: "wms-index-layer",
+              type: "line",
+              source: "wms-index",
+              "source-layer": "wms-index",
+              layout: { visibility: "visible" },
+              interactive: true,
+              paint: {
+                "line-color": "#333",
+                "line-width": 1,
+                "line-opacity": 1,
+              },
+              label: "Index",
+            },
+          ];
+        });
+      } */
+    }
+  }, [map, collectionContents, setMapSources, setMapLayers]);
+  //remove preview layers and sources on unmounting with cleanup fn
+  useEffect(() => {
+    return () => {
+      if (
+        map &&
+        map.getLayer("wms-preview-layer") &&
+        map.getSource("wms-preview")
+      ) {
+        setMapLayers((prev) =>
+          [...prev].filter((layer) => layer.id !== "wms-preview-layer")
+        );
+        map.removeLayer("wms-preview-layer");
+        setMapSources((prev) => {
+          //make a copy of prev, since it is immutable in recoil
+          const newData = { ...prev };
+          delete newData["wms-preview"];
 
+          return newData;
+        });
+        map.removeSource("wms-preview");
+      }
+    };
+  }, []);
   useEffect(() => {
     const scrollEl = document.getElementsByClassName(
       "ant-tabs-content-holder"

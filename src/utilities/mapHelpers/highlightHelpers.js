@@ -3,7 +3,7 @@ export const removeCoverageLayer = (map) => {
     map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
   }
-}
+};
 
 export const addCoverageLayer = (map, coverage) => {
   if (map && map.getSource("collection-coverage-source")) {
@@ -22,12 +22,13 @@ export const addCoverageLayer = (map, coverage) => {
       minzoom: 2,
       maxzoom: 24,
       paint: {
-        "fill-color": "#73808c",
-        "fill-opacity": 0.25,
+        "fill-color": "#73808C",
+        "fill-opacity": 0.5,
+        "fill-outline-color": "#73808C",
       },
     });
   }
-}
+};
 
 // Highlight a selected area type in the map
 export const highlightSelectedAreaType = (areaType, areaTypeId, map) => {
@@ -39,7 +40,7 @@ export const highlightSelectedAreaType = (areaType, areaTypeId, map) => {
       );
     }
   }
-}
+};
 
 // Remove the highlight from a selected area type in the map
 export const unHighlightSelectedAreaType = (areaType, areaTypeId, map) => {
@@ -51,5 +52,4 @@ export const unHighlightSelectedAreaType = (areaType, areaTypeId, map) => {
       );
     }
   }
-}
-
+};
