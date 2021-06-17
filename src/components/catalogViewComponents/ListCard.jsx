@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   addCoverageLayer,
-  removeCoverageLayer,
+  removeCoverageLayer
 } from "../../utilities/mapHelpers/highlightHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { LazyBackgroundImage } from "../LazyBackgroundImage";
@@ -75,11 +75,11 @@ export function CatalogListCard({ collection }) {
                 <Col span={24} className="CatalogCardMetaTagContainer">
                   <Row>
                     {collection.availability &&
-                      collection.availability
-                        .split(",")
-                        .map((v) => (
-                          <Tag color="green">{v.replace("_", " ")}</Tag>
-                        ))}
+                      collection.availability.split(",").map((v) => (
+                        <Tag key={v} color="green">
+                          {v.replace("_", " ")}
+                        </Tag>
+                      ))}
                   </Row>
                 </Col>
               </Row>

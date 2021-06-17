@@ -57,12 +57,9 @@ export function MapControlPanel() {
   const sources = useRecoilValue(sourcesAtom);
   const location = useLocation();
 
-  useEffect(() => {
-    console.log(sources, layers)
-  }, [sources, layers])
   return (
     <>
-      <Row justify="start" gutter={[0,16]}>
+      <Row justify="start" gutter={[0, 16]}>
         <MapLayer
           key={"satellite-basemap-layer_1"}
           sourceId={"satellite-basemap"}
