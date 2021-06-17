@@ -56,17 +56,18 @@ export default function CollectionTabsContainer({ collection }) {
   // Add WMS / Preview Layers when map initialized and collectionContents retreived
   useEffect(() => {
     if (map && collectionContents) {
-      console.log(collectionContents);
+      //console.log(collectionContents);
       if (collectionContents.wms_link) {
         setMapSources((prev) => {
           return {
             ...prev,
             "wms-preview": {
-              type: "vector",
+              type: "raster",
               tiles: [
                 collectionContents.wms_link +
-                  "&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=all&map.imagetype=mvt",
+                  "?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&SRS=EPSG:3857&styles=default&width=256&height=256&layers=0&transparent=true",
               ],
+              tileSize: 256,
             },
           };
         });
@@ -140,7 +141,7 @@ export default function CollectionTabsContainer({ collection }) {
         map.removeSource("wms-preview");
       }
     };
-  }, []);
+  });
   useEffect(() => {
     const scrollEl = document.getElementsByClassName(
       "ant-tabs-content-holder"

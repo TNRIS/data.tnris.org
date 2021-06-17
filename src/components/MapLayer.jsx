@@ -18,7 +18,7 @@ export function MapLayer({
   const [visible, setVisible] = useState(defaultVisibility);
   useEffect(() => {
     if (map) {
-      const srcCopy = {...source}
+      const srcCopy = { ...source };
       if (!map.getSource(sourceId)) {
         map.addSource(sourceId, srcCopy);
       }
@@ -34,7 +34,7 @@ export function MapLayer({
   return (
     <Card size="small" focusable={false}>
       <Row justify="space-between">
-        <span style={{paddingRight: ".5rem"}}>{label}</span>
+        <span style={{ paddingRight: ".5rem" }}>{label}</span>
         <Switch
           checkedChildren="ON"
           unCheckedChildren="OFF"
