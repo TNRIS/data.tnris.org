@@ -1,6 +1,5 @@
 import Icon from "@ant-design/icons";
 import { Row } from "antd";
-import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { atom, useRecoilValue } from "recoil";
 import { MapLayer } from "./MapLayer";

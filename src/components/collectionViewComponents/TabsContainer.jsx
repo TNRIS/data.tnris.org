@@ -141,7 +141,7 @@ export default function CollectionTabsContainer({ collection }) {
         map.removeSource("wms-preview");
       }
     };
-  });
+  }, [map, setMapLayers, setMapSources]);
   useEffect(() => {
     const scrollEl = document.getElementsByClassName(
       "ant-tabs-content-holder"
