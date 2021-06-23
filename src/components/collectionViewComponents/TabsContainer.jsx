@@ -1,5 +1,5 @@
 // package imports
-import { List, PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
+import { List, message, PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
@@ -14,11 +14,6 @@ import {
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
-import {
-  addCoverageLayer,
-  removeCoverageLayer,
-} from "../../utilities/mapHelpers/highlightHelpers";
-import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
 import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";
 import { layersAtom, sourcesAtom } from "../MapControlPanel";
@@ -39,20 +34,6 @@ export default function CollectionTabsContainer({ collection }) {
   const { state: AreaTypesState, contents: AreaTypesContents } =
     useRecoilValueLoadable(fetchAreaTypesByCollectionIdSelector(collection_id));
 
-  useEffect(() => {
-    if (map && collectionContents.the_geom) {
-      addCoverageLayer(map, collectionContents.the_geom);
-      zoomToFeatures(map, collectionContents.the_geom);
-    }
-
-    return () => {
-      if (map && map.getLayer("collection-coverage-layer")) {
-        removeCoverageLayer(map);
-        return null;
-      }
-      return null;
-    };
-  }, [map, collectionContents]);
   // Add WMS / Preview Layers when map initialized and collectionContents retreived
   useEffect(() => {
     if (map && collectionContents) {
@@ -84,39 +65,8 @@ export default function CollectionTabsContainer({ collection }) {
           ];
         });
       }
-      /* if (collectionContents.index_service_url) {
-        setMapSources((prev) => {
-          return {
-            ...prev,
-            "wms-index": {
-              type: "vector",
-              tiles: [
-                collectionContents.index_service_url +
-                  "&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=all&map.imagetype=mvt",
-              ],
-            },
-          };
-        });
-        setMapLayers((prev) => {
-          return [
-            ...prev,
-            {
-              id: "wms-index-layer",
-              type: "line",
-              source: "wms-index",
-              "source-layer": "wms-index",
-              layout: { visibility: "visible" },
-              interactive: true,
-              paint: {
-                "line-color": "#333",
-                "line-width": 1,
-                "line-opacity": 1,
-              },
-              label: "Index",
-            },
-          ];
-        });
-      } */
+      // TODO: Add wms layer for historical collections
+      //
     }
   }, [map, collectionContents, setMapSources, setMapLayers]);
   //remove preview layers and sources on unmounting with cleanup fn
@@ -142,6 +92,35 @@ export default function CollectionTabsContainer({ collection }) {
       }
     };
   }, [map, setMapLayers, setMapSources]);
+
+  useEffect(() => {
+    if (AreaTypesState === "loading") {
+      message.loading({
+        content: "Loading download areas...",
+        key: "areasIndicator",
+        style: {
+          position: "absolute",
+          right: "4rem",
+          top: "4rem",
+        },
+      });
+    }
+    if (AreaTypesState === "hasValue") {
+      message.success(
+        {
+          content: "Loaded download areas!",
+          key: "areasIndicator",
+          style: {
+            position: "absolute",
+            right: "4rem",
+            top: "4rem",
+          },
+        },
+        2.5
+      );
+    }
+  }, [AreaTypesState]);
+
   useEffect(() => {
     const scrollEl = document.getElementsByClassName(
       "ant-tabs-content-holder"
@@ -194,7 +173,7 @@ export default function CollectionTabsContainer({ collection }) {
               <Tabs.TabPane tab="Metadata" key="0" style={{ height: "100%" }}>
                 <MetadataTab metadata={collectionContents} />
               </Tabs.TabPane>
-              <Tabs.TabPane tab="Downloads" key="1">
+              <Tabs.TabPane tab="Downloads" key="1" forceRender>
                 {AreaTypesState === "loading" && (
                   <Spin
                     spinning={AreaTypesState === "loading"}
@@ -219,6 +198,7 @@ export default function CollectionTabsContainer({ collection }) {
                   <DownloadAreasList
                     collectionId={collectionContents.collection_id}
                     activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                     areaTypes={AreaTypesContents}
                     areaTypesState={AreaTypesState}
                   />
