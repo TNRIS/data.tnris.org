@@ -16,6 +16,7 @@ import {
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 // local imports
 import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { removeCoverageLayer } from "../../utilities/mapHelpers/highlightHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
 import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";
 import { layersAtom, sourcesAtom } from "../MapControlPanel";
@@ -43,6 +44,7 @@ export default function CollectionTabsContainer({ collection }) {
   // Add WMS / Preview Layers when map initialized and collectionContents retreived
   useEffect(() => {
     if (map && collectionContents) {
+      setTimeout(() => removeCoverageLayer(map), 1200);
       //console.log(collectionContents);
       if (collectionContents.wms_link) {
         setMapSources((prev) => {
