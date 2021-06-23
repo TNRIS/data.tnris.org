@@ -17,6 +17,7 @@ import { DownloadAreaResources } from "./DownloadAreaResources";
 
 export function DownloadAreasList({
   activeTab,
+  setActiveTab,
   areaTypes,
   areaTypesState,
   collectionId,
@@ -37,8 +38,109 @@ export function DownloadAreasList({
 
   // Add the area type layers when the component mounts
   useEffect(() => {
+    if (map) {
+      // Add map sources and layers for each
+      // area type geojson that has features
+      //console.log(areaTypes);
+      for (let [k, v] of Object.entries(areaTypes)) {
+        if (v["features"].length && map) {
+          if (!map.getSource(`${k}-source`)) {
+            map.addSource(`${k}-source`, {
+              type: "geojson",
+              data: v,
+              promoteId: "area_type_id",
+            });
+            // Add base outline layer for areas
+            map.addLayer({
+              id: `${k}-outline`,
+              type: "line",
+              source: `${k}-source`,
+              minzoom: 2,
+              maxzoom: 24,
+              paint: {
+                "line-color": "#fff",
+                "line-width": 2.0,
+                "line-opacity": 0.75,
+              },
+              layout: { visibility: "none" },
+            });
+            // Add hover layer for hover highlight
+            // Controlled by feature state
+            map.addLayer(
+              {
+                id: `${k}-hover`,
+                type: "fill",
+                source: `${k}-source`,
+                minzoom: 2,
+                maxzoom: 24,
+                paint: {
+                  // hover state is set here using a case expression
+                  "fill-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#73808c",
+                    "#73808c",
+                  ],
+                  "fill-outline-color": "#fff",
+                  "fill-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    0.5,
+                    0.25,
+                  ],
+                },
+                layout: {
+                  visibility: "none",
+                },
+              },
+              `${k}-outline`
+            );
+            // Add layer for selectedAreas highlight
+            map.addLayer(
+              {
+                id: `${k}-select`,
+                type: "fill",
+                source: `${k}-source`,
+                minzoom: 2,
+                maxzoom: 24,
+                paint: {
+                  // hover state is set here using a case expression
+                  "fill-color": "#73808c",
+                  "fill-opacity": 0.75,
+                },
+                filter: ["match", ["get", "area_type_id"], "", true, false],
+              },
+              `${k}-hover`
+            );
+            // Add listener to add area to selectedAreas atom on click
+          }
+        }
+      }
+      // Clean up the area type layers when
+      // returning to the catalog view
+      return () => {
+        setSelectedAreas([]);
+        opts.forEach((v) => {
+          if (map.getLayer(`${v.type}-outline`)) {
+            map.removeLayer(`${v.type}-outline`);
+          }
+          if (map.getLayer(`${v.type}-hover`)) {
+            map.removeLayer(`${v.type}-hover`);
+          }
+          if (map.getLayer(`${v.type}-select`)) {
+            map.removeLayer(`${v.type}-select`);
+          }
+          if (map.getSource(`${v.type}-source`)) {
+            map.removeSource(`${v.type}-source`);
+          }
+        });
+      };
+    }
+  }, [areaTypes, map, opts, setSelectedAreas]);
+
+  // Add click listener to active area layers in map
+  useEffect(() => {
     function handleHoverClick(e) {
-      //console.log("area clicked");
       setSelectedAreas((current) => {
         if (current.includes(e.features[0].properties.area_type_id)) {
           return current.filter(
@@ -48,173 +150,89 @@ export function DownloadAreasList({
           return [...current, e.features[0].properties.area_type_id];
         }
       });
-    }
-    // Add map sources and layers for each
-    // area type geojson that has features
-    //console.log(areaTypes);
-    for (let [k, v] of Object.entries(areaTypes)) {
-      if (v["features"].length) {
-        if (!map.getSource(`${k}-source`)) {
-          map.addSource(`${k}-source`, {
-            type: "geojson",
-            data: v,
-            promoteId: "area_type_id",
-          });
-          // Add base outline layer for areas
-          map.addLayer({
-            id: `${k}-outline`,
-            type: "line",
-            source: `${k}-source`,
-            minzoom: 2,
-            maxzoom: 24,
-            paint: {
-              "line-color": "#fff",
-              "line-width": 2.0,
-              "line-opacity": 0.75,
-            },
-            layout: { visibility: "none" },
-          });
-          // Add hover layer for hover highlight
-          // Controlled by feature state
-          map.addLayer(
-            {
-              id: `${k}-hover`,
-              type: "fill",
-              source: `${k}-source`,
-              minzoom: 2,
-              maxzoom: 24,
-              paint: {
-                // hover state is set here using a case expression
-                "fill-color": [
-                  "case",
-                  ["boolean", ["feature-state", "hover"], false],
-                  "#73808c",
-                  "#73808c",
-                ],
-                "fill-outline-color": "#fff",
-                "fill-opacity": [
-                  "case",
-                  ["boolean", ["feature-state", "hover"], false],
-                  0.5,
-                  0.25,
-                ],
-              },
-              layout: {
-                visibility: "none",
-              },
-            },
-            `${k}-outline`
-          );
-          // Add layer for selectedAreas highlight
-          map.addLayer(
-            {
-              id: `${k}-select`,
-              type: "fill",
-              source: `${k}-source`,
-              minzoom: 2,
-              maxzoom: 24,
-              paint: {
-                // hover state is set here using a case expression
-                "fill-color": "#73808c",
-                "fill-opacity": 0.75,
-              },
-              filter: ["match", ["get", "area_type_id"], "", true, false],
-            },
-            `${k}-hover`
-          );
-          // Add listener to add area to selectedAreas atom on click
-          map.on("click", `${k}-hover`, handleHoverClick);
-        }
+      if (activeTab !== "1") {
+        setActiveTab("1");
       }
+      //console.log("area clicked");
     }
-    // Clean up the area type layers when
-    // returning to the catalog view
-    return () => {
-      setSelectedAreas([]);
+
+    if (map && opts && areaTypesState === "hasValue") {
       opts.forEach((v) => {
-        if (map.getLayer(`${v.type}-outline`)) {
-          map.removeLayer(`${v.type}-outline`);
-        }
-        if (map.getLayer(`${v.type}-hover`)) {
-          map.removeLayer(`${v.type}-hover`);
-        }
-        if (map.getLayer(`${v.type}-select`)) {
-          map.removeLayer(`${v.type}-select`);
-        }
-        if (map.getSource(`${v.type}-source`)) {
-          map.removeSource(`${v.type}-source`);
-        }
-        // remove listener when navigating away from collection view
-        map.off("click", `${v.type}-hover`, handleHoverClick);
+        map.on("click", `${v.type}-hover`, handleHoverClick);
       });
+    }
+    return () => {
+      // remove listener when navigating away from collection view
+      if (map) {
+        opts.forEach((v) => {
+          if (map.getLayer(`${v.type}-source`)) {
+            map.off("click", `${v.type}-hover`, handleHoverClick);
+          }
+        });
+      }
     };
-  }, [areaTypes, map, opts, setSelectedAreas]);
+  }, [setActiveTab, map, opts, setSelectedAreas, areaTypesState]);
   // When the activeTab changes toggle the
   // area type layer on and off. The downloads
   // tab key = "1".
   useEffect(() => {
-    if (activeTab !== "1") {
-      hideLayer(`${areaTypeSelection}-outline`, map);
-      hideLayer(`${areaTypeSelection}-hover`, map);
-      hideLayer(`${areaTypeSelection}-select`, map);
-      showLayer("collection-coverage-layer", map);
-    } else {
-      showLayer(`${areaTypeSelection}-outline`, map);
-      showLayer(`${areaTypeSelection}-hover`, map);
-      showLayer(`${areaTypeSelection}-select`, map);
-      hideLayer("collection-coverage-layer", map);
-    }
-  }, [activeTab, areaTypeSelection, map]);
-  
-  useEffect(() => {
-    // For each counties, quads, qquads, if not current selection,
-    // set visibility to none, else set to visible
-    opts.forEach((v) => {
-      if (v.type !== areaTypeSelection) {
-        hideLayer(`${v.type}-outline`, map);
-        hideLayer(`${v.type}-source`, map);
-        hideLayer(`${v.type}-select`, map);
-      } else {
-        showLayer(`${v.type}-outline`, map);
-        showLayer(`${v.type}-source`, map);
-        showLayer(`${v.type}-select`, map);
-      }
-    });
-    let popup = new Popup();
-    let hoveredStateId = null;
-    // When the user moves their mouse over the hover layer, update
-    // the feature state for the feature under the mouse.
-    map.on("mousemove", `${areaTypeSelection}-hover`, function (e) {
-      setAreaHover(e.features[0].properties.area_type_id);
+    showLayer(`${areaTypeSelection}-outline`, map);
+    showLayer(`${areaTypeSelection}-hover`, map);
+    showLayer(`${areaTypeSelection}-select`, map);
+    hideLayer("collection-coverage-layer", map);
+  }, [areaTypeSelection, map]);
 
-      map.getCanvas().style.cursor = "pointer";
-      // add tooltip with area name
-      let name = e.features[0].properties.area_type_name;
-      popup.setLngLat(e.lngLat).setHTML(name).addTo(map);
-      // toggle highlight with hover-state
-      if (e.features.length > 0) {
+  useEffect(() => {
+    if (map) {
+      // For each counties, quads, qquads, if not current selection,
+      // set visibility to none, else set to visible
+      opts.forEach((v) => {
+        if (v.type !== areaTypeSelection) {
+          hideLayer(`${v.type}-outline`, map);
+          hideLayer(`${v.type}-source`, map);
+          hideLayer(`${v.type}-select`, map);
+        } else {
+          showLayer(`${v.type}-outline`, map);
+          showLayer(`${v.type}-source`, map);
+          showLayer(`${v.type}-select`, map);
+        }
+      });
+      let popup = new Popup();
+      let hoveredStateId = null;
+      // When the user moves their mouse over the hover layer, update
+      // the feature state for the feature under the mouse.
+      map.on("mousemove", `${areaTypeSelection}-hover`, function (e) {
+        setAreaHover(e.features[0].properties.area_type_id);
+
+        map.getCanvas().style.cursor = "pointer";
+        // add tooltip with area name
+        let name = e.features[0].properties.area_type_name;
+        popup.setLngLat(e.lngLat).setHTML(name).addTo(map);
+        // toggle highlight with hover-state
+        if (e.features.length > 0) {
+          if (hoveredStateId !== null) {
+            unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+          }
+          hoveredStateId = e.features[0].id;
+          highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+        }
+      });
+
+      // When the mouse leaves the hover layer, update the feature
+      // state of the previously hovered feature.
+      map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
+        map.getCanvas().style.cursor = "";
+        //remove popup
+        popup.remove();
+        setAreaHover(null);
         if (hoveredStateId !== null) {
           unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
         }
-        hoveredStateId = e.features[0].id;
-        highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
-      }
-    });
+        hoveredStateId = null;
+      });
 
-    // When the mouse leaves the hover layer, update the feature
-    // state of the previously hovered feature.
-    map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
-      map.getCanvas().style.cursor = "";
-      //remove popup
-      popup.remove();
-      setAreaHover(null);
-      if (hoveredStateId !== null) {
-        unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
-      }
-      hoveredStateId = null;
-    });
-
-    return () => popup.remove();
+      return () => popup.remove();
+    }
   }, [areaTypeSelection, areaTypes, opts, map]);
 
   useEffect(() => {
@@ -241,7 +259,7 @@ export function DownloadAreasList({
 
   useEffect(() => {
     zoomToFeatures(map, areaTypes[areaTypeSelection], 100);
-  }, [areaTypeSelection, map, areaTypes, activeTab]);
+  }, [areaTypeSelection, map, areaTypes]);
 
   return (
     <div style={{ padding: "1rem" }}>

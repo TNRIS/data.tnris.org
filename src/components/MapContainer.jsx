@@ -112,7 +112,7 @@ export function MapContainer() {
       <MapControlPanel />
       <div
         ref={(el) => (MapContainer.current = el)}
-        className=""
+        id="mapContainer"
         style={{
           position: "relative",
           top: "0",

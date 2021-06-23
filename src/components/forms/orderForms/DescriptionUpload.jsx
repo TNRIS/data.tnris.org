@@ -57,7 +57,7 @@ const FileUploadField = ({ description }) => {
       name={["Description"]}
       rules={[{ required: true }]}
       getValueFromEvent={({ fileList }) => {
-        console.log(fileList);
+        //console.log(fileList);
         return fileList;
       }}
     >
