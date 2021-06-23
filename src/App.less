@@ -103,8 +103,7 @@
   height: 100%;
 
   .MapContainer {
-    display: grid;
-    grid-template-rows: auto 1fr;
+    
     height: 100%;
     @media (max-width: @screen-lg) {
       height: 30%;
@@ -115,6 +114,14 @@
 
     &.HideMap {
       display: none;
+    }
+
+    #MapLayerControls {
+      position: absolute;
+      z-index: 9999;
+      padding: @padding-xs;
+      gap: @padding-xs;
+      flex-direction: column;
     }
   }
 
