@@ -1,11 +1,12 @@
 import { Alert, Empty, List, Select } from "antd";
 import { Popup } from "maplibre-gl";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { collectionAreasMapSelectionAtom } from "../../utilities/atoms/collectionsAtoms";
 import { mapAtom } from "../../utilities/atoms/mapAtoms";
 import {
   highlightSelectedAreaType,
+  removeCoverageLayer,
   unHighlightSelectedAreaType,
 } from "../../utilities/mapHelpers/highlightHelpers";
 import {
@@ -14,15 +15,11 @@ import {
 } from "../../utilities/mapHelpers/layerVisibilityHelpers";
 import { zoomToFeatures } from "../../utilities/mapHelpers/zoomHelpers";
 import { DownloadAreaResources } from "./DownloadAreaResources";
+import { activeTabAtom } from "./TabsContainer";
 
-export function DownloadAreasList({
-  activeTab,
-  setActiveTab,
-  areaTypes,
-  areaTypesState,
-  collectionId,
-}) {
+export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
   const map = useRecoilValue(mapAtom);
+  const setActiveTab = useSetRecoilState(activeTabAtom);
   const [opts] = useState(
     Object.keys(areaTypes)
       .map((v) => {
@@ -142,6 +139,7 @@ export function DownloadAreasList({
   useEffect(() => {
     function handleHoverClick(e) {
       setSelectedAreas((current) => {
+        //console.log(current);
         if (current.includes(e.features[0].properties.area_type_id)) {
           return current.filter(
             (f) => f !== e.features[0].properties.area_type_id
@@ -150,40 +148,67 @@ export function DownloadAreasList({
           return [...current, e.features[0].properties.area_type_id];
         }
       });
-      if (activeTab !== "1") {
-        setActiveTab("1");
-      }
-      //console.log("area clicked");
-    }
-
-    if (map && opts && areaTypesState === "hasValue") {
-      opts.forEach((v) => {
-        map.on("click", `${v.type}-hover`, handleHoverClick);
+      setActiveTab((currentTab) => {
+        //console.log(currentTab);
+        if (currentTab !== "1") {
+          return "1";
+        }
+        return currentTab;
       });
     }
+
+    if (map && areaTypes && areaTypesState === "hasValue") {
+      for (let k of Object.keys(areaTypes)) {
+        map.on("click", `${k}-hover`, handleHoverClick);
+      }
+    }
+
     return () => {
-      // remove listener when navigating away from collection view
-      if (map) {
-        opts.forEach((v) => {
-          if (map.getLayer(`${v.type}-source`)) {
-            map.off("click", `${v.type}-hover`, handleHoverClick);
-          }
-        });
+      if (map && areaTypes) {
+        for (let k of Object.keys(areaTypes)) {
+          map.off("click", `${k}-hover`, handleHoverClick);
+          map.off("hover", `${k}-hover`);
+        }
       }
     };
-  }, [setActiveTab, map, opts, setSelectedAreas, areaTypesState]);
-  // When the activeTab changes toggle the
-  // area type layer on and off. The downloads
-  // tab key = "1".
+  }, [setActiveTab, map, setSelectedAreas, areaTypes, areaTypesState]);
+
+  // show areas in map based on selected areaType in areaTypeSelection
   useEffect(() => {
     showLayer(`${areaTypeSelection}-outline`, map);
     showLayer(`${areaTypeSelection}-hover`, map);
     showLayer(`${areaTypeSelection}-select`, map);
-    hideLayer("collection-coverage-layer", map);
+    removeCoverageLayer(map);
   }, [areaTypeSelection, map]);
 
   useEffect(() => {
     if (map) {
+      function mouseEnter(e) {
+        setAreaHover(e.features[0].properties.area_type_id);
+
+        map.getCanvas().style.cursor = "pointer";
+        // add tooltip with area name
+        let name = e.features[0].properties.area_type_name;
+        popup.setLngLat(e.lngLat).setHTML(name).addTo(map);
+        // toggle highlight with hover-state
+        if (e.features.length > 0) {
+          if (hoveredStateId !== null) {
+            unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+          }
+          hoveredStateId = e.features[0].id;
+          highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+        }
+      }
+      function mouseLeave(e) {
+        map.getCanvas().style.cursor = "";
+        //remove popup
+        popup.remove();
+        setAreaHover(null);
+        if (hoveredStateId !== null) {
+          unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
+        }
+        hoveredStateId = null;
+      }
       // For each counties, quads, qquads, if not current selection,
       // set visibility to none, else set to visible
       opts.forEach((v) => {
@@ -201,37 +226,21 @@ export function DownloadAreasList({
       let hoveredStateId = null;
       // When the user moves their mouse over the hover layer, update
       // the feature state for the feature under the mouse.
-      map.on("mousemove", `${areaTypeSelection}-hover`, function (e) {
-        setAreaHover(e.features[0].properties.area_type_id);
-
-        map.getCanvas().style.cursor = "pointer";
-        // add tooltip with area name
-        let name = e.features[0].properties.area_type_name;
-        popup.setLngLat(e.lngLat).setHTML(name).addTo(map);
-        // toggle highlight with hover-state
-        if (e.features.length > 0) {
-          if (hoveredStateId !== null) {
-            unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
-          }
-          hoveredStateId = e.features[0].id;
-          highlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
-        }
-      });
+      map.on("mousemove", `${areaTypeSelection}-hover`, mouseEnter);
 
       // When the mouse leaves the hover layer, update the feature
       // state of the previously hovered feature.
-      map.on("mouseleave", `${areaTypeSelection}-hover`, function () {
-        map.getCanvas().style.cursor = "";
-        //remove popup
-        popup.remove();
-        setAreaHover(null);
-        if (hoveredStateId !== null) {
-          unHighlightSelectedAreaType(areaTypeSelection, hoveredStateId, map);
-        }
-        hoveredStateId = null;
-      });
+      map.on("mouseleave", `${areaTypeSelection}-hover`, mouseLeave);
 
-      return () => popup.remove();
+      return () => {
+        if (map) {
+          popup.remove();
+          opts.forEach((v) => {
+            map.off(`${v}-hover`, mouseEnter);
+            map.off(`${v}-hover`, mouseLeave);
+          });
+        }
+      };
     }
   }, [areaTypeSelection, areaTypes, opts, map]);
 
@@ -259,7 +268,11 @@ export function DownloadAreasList({
 
   useEffect(() => {
     zoomToFeatures(map, areaTypes[areaTypeSelection], 100);
-  }, [areaTypeSelection, map, areaTypes]);
+    //reset active tab to "0" on unmount
+    return () => {
+      setActiveTab("0");
+    };
+  }, [areaTypeSelection, map, areaTypes, setActiveTab]);
 
   return (
     <div style={{ padding: "1rem" }}>

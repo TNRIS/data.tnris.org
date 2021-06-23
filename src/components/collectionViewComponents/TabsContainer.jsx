@@ -1,8 +1,10 @@
 // package imports
 import { List, message, PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
+  atom,
+  useRecoilState,
   useRecoilValue,
   useRecoilValueLoadable,
   useSetRecoilState,
@@ -20,13 +22,17 @@ import { layersAtom, sourcesAtom } from "../MapControlPanel";
 import { DownloadAreasList } from "./DownloadAreasList";
 import { MetadataTab } from "./MetadataTab";
 
+export const activeTabAtom = atom({
+  key: "activeTabAtom",
+  default: "0",
+});
 export default function CollectionTabsContainer({ collection }) {
   const history = useHistory();
   const collection_id = useQueryParam().get("c");
   const map = useRecoilValue(mapAtom);
   const setMapSources = useSetRecoilState(sourcesAtom);
   const setMapLayers = useSetRecoilState(layersAtom);
-  const [activeTab, setActiveTab] = useState("0");
+  const [activeTab, setActiveTab] = useRecoilState(activeTabAtom);
 
   const { state: collectionState, contents: collectionContents } =
     useRecoilValueLoadable(fetchCollectionByIdSelector(collection_id));
@@ -197,8 +203,6 @@ export default function CollectionTabsContainer({ collection }) {
                 {AreaTypesState !== "loading" && (
                   <DownloadAreasList
                     collectionId={collectionContents.collection_id}
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
                     areaTypes={AreaTypesContents}
                     areaTypesState={AreaTypesState}
                   />
