@@ -1,6 +1,7 @@
 export const removeCoverageLayer = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {
     map.removeLayer("collection-coverage-layer");
+    map.removeLayer("collection-coverage-outline-layer");
     map.removeSource("collection-coverage-source");
   }
 };
@@ -25,6 +26,17 @@ export const addCoverageLayer = (map, coverage) => {
         "fill-color": "#73808c",
         "fill-opacity": 0.25,
         "fill-outline-color": "#73808C",
+      },
+    });
+    map.addLayer({
+      id: "collection-coverage-outline-layer",
+      type: "line",
+      source: "collection-coverage-source",
+      minzoom: 2,
+      maxzoom: 24,
+      paint: {
+        "line-color": "#fff",
+        "line-width": 2,
       },
     });
   }
