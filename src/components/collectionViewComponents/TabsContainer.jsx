@@ -50,7 +50,7 @@ export default function CollectionTabsContainer({ collection }) {
         setMapSources((prev) => {
           return {
             ...prev,
-            "wms-preview": {
+            "preview-src": {
               type: "raster",
               tiles: [
                 collectionContents.wms_link +
@@ -64,9 +64,9 @@ export default function CollectionTabsContainer({ collection }) {
           return [
             ...prev,
             {
-              id: "wms-preview-layer",
+              id: "preview-layer",
               type: "raster",
-              source: "wms-preview",
+              source: "preview-src",
               layout: { visibility: "none" },
               label: "Preview",
             },
@@ -75,6 +75,101 @@ export default function CollectionTabsContainer({ collection }) {
       }
       // TODO: Add wms layer for historical collections
       //
+      console.log(collectionContents.index_service_url);
+      if (collectionContents.index_service_url) {
+        const locale = collectionContents.counties.includes(", ")
+          ? "Multi-County"
+          : collectionContents.counties.replace(/ /g, "");
+        const mapfile =
+          collectionContents.index_service_url.split("/")[
+            collectionContents.index_service_url.split("/").length - 1
+          ];
+        const serviceLayer =
+          locale +
+          "_" +
+          mapfile.split("_")[1].toUpperCase() +
+          "_" +
+          mapfile.split("_")[2];
+
+        const rasterLayer = serviceLayer + "_index";
+        const boundaryLayer = serviceLayer + "_index_index";
+        const mvtUrl =
+          collectionContents.index_service_url +
+          "&mode=tile&tilemode=gmap&tile={x}+{y}+{z}&layers=all&map.imagetype=mvt";
+        const wmsRasterUrl =
+          collectionContents.index_service_url +
+          "&bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=" +
+          rasterLayer;
+        console.log(mvtUrl, wmsRasterUrl);
+        // use the tiles url query on index service
+        // to add a source to the map
+        setMapSources((prev) => {
+          return {
+            ...prev,
+            "index-src": {
+              type: "vector",
+              tiles: [mvtUrl],
+            },
+          };
+        });
+
+        // add the index sheets outline layer
+        setMapLayers((prev) => [
+          ...prev,
+          {
+            id: "index-layer",
+            type: "line",
+            source: "index-src",
+            "source-layer": boundaryLayer,
+            layout: { visibility: "none" },
+            interactive: true,
+            paint: {
+              // hover state is set here using a case expression
+              // if hover is false, then color should be grey
+              // if hover is true then color should be blue
+              "line-color": [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                "#111",
+                "#333",
+              ],
+              "line-width": [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                2.5,
+                1.5,
+              ],
+              "line-opacity": 1,
+            },
+            label: "Index",
+          },
+        ]);
+
+        // use the wms url query on index service
+        // to add a source to the map
+        setMapSources((prev) => {
+          return {
+            ...prev,
+            "preview-src": {
+              type: "raster",
+              tiles: [wmsRasterUrl],
+              tileSize: 256,
+            },
+          };
+        });
+
+        // add the index sheets raster layer
+        setMapLayers((prev) => [
+          ...prev,
+          {
+            id: "preview-layer",
+            label: "Preview",
+            type: "raster",
+            source: "preview-src",
+            layout: { visibility: "none" },
+          },
+        ]);
+      }
     }
   }, [map, collectionContents, setMapSources, setMapLayers]);
   //remove preview layers and sources on unmounting with cleanup fn
@@ -82,21 +177,39 @@ export default function CollectionTabsContainer({ collection }) {
     return () => {
       if (
         map &&
-        map.getLayer("wms-preview-layer") &&
-        map.getSource("wms-preview")
+        map.getLayer("preview-layer") &&
+        map.getSource("preview-src")
       ) {
         setMapLayers((prev) =>
-          [...prev].filter((layer) => layer.id !== "wms-preview-layer")
+          [...prev].filter((layer) => layer.id !== "preview-layer")
         );
-        map.removeLayer("wms-preview-layer");
+        map.removeLayer("preview-layer");
         setMapSources((prev) => {
           //make a copy of prev, since it is immutable in recoil
           const newData = { ...prev };
-          delete newData["wms-preview"];
+          delete newData["preview-src"];
 
           return newData;
         });
-        map.removeSource("wms-preview");
+        map.removeSource("preview-src");
+      }
+      if (
+        map &&
+        map.getLayer("index-layer") &&
+        map.getSource("index-src")
+      ) {
+        setMapLayers((prev) =>
+          [...prev].filter((layer) => layer.id !== "index-layer")
+        );
+        map.removeLayer("index-layer");
+        setMapSources((prev) => {
+          //make a copy of prev, since it is immutable in recoil
+          const newData = { ...prev };
+          delete newData["index-src"];
+
+          return newData;
+        });
+        map.removeSource("index-src");
       }
     };
   }, [map, setMapLayers, setMapSources]);

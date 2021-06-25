@@ -58,7 +58,7 @@ export function MapControlPanel() {
 
   return (
     <>
-      <Row justify="start" gutter={[0, 16]} id="MapLayerControls">
+      <Row justify="start" gutter={[0, 8]} id="MapLayerControls">
         <MapLayer
           key={"satellite-basemap-layer_1"}
           sourceId={"satellite-basemap"}
