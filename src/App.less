@@ -17,9 +17,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   background: #2a2b2e;
-  border-bottom: solid 2px @primary-color;
+  //border-bottom: solid 2px @primary-color;
 
   .BrandBar {
     min-width: 25%;
@@ -32,7 +32,6 @@
       .TnrisLogo {
         width: 4rem;
       }
-
       a {
         color: white;
       }
@@ -43,7 +42,7 @@
 .CatalogSearchBar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 400px));
-  gap: @padding-xs;
+  gap: calc(@padding-xs / 2);
   padding: @padding-md @padding-md 0 @padding-md;
   max-width: 100%;
   background: #2a2b2e;
@@ -75,7 +74,7 @@
   background: #2a2b2e;
 }
 .FilterBar {
-  gap: @padding-xs;
+  gap: calc(@padding-xs / 2);
 }
 .content {
   grid-area: content;
@@ -103,7 +102,6 @@
   height: 100%;
 
   .MapContainer {
-    
     height: 100%;
     @media (max-width: @screen-lg) {
       height: 30%;
