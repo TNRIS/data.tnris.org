@@ -9,7 +9,14 @@ import GA4React from "ga-4-react";
 const ga4react = new GA4React("G-9X735VQZZB");
 
 (async () => {
-  await ga4react.initialize();
+  try {
+    await ga4react.initialize();
+  } catch (e) {
+    console.log(e);
+    console.log(
+      "Google Tag Manager failed to Initialize. The client is likely using an Ad Blocker. To avoid this error, turn off Ad Blockers for this site."
+    );
+  }
   ReactDOM.render(
     <React.StrictMode>
       <RecoilRoot>
