@@ -268,11 +268,14 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
 
   useEffect(() => {
     zoomToFeatures(map, areaTypes[areaTypeSelection], 100);
+  }, [areaTypeSelection, map, areaTypes, setActiveTab]);
+
+  useEffect(() => {
     //reset active tab to "0" on unmount
     return () => {
       setActiveTab("0");
     };
-  }, [areaTypeSelection, map, areaTypes, setActiveTab]);
+  }, [setActiveTab]);
 
   return (
     <div style={{ padding: "1rem" }}>
