@@ -82,7 +82,7 @@ function ContemporaryMeta({ metadata }) {
                 margin: 0,
               }}
             >
-              detailed metadata
+              metadata
             </h3>
           }
         >
