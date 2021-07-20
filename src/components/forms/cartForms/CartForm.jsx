@@ -21,7 +21,7 @@ export function CartForm() {
       validateFields: [],
     },
     {
-      title: "Requestor Details",
+      title: "Personal Info",
       content: <RequestorDetailsFields form={form} />,
       validateFields: [
         "First Name",
