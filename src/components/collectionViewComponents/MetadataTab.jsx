@@ -136,7 +136,7 @@ function HistoricMeta({ metadata }) {
                 margin: 0,
               }}
             >
-              detailed metadata
+              metadata
             </h3>
           }
         >
