@@ -1,22 +1,26 @@
 // Package imports
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import bboxPolygon from "@turf/bbox-polygon";
+import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
 import "maplibre-gl/dist/maplibre-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
-  geoFilterSelectedResult,
+  geoSearchBboxAtom,
   mapBounds,
 } from "../utilities/atoms/geofilterAtoms";
-import { mapAtom } from "../utilities/atoms/mapAtoms";
+import { drawControlsAtom, mapAtom } from "../utilities/atoms/mapAtoms";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
 import { NavigateToExtentControl } from "../utilities/mapHelpers/navigateToExtentControl.js";
 import { MapControlPanel } from "./MapControlPanel";
 
 export function MapContainer() {
   const location = useLocation();
-  const geoFilterSelection = useRecoilValue(geoFilterSelectedResult);
+  const geoSearchBbox = useRecoilValue(geoSearchBboxAtom);
   const [map, setMap] = useRecoilState(mapAtom);
+  const setDrawControls = useSetRecoilState(drawControlsAtom);
   const [bounds, setBounds] = useRecoilState(mapBounds);
   const [zoom] = useState(5.5);
   const MapContainer = useRef(null);
@@ -42,8 +46,24 @@ export function MapContainer() {
       // Instantiate custom navigation control and add it to the map
       const navigateToExtentControl = new NavigateToExtentControl(map);
       map.addControl(navigateToExtentControl, "top-right");
+
+      const modes = MapboxDraw.modes;
+      modes.draw_rectangle = DrawRectangle;
+
+      const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        modes: modes,
+        controls: {
+          simple_select: false,
+          draw_rectangle: false,
+          trash: false,
+        },
+      });
+      map.addControl(draw);
+      setDrawControls(draw);
+
       map.on("moveend", () => {
-        setBounds(JSON.stringify(map.getBounds()));
+        //setBounds(JSON.stringify(map.getBounds()));
       });
       map.on("load", () => {
         // Store map object in Recoil Atom
@@ -54,9 +74,9 @@ export function MapContainer() {
     if (!map) {
       initializeMap({ setMap, MapContainer });
     }
-  }, [map, bounds, setBounds, zoom, setMap]);
+  }, [map, bounds, setBounds, zoom, setMap, setDrawControls]);
 
-  // Show geofilter search geometry when available
+  // Show  geoSearchBbox geometry when available
   useEffect(() => {
     // Only animate to geosearch layer when at root "/" path
     // Check that map is initialized
@@ -68,12 +88,12 @@ export function MapContainer() {
         map.removeLayer("geofilter-layer");
         map.removeSource("geofilter-source");
       }
-      // Check if geoFilterSelection atom is populated with search result
-      if (geoFilterSelection) {
+      // Check if geoSearchBbox atom is populated with search result
+      if (geoSearchBbox) {
         // If so, add source from geojson and layer from source
         map.addSource("geofilter-source", {
           type: "geojson",
-          data: geoFilterSelection,
+          data: bboxPolygon(geoSearchBbox.split(",")),
         });
         map.addLayer({
           id: "geofilter-layer",
@@ -86,11 +106,9 @@ export function MapContainer() {
             "line-width": 4,
           },
         });
-        // After adding layer, fit bounds to selection
-        // map.fitBounds(geoFilterSelection.bbox, { padding: 100 });
       }
     }
-  }, [geoFilterSelection, map, location]);
+  }, [geoSearchBbox, map, location]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the

@@ -1,10 +1,15 @@
 import { Button } from "antd";
 import { useHistory, useLocation } from "react-router";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { geoSearchBboxAtom } from "../../../utilities/atoms/geofilterAtoms";
+import { drawControlsAtom } from "../../../utilities/atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 
 export function ClearAllFilters(props) {
   const history = useHistory();
   const { search } = useLocation();
+  const setGeoSearchBbox = useSetRecoilState(geoSearchBboxAtom);
+  const drawControls = useRecoilValue(drawControlsAtom);
   const clearFiltersKeys = [
     "availability",
     "category",
@@ -31,6 +36,10 @@ export function ClearAllFilters(props) {
                 search
               ),
             });
+            setGeoSearchBbox(null);
+            if (drawControls) {
+              drawControls.deleteAll();
+            }
           }}
         >
           Clear all filters &#10005;

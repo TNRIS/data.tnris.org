@@ -4,8 +4,7 @@ export const geoFilterSearchText = atom({
   key: "geoFilterSearchText",
   default: "",
 });
-
-export const fetchGeofilterSearchResults = selector({
+export const fetchGeocoderSearchResults = selector({
   key: "fetchGeoFilterSearchResults",
   get: async ({ get }) => {
     const searchText = get(geoFilterSearchText);
@@ -15,18 +14,11 @@ export const fetchGeofilterSearchResults = selector({
     return response.json();
   },
 });
-
-export const geoFilterSelectedResult = atom({
-  key: "geoFitlerSelectedResult",
+export const geoSearchBboxAtom = atom({
+  key: "geoFilterSelectedResultBboxSelector",
   default: null,
 });
-
-export const hoverPreviewCoverageCounties = atom({
-  key: "hoverPreviewCoverageCounties",
-  default: [],
-});
-
 export const mapBounds = atom({
   key: "mapBounds",
-  default: {lng: -99.341389, lat: 31.33}
-})
+  default: { lng: -99.341389, lat: 31.33 },
+});

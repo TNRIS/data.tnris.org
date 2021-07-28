@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { geoFilterSelectedResult } from "./geofilterAtoms";
+import { geoFilterSelectedResult, geoSearchBboxAtom } from "./geofilterAtoms";
 import { searchString } from "./urlFactoryAtoms";
 
 // parse pg from url, if present. If not, default to 1
@@ -130,10 +130,11 @@ export const catalogBBoxSelector = selector({
   key: "catalogBBoxSelector",
   default: null,
   get: ({ get }) => {
-    const geo = get(geoFilterSelectedResult);
-    
-    if (geo !== null) {
-      return `&in_bbox=${geo.bbox.toString()}`
+    //const geo = get(geoFilterSelectedResult);
+    const bb = get(geoSearchBboxAtom)
+
+    if (bb !== null) {
+      return `&in_bbox=${bb}`
     } else {
       return ""
     }
