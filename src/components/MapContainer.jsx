@@ -1,15 +1,15 @@
 // Package imports
-import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import bboxPolygon from "@turf/bbox-polygon";
 import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
+import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   geoSearchBboxAtom,
-  mapBounds,
+  mapBoundsAtom,
 } from "../utilities/atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../utilities/atoms/mapAtoms";
 import useQueryParam from "../utilities/custom-hooks/useQueryParam";
@@ -21,7 +21,7 @@ export function MapContainer() {
   const geoSearchBbox = useRecoilValue(geoSearchBboxAtom);
   const [map, setMap] = useRecoilState(mapAtom);
   const setDrawControls = useSetRecoilState(drawControlsAtom);
-  const [bounds, setBounds] = useRecoilState(mapBounds);
+  const [bounds, setBounds] = useRecoilState(mapBoundsAtom);
   const [zoom] = useState(5.5);
   const MapContainer = useRef(null);
 

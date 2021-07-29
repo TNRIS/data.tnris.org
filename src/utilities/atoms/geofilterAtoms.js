@@ -1,13 +1,13 @@
 import { atom, selector } from "recoil";
 
-export const geoFilterSearchText = atom({
-  key: "geoFilterSearchText",
+export const geoFilterSearchTextAtom = atom({
+  key: "geoFilterSearchTextAtom",
   default: "",
 });
-export const fetchGeocoderSearchResults = selector({
-  key: "fetchGeoFilterSearchResults",
+export const fetchGeocoderSearchResultsSelector = selector({
+  key: "fetchGeoFilterSearchResultsSelector",
   get: async ({ get }) => {
-    const searchText = get(geoFilterSearchText);
+    const searchText = get(geoFilterSearchTextAtom);
     const response = await fetch(
       `https://nominatim.tnris.org/search/${searchText}?format=geojson&polygon_geojson=1`
     );
@@ -18,7 +18,7 @@ export const geoSearchBboxAtom = atom({
   key: "geoFilterSelectedResultBboxSelector",
   default: null,
 });
-export const mapBounds = atom({
-  key: "mapBounds",
+export const mapBoundsAtom = atom({
+  key: "mapBoundsAtom",
   default: { lng: -99.341389, lat: 31.33 },
 });

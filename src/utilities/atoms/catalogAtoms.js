@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { geoFilterSelectedResult, geoSearchBboxAtom } from "./geofilterAtoms";
+import { geoSearchBboxAtom } from "./geofilterAtoms";
 import { searchString } from "./urlFactoryAtoms";
 
 // parse pg from url, if present. If not, default to 1
@@ -95,51 +95,52 @@ export const catalogDateRangeSelector = selector({
   key: "catalogDateRangeSelector",
   default: null,
   get: ({ get }) => {
-    const urlParams = get(searchString)
-    const dr = new URLSearchParams(urlParams).get("dates")
-    const drToArray = dr ? dr.split(",").map(v => `01-01-${Number(v)+1}`) : null
-    if(drToArray){
-      return `&acquisition_date__gte=${drToArray[0]}&acquisition_date__lte=${drToArray[1]}`
+    const urlParams = get(searchString);
+    const dr = new URLSearchParams(urlParams).get("dates");
+    const drToArray = dr
+      ? dr.split(",").map((v) => `01-01-${Number(v) + 1}`)
+      : null;
+    if (drToArray) {
+      return `&acquisition_date__gte=${drToArray[0]}&acquisition_date__lte=${drToArray[1]}`;
+    } else {
+      return "";
     }
-    else {
-      return ""
-    }
-  }
-})
+  },
+});
 export const catalogSortSelector = selector({
   key: "catalogSortSelector",
   default: null,
-  get: ({get}) => {
-    const urlParams = get(searchString)
-    const sort = new URLSearchParams(urlParams).get("sort")
-    switch(true){
+  get: ({ get }) => {
+    const urlParams = get(searchString);
+    const sort = new URLSearchParams(urlParams).get("sort");
+    switch (true) {
       case sort === "NEWEST":
-        return "&ordering=-acquisition_date"
+        return "&ordering=-acquisition_date";
       case sort === "OLDEST":
-        return "&ordering=acquisition_date"
+        return "&ordering=acquisition_date";
       case sort === "AZ":
-        return "&ordering=name"
+        return "&ordering=name";
       case sort === "ZA":
-        return "&ordering=-name"
+        return "&ordering=-name";
       default:
-        return "&ordering=-acquisition_date"
+        return "&ordering=-acquisition_date";
     }
-  }
-})
+  },
+});
 export const catalogBBoxSelector = selector({
   key: "catalogBBoxSelector",
   default: null,
   get: ({ get }) => {
     //const geo = get(geoFilterSelectedResult);
-    const bb = get(geoSearchBboxAtom)
+    const bb = get(geoSearchBboxAtom);
 
     if (bb !== null) {
-      return `&in_bbox=${bb}`
+      return `&in_bbox=${bb}`;
     } else {
-      return ""
+      return "";
     }
-  }
-})
+  },
+});
 export const fetchCatalogCollectionsSelector = selector({
   key: "fetchCollectionsSelector",
   get: async ({ get }) => {

@@ -1,11 +1,11 @@
+import bbox from "@turf/bbox";
 import { Checkbox, Empty, Select, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
-import bbox from "@turf/bbox";
 import {
-  fetchGeocoderSearchResults,
-  geoFilterSearchText,
+  fetchGeocoderSearchResultsSelector,
+  geoFilterSearchTextAtom,
   geoSearchBboxAtom,
 } from "../../../utilities/atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../utilities/atoms/mapAtoms";
@@ -19,12 +19,14 @@ export function GeoFilterSearchBar(props) {
   const map = useRecoilValue(mapAtom);
 
   const [drawMode, setDrawMode] = useState(false);
+  const [geoSearchSelectionText, setGeoSearchSelectionText] = useState("");
   const drawControls = useRecoilValue(drawControlsAtom);
   const { state, contents } = useRecoilValueLoadable(
-    fetchGeocoderSearchResults
+    fetchGeocoderSearchResultsSelector
   );
-  const [geoSearchInputText, setGeoSearchInputText] =
-    useRecoilState(geoFilterSearchText);
+  const [geoSearchInputText, setGeoSearchInputText] = useRecoilState(
+    geoFilterSearchTextAtom
+  );
   const [geoSearchBbox, setGeoSearchBbox] = useRecoilState(geoSearchBboxAtom);
 
   //if the geo param is set on page load, register it as the search text
@@ -57,9 +59,9 @@ export function GeoFilterSearchBar(props) {
     // this clears the input and item from the map
     if (!geo) {
       setGeoSearchBbox(null);
-      setGeoSearchInputText(null);
+      setGeoSearchSelectionText(null);
     }
-  }, [geo, setGeoSearchBbox, setGeoSearchInputText]);
+  }, [geo, setGeoSearchBbox, setGeoSearchSelectionText]);
 
   useEffect(() => {
     if (geoSearchBbox && map) {
@@ -85,7 +87,7 @@ export function GeoFilterSearchBar(props) {
   useEffect(() => {
     if (drawControls && map) {
       const drawLayerFn = (layer) => {
-        console.log(layer);
+        setGeoSearchSelectionText("Custom boundary");
         history.push({
           search: changeParams(
             [
@@ -142,12 +144,14 @@ export function GeoFilterSearchBar(props) {
           loading={state === "loading"}
           onClear={handleClear}
           // value is set to selection from dropdown if selection made, else, null
-          value={geoSearchBbox ? geoSearchBbox : null}
+          value={geoSearchSelectionText}
           // on selection change, set URI
           // and set geoSearchInputTextAtom and geoSearchBboxAtom
           onChange={(v) => {
             if (contents.features[v]?.properties) {
-              //console.log(v, contents.features[v]);
+              setGeoSearchSelectionText(() => {
+                return contents.features[v].properties.display_name;
+              });
               history.push({
                 search: changeParams(
                   [
@@ -161,9 +165,6 @@ export function GeoFilterSearchBar(props) {
                 ),
               });
               setGeoSearchBbox(contents.features[v].bbox);
-              setGeoSearchInputText(
-                contents.features[v].properties.display_name
-              );
             }
           }}
           className="GeoFilterSearchBar"
