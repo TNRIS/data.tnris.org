@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeocoderSearchResultsSelector,
   geoFilterSearchTextAtom,
-  geoSearchBboxAtom,
+  geoSearchBboxAtom
 } from "../../../utilities/atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../utilities/atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
@@ -15,6 +15,7 @@ import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
 export function GeoFilterSearchBar(props) {
   const history = useHistory();
   const geo = useQueryParam().get("geo");
+  const showMap = useQueryParam().get("map");
   const search = useLocation().search;
   const map = useRecoilValue(mapAtom);
 
@@ -185,7 +186,22 @@ export function GeoFilterSearchBar(props) {
       )}
       <Checkbox
         checked={drawMode}
-        onChange={() => setDrawMode((currentMode) => !currentMode)}
+        onChange={() =>
+          setDrawMode((currentMode) => {
+            if (!currentMode && showMap !== true) {
+              history.push({
+                search: changeParams([
+                  {
+                    key: "map",
+                    value: true,
+                    ACTION: "set",
+                  },
+                ]),
+              });
+            }
+            return !currentMode;
+          })
+        }
       >
         Draw search boundary
       </Checkbox>
