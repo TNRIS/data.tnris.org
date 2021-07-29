@@ -5,3 +5,9 @@ export const mapAtom = atom({
   default: null,
   dangerouslyAllowMutability: true,
 });
+
+export const drawControlsAtom = atom({
+  key: "drawControlsAtom",
+  default: null,
+  dangerouslyAllowMutability: true,
+});

@@ -64,7 +64,7 @@ export function FilterBar() {
 
       <Sort />
 
-      <ClearAllFilters style={{ color: "white" }} />
+      <ClearAllFilters />
     </Row>
   );
 }
