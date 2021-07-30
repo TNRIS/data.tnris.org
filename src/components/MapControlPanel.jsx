@@ -38,7 +38,7 @@ export const LayersIcon = (props) => (
 export const sourcesAtom = atom({
   key: "sourcesAtom",
   default: {
-    "satellite-basemap": {
+    "imagery-basemap": {
       type: "raster",
       tiles: [
         "https://imagery.tnris.org/server/services/NAIP/NAIP18_NCCIR_60cm/ImageServer/WMSServer?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=0",
@@ -60,16 +60,16 @@ export function MapControlPanel() {
     <>
       <Row justify="start" gutter={[0, 8]} id="MapLayerControls">
         <MapLayer
-          key={"satellite-basemap-layer_1"}
-          sourceId={"satellite-basemap"}
-          source={sources["satellite-basemap"]}
+          key={"imagery-basemap-layer_1"}
+          sourceId={"imagery-basemap"}
+          source={sources["imagery-basemap"]}
           layer={{
-            id: "satellite-basemap-layer",
+            id: "imagery-basemap-layer",
             type: "raster",
-            source: "satellite-basemap",
-            label: "Satellite",
+            source: "imagery-basemap",
+            label: "Imagery",
           }}
-          label={"Satellite"}
+          label={"Imagery"}
           defaultVisibility={false}
         />
         {location.pathname === "/collection" &&
