@@ -206,7 +206,7 @@ export function HyperLink({ url, text, label }) {
 ////////////////////////////////////////////////////////////////////////
 export function CollectionDescription({ about }) {
   return (
-    <Card size="small">
+    <Card size="small" className="DescriptionCard">
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         description
       </h3>
