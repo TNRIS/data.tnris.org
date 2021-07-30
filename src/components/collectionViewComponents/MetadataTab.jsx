@@ -96,7 +96,7 @@ function ContemporaryMeta({ metadata }) {
                   <a href={`mailto:${metadata[k.key]}`}>{metadata[k.key]}</a>
                 )}
                 {urlRegex.test(metadata[k.key]) && (
-                  <a href={`${metadata[k.key]}`}>{metadata[k.key]}</a>
+                  <a target="_blank" rel="noreferrer" href={`${metadata[k.key]}`}>{metadata[k.key]}</a>
                 )}
                 {!emailRegex.test(metadata[k.key]) &&
                   !urlRegex.test(metadata[k.key]) && (
