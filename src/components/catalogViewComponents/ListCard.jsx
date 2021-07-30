@@ -57,7 +57,7 @@ export function CatalogListCard({ collection }) {
               <Row gutter={[8, 0]}>
                 <Col span={24} className="CatalogCardMetaTagContainer">
                   <Row>
-                    <Tag style={{border: "1px solid #C2960C", color:"#C2960C", background:"#C2960C35", textShadow: "1px 1px black"}}>
+                    <Tag style={{border: "1px solid #C2960C", color:"#C2960C", background:"#00000070", textShadow: "1px 1px black"}}>
                       <strong>{new Date(collection.acquisition_date).getFullYear()}</strong>
                     </Tag>
                   </Row>
@@ -66,7 +66,7 @@ export function CatalogListCard({ collection }) {
                   <Row>
                     {collection.category &&
                       collection.category.split(",").map((v) => (
-                        <Tag style={{border: "1px solid #15C29B", color:"#15C29B", background:"#15C29B35", textShadow: "1px 1px black"}} key={v}>
+                        <Tag style={{border: "1px solid #15C29B", color:"#15C29B", background:"#00000070", textShadow: "1px 1px black"}} key={v}>
                           <strong>{v.replace("_", " ")}</strong>
                         </Tag>
                       ))}
@@ -76,7 +76,7 @@ export function CatalogListCard({ collection }) {
                   <Row>
                     {collection.availability &&
                       collection.availability.split(",").map((v) => (
-                        <Tag key={v} style={{border: "1px solid #fff", color:"#fff", background:"#ffffff35", textShadow: "1px 1px black"}}>
+                        <Tag key={v} style={{border: "1px solid #fff", color:"#fff", background:"#00000070", textShadow: "1px 1px black"}}>
                           <strong>{v.replace("_", " ")}</strong>
                         </Tag>
                       ))}
