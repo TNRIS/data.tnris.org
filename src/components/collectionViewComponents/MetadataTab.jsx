@@ -195,7 +195,9 @@ export function HyperLink({ url, text, label }) {
   return (
     <div>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>{label}</h3>
-      <Link to={url}>{text}</Link>
+      <a href={url} rel="noreferrer" target="_blank">
+        {text}
+      </a>
     </div>
   );
 }
