@@ -222,7 +222,9 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
           showLayer(`${v.type}-select`, map);
         }
       });
-      let popup = new Popup();
+      let popup = new Popup({
+        closeButton:false
+      });
       let hoveredStateId = null;
       // When the user moves their mouse over the hover layer, update
       // the feature state for the feature under the mouse.
