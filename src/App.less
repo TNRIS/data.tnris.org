@@ -222,7 +222,14 @@
         .search,
         #MetadataTabContentContainer {
           padding: @padding-xs;
+
+          .DescriptionCard {
+            white-space: break-spaces;
+          }
         }
+      }
+      .ant-card-body::before {
+        display: none;
       }
     }
   }

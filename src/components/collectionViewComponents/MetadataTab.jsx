@@ -96,7 +96,7 @@ function ContemporaryMeta({ metadata }) {
                   <a href={`mailto:${metadata[k.key]}`}>{metadata[k.key]}</a>
                 )}
                 {urlRegex.test(metadata[k.key]) && (
-                  <a href={`${metadata[k.key]}`}>{metadata[k.key]}</a>
+                  <a target="_blank" rel="noreferrer" href={`${metadata[k.key]}`}>{metadata[k.key]}</a>
                 )}
                 {!emailRegex.test(metadata[k.key]) &&
                   !urlRegex.test(metadata[k.key]) && (
@@ -195,7 +195,9 @@ export function HyperLink({ url, text, label }) {
   return (
     <div>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>{label}</h3>
-      <Link to={url}>{text}</Link>
+      <a href={url} rel="noreferrer" target="_blank">
+        {text}
+      </a>
     </div>
   );
 }
@@ -204,7 +206,7 @@ export function HyperLink({ url, text, label }) {
 ////////////////////////////////////////////////////////////////////////
 export function CollectionDescription({ about }) {
   return (
-    <Card size="small">
+    <Card size="small" className="DescriptionCard">
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         description
       </h3>

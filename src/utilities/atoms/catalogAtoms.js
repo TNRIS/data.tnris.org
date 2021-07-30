@@ -148,7 +148,8 @@ export const fetchCatalogCollectionsSelector = selector({
     const increment = get(catalogIncrementSelector);
     const offset = page <= 1 ? "" : `offset=${(page - 1) * increment}&`;
     //get search
-    const search = get(catalogSearchSelector);
+    const search = "&" + get(catalogSearchSelector).substr(1).replaceAll("&", "%26")
+    console.log(search)
     //get filters
     const availability = get(catalogAvailabilitySelector);
     const category = get(catalogCategorySelector);
@@ -156,8 +157,10 @@ export const fetchCatalogCollectionsSelector = selector({
     const acquisitionDateRange = get(catalogDateRangeSelector);
     const ordering = get(catalogSortSelector);
     const bbox = get(catalogBBoxSelector);
+    //combine params into uri
+    const uri = `${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}${ordering}`
     const response = await fetch(
-      `https://api.tnris.org/api/v1/collections_catalog/?${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}${ordering}`,
+      `https://api.tnris.org/api/v1/collections_catalog/?${uri}`,
       {
         headers: {
           "Content-Type": "application/json",
