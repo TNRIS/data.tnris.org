@@ -1,4 +1,5 @@
 import { Form, Radio } from "antd";
+import { useEffect } from "react";
 
 const paymentOptions = [
   { label: "Credit Card", value: "Credit Card" },
@@ -8,26 +9,41 @@ const paymentOptions = [
 ];
 
 const disabledOption = (deliveryValue) => {
-  switch(true){
-    case deliveryValue === "ZIP" || deliveryValue === "USPS":
-      return [0,1]
+  switch (true) {
+    case deliveryValue === "ZIP":
+      return [];
+    case deliveryValue === "USPS":
+      return [0, 1];
     case deliveryValue === "FEDEX":
-      return [0,1,2]
+      return [0, 1, 2];
     case deliveryValue === "PICKUP":
-      return [0,1,3]
-    default: 
-      return [0,1,2,3]
+      return [0, 1, 3];
+    default:
+      return [0, 1, 2, 3];
   }
 };
 export function PaymentFields({ form }) {
-  const selectable = disabledOption(form.getFieldValue("Delivery Method"));
+  const deliveryMethod = form.getFieldValue("Delivery Method");
+  const selectable = disabledOption(deliveryMethod);
+
+  useEffect(() => {
+    if (deliveryMethod === "ZIP") {
+      form.setFieldsValue({ "Payment Method": "N/A" });
+    }
+  });
+
   return (
-    <>
-      <Form.Item
-        name="Payment Method"
-        help="Once a quote for your order has been completed, TNRIS will contact you for payment details."
-        rules={[{required: true}]}
-      >
+    <Form.Item
+      name="Payment Method"
+      help="Once a quote for your order has been completed, TNRIS will contact you for payment details."
+      rules={[{ required: true }]}
+    >
+      {form.getFieldValue("Delivery Method") === "ZIP" && (
+        <div>
+          <strong>Pre-prepared ZIP files are provided free of charge and delivered to you by email. Please proceed without selecting a payment method.</strong>
+        </div>
+      )}
+      {deliveryMethod !== "ZIP" && (
         <Radio.Group>
           {paymentOptions.map((v, i) => (
             <Radio
@@ -40,7 +56,7 @@ export function PaymentFields({ form }) {
             </Radio>
           ))}
         </Radio.Group>
-      </Form.Item>
-    </>
+      )}
+    </Form.Item>
   );
 }

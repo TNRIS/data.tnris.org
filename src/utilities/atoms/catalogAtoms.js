@@ -149,7 +149,6 @@ export const fetchCatalogCollectionsSelector = selector({
     const offset = page <= 1 ? "" : `offset=${(page - 1) * increment}&`;
     //get search
     const search = "&" + get(catalogSearchSelector).substr(1).replaceAll("&", "%26")
-    console.log(search)
     //get filters
     const availability = get(catalogAvailabilitySelector);
     const category = get(catalogCategorySelector);

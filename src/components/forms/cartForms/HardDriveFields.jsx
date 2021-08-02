@@ -47,7 +47,7 @@ export function HardDriveFields({ form }) {
               </Radio.Group>
             </Form.Item>
           ) : (
-            form.setFieldsValue({ "Hard Drive": null })
+            form.setFieldsValue({ "Hard Drive": "none" })
           );
         }}
       </Form.Item>
