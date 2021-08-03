@@ -34,10 +34,10 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
   const [areaHover, setAreaHover] = useState();
 
   useEffect(() => {
-    if(map && areaTypes && opts && opts.length === 1 && opts[0].type === "state"){
-      setSelectedAreas( prev => [...prev, areaTypes[opts[0].type].features[0].properties.area_type_id])
+    if(map && areaTypes && opts && areaTypeSelection === "state"){
+      setSelectedAreas( prev => [...prev, areaTypes["state"].features[0].properties.area_type_id])
     }
-  }, [opts, areaTypes, setSelectedAreas, map])
+  }, [opts, areaTypes, setSelectedAreas, areaTypeSelection, map])
   // Add the area type layers when the component mounts
   useEffect(() => {
     if (map) {
