@@ -1,12 +1,13 @@
+import { CloseCircleOutlined } from "@ant-design/icons";
 import bbox from "@turf/bbox";
-import { Checkbox, Empty, Select, Spin } from "antd";
+import { Button, Checkbox, Empty, Select, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeocoderSearchResultsSelector,
   geoFilterSearchTextAtom,
-  geoSearchBboxAtom
+  geoSearchBboxAtom,
 } from "../../../utilities/atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../utilities/atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
@@ -20,7 +21,7 @@ export function GeoFilterSearchBar(props) {
   const map = useRecoilValue(mapAtom);
 
   const [drawMode, setDrawMode] = useState(false);
-  const [geoSearchSelectionText, setGeoSearchSelectionText] = useState("");
+  const [geoSearchSelectionText, setGeoSearchSelectionText] = useState();
   const drawControls = useRecoilValue(drawControlsAtom);
   const { state, contents } = useRecoilValueLoadable(
     fetchGeocoderSearchResultsSelector
@@ -35,6 +36,7 @@ export function GeoFilterSearchBar(props) {
   if (geo) {
     setGeoSearchBbox(geo);
   }
+  // handler for clearing drawn geosearch boundary
   const handleClear = () => {
     history.push({
       pathname: "/",
@@ -52,6 +54,10 @@ export function GeoFilterSearchBar(props) {
     setGeoSearchBbox(null);
     if (drawControls && map) {
       drawControls.deleteAll();
+
+      if (drawMode) {
+        drawControls.changeMode("draw_rectangle");
+      }
     }
   };
 
@@ -61,6 +67,13 @@ export function GeoFilterSearchBar(props) {
     if (!geo) {
       setGeoSearchBbox(null);
       setGeoSearchSelectionText(null);
+    } else {
+      setGeoSearchSelectionText((cur) => {
+        if (!cur) {
+          return "Custom search boundary";
+        }
+        return cur;
+      });
     }
   }, [geo, setGeoSearchBbox, setGeoSearchSelectionText]);
 
@@ -88,7 +101,7 @@ export function GeoFilterSearchBar(props) {
   useEffect(() => {
     if (drawControls && map) {
       const drawLayerFn = (layer) => {
-        setGeoSearchSelectionText("Custom boundary");
+        setGeoSearchSelectionText("Custom search boundary");
         history.push({
           search: changeParams(
             [
@@ -129,7 +142,7 @@ export function GeoFilterSearchBar(props) {
       {true && (
         <Select
           showSearch
-          placeholder="Search collections by location"
+          placeholder="Search collections by location bbox"
           searchValue={geoSearchInputText}
           // set geoFilterSearchText atom
           // when geoFilterSearchText changes, the fetch geoFilterResults selector automatically re-runs the query to nominatim
@@ -184,27 +197,38 @@ export function GeoFilterSearchBar(props) {
             ))}
         </Select>
       )}
-      <Checkbox
-        checked={drawMode}
-        onChange={() =>
-          setDrawMode((currentMode) => {
-            if (!currentMode && showMap !== true) {
-              history.push({
-                search: changeParams([
-                  {
-                    key: "map",
-                    value: true,
-                    ACTION: "set",
-                  },
-                ]),
-              });
-            }
-            return !currentMode;
-          })
-        }
-      >
-        Draw search boundary
-      </Checkbox>
+      <div style={{ display: "inline-block" }}>
+        <Checkbox
+          checked={drawMode}
+          onChange={() =>
+            setDrawMode((currentMode) => {
+              if (!currentMode && showMap !== true) {
+                history.push({
+                  search: changeParams([
+                    {
+                      key: "map",
+                      value: true,
+                      ACTION: "set",
+                    },
+                  ]),
+                });
+              }
+              return !currentMode;
+            })
+          }
+        >
+          Draw search boundary
+        </Checkbox>
+        {geo && (
+          <Button
+            icon={<CloseCircleOutlined />}
+            type="link"
+            onClick={() => handleClear()}
+          >
+            Clear search boundary
+          </Button>
+        )}
+      </div>
     </>
   );
 }

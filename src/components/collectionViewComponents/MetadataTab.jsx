@@ -56,11 +56,13 @@ const fields = {
 export function MetadataTab({ metadata }) {
   return (
     <div id="MetadataTabContentContainer">
-      {metadata && metadata.category.includes("Historic_Imagery") ? (
-        <HistoricMeta metadata={metadata} />
-      ) : (
-        <ContemporaryMeta metadata={metadata} />
-      )}
+      <div style={{ display: "grid", gap: ".25rem" }}>
+        {metadata && metadata.category.includes("Historic_Imagery") ? (
+          <HistoricMeta metadata={metadata} />
+        ) : (
+          <ContemporaryMeta metadata={metadata} />
+        )}
+      </div>
     </div>
   );
 }
@@ -69,7 +71,7 @@ export function MetadataTab({ metadata }) {
 //////////////////////////////////////////////////////////////////////////////////////////
 function ContemporaryMeta({ metadata }) {
   return (
-    <div style={{ display: "grid", gap: ".25rem" }}>
+    <>
       <CollectionDescription about={metadata.description} />
       <Collapse>
         <Collapse.Panel
@@ -123,12 +125,12 @@ function ContemporaryMeta({ metadata }) {
       <CollectionCitation metadata={metadata} />
 
       <CollectionSocialShare />
-    </div>
+    </>
   );
 }
 function HistoricMeta({ metadata }) {
   return (
-    <div style={{ display: "grid", gap: ".25rem" }}>
+    <>
       <CollectionDescription about={metadata.about} />
       <HistoricScanStatus status={metadata.fully_scanned} />
       <Collapse>
@@ -181,7 +183,7 @@ function HistoricMeta({ metadata }) {
       </Card>
       <CollectionCitation metadata={metadata} />
       <CollectionSocialShare />
-    </div>
+    </>
   );
 }
 //////////////////////////////////////////////
