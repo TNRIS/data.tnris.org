@@ -193,11 +193,7 @@ export default function CollectionTabsContainer({ collection }) {
         });
         map.removeSource("preview-src");
       }
-      if (
-        map &&
-        map.getLayer("index-layer") &&
-        map.getSource("index-src")
-      ) {
+      if (map && map.getLayer("index-layer") && map.getSource("index-src")) {
         setMapLayers((prev) =>
           [...prev].filter((layer) => layer.id !== "index-layer")
         );
@@ -261,6 +257,7 @@ export default function CollectionTabsContainer({ collection }) {
       <div id="TabsContainer">
         {collectionContents && (
           <PageHeader
+            avatar={{ src: collectionContents.thumbnail_image }}
             title={collectionContents.name}
             extra={
               <span>
@@ -269,7 +266,9 @@ export default function CollectionTabsContainer({ collection }) {
                 )}
               </span>
             }
-            onBack={() => (history.length > 0 ? history.goBack() : null)}
+            onBack={() => (history.length > 0 ? history.goBack() : history.push({
+              pathname: "/"
+            }))}
           />
         )}
         <div id={"TabContentContainer"}>

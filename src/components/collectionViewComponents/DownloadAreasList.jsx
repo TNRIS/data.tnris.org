@@ -33,6 +33,11 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
   );
   const [areaHover, setAreaHover] = useState();
 
+  useEffect(() => {
+    if(map && areaTypes && opts && areaTypeSelection === "state"){
+      setSelectedAreas( prev => [...prev, areaTypes["state"].features[0].properties.area_type_id])
+    }
+  }, [opts, areaTypes, setSelectedAreas, areaTypeSelection, map])
   // Add the area type layers when the component mounts
   useEffect(() => {
     if (map) {
@@ -278,6 +283,7 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
       setActiveTab("0");
     };
   }, [setActiveTab]);
+
 
   return (
     <div style={{ padding: "1rem" }}>

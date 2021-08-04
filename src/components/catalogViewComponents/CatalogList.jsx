@@ -1,4 +1,4 @@
-import { Col, Empty, Input, PageHeader, Spin } from "antd";
+import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
@@ -39,6 +39,24 @@ export function CatalogList() {
     fetchCatalogCollectionsSelector
   );
 
+  //if results returned, notify how many with toast
+  useEffect(() => {
+    if(state === "loading") {
+      message.loading({
+        content: `Searching for collections...`,
+        key: "catalogCount",
+        style: { position: "fixed", bottom: "2.4rem", },
+      })
+    }
+    if (state === "hasValue") {
+      message.success({
+        content: `${contents.count} collections found`,
+        key: "catalogCount",
+        style: { position: "fixed", bottom: "2.4rem", },
+      });
+    }
+  }, [state, contents]);
+
   return (
     <Col id={"CatalogViewContainer"}>
       <div>
@@ -60,6 +78,7 @@ export function CatalogList() {
         <Spin
           spinning={state === "loading"}
           tip={"Loading data collections, please wait"}
+          style={{ paddingTop: "124px" }}
         >
           {contents.results && contents.results.length > 0 && (
             <>
