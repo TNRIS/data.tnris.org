@@ -56,7 +56,7 @@ const fields = {
 export function MetadataTab({ metadata }) {
   return (
     <div id="MetadataTabContentContainer">
-      <div style={{ display: "grid", gap: ".25rem" }}>
+      <div>
         {metadata && metadata.category.includes("Historic_Imagery") ? (
           <HistoricMeta metadata={metadata} />
         ) : (
