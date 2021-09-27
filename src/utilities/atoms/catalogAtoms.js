@@ -1,7 +1,7 @@
 import { selector } from "recoil";
+import { bboxToWKTPolygon } from "../mapHelpers/bboxToWKTPolygon";
 import { geoSearchBboxAtom } from "./geofilterAtoms";
 import { searchString } from "./urlFactoryAtoms";
-
 // parse pg from url, if present. If not, default to 1
 export const catalogPageSelector = selector({
   key: "catalogPageSelector",
@@ -135,7 +135,8 @@ export const catalogBBoxSelector = selector({
     const bb = get(geoSearchBboxAtom);
 
     if (bb !== null) {
-      return `&in_bbox=${bb}`;
+      // convert bbox from uri param to polygon, check if the_geom intersects new bbox polygon
+      return `&the_geom__intersects=${bboxToWKTPolygon(bb.split(","))}`;
     } else {
       return "";
     }
@@ -148,7 +149,8 @@ export const fetchCatalogCollectionsSelector = selector({
     const increment = get(catalogIncrementSelector);
     const offset = page <= 1 ? "" : `offset=${(page - 1) * increment}&`;
     //get search
-    const search = "&" + get(catalogSearchSelector).substr(1).replaceAll("&", "%26")
+    const search =
+      "&" + get(catalogSearchSelector).substr(1).replaceAll("&", "%26");
     //get filters
     const availability = get(catalogAvailabilitySelector);
     const category = get(catalogCategorySelector);
@@ -157,7 +159,7 @@ export const fetchCatalogCollectionsSelector = selector({
     const ordering = get(catalogSortSelector);
     const bbox = get(catalogBBoxSelector);
     //combine params into uri
-    const uri = `${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}${ordering}`
+    const uri = `${offset}limit=${increment}${search}${availability}${category}${fileType}${acquisitionDateRange}${bbox}${ordering}`;
     const response = await fetch(
       `https://api.tnris.org/api/v1/collections_catalog/?${uri}`,
       {

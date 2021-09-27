@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeocoderSearchResultsSelector,
   geoFilterSearchTextAtom,
-  geoSearchBboxAtom,
+  geoSearchBboxAtom
 } from "../../../utilities/atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../utilities/atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
@@ -62,7 +62,7 @@ export function GeoFilterSearchBar(props) {
   };
 
   useEffect(() => {
-    // if geo param is null, setGeoSearchBbox to null and setGetoSearchInputText null
+    // if geo param is null, setGeoSearchBbox to null and setGeoSearchInputText null
     // this clears the input and item from the map
     if (!geo) {
       setGeoSearchBbox(null);
