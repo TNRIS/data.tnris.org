@@ -88,12 +88,7 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
                     "#fff",
                     "#73808c",
                   ],
-                  "fill-outline-color": [
-                    "case",
-                    ["boolean", ["feature-state", "hover"], false],
-                    "#1e8dc1",
-                    "#fff",
-                  ],
+                  "fill-outline-color": "#fff",
                   "fill-opacity": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
