@@ -36,7 +36,7 @@ export function HeaderContainer(props) {
               className="TnrisLogo"
               src="https://data.tnris.org/static/media/tnris_logo.1b5d784b.svg"
               alt="TNRIS Logo"
-              title="tnris.org"
+              title="data.tnris.org"
             />
           </Link>
         </div>

@@ -46,22 +46,19 @@ export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
           <Card
             bordered
             size="small"
-            style={{ border: hovered ? "solid black 1px" : "inherit" }}
+            //style={{ border: hovered ? "solid black 1px" : "inherit" }}
+            className={ hovered ? "ResourceCard ResourceCard__hovered" : "ResourceCard" }
           >
             <Row
               justify="space-between"
               align="middle"
-              style={{
-                background: "#73808c40",
-                padding: ".125rem .25rem",
-              }}
             >
               <Col>
-                <strong>
+                <h3 style={{ fontVariantCaps: "all-small-caps", fontWeight: "600" }}>
                   {resourcesContents.results[0].area_type_name +
                     " " +
                     resourcesContents.results[0].area_type}
-                </strong>
+                </h3>
               </Col>
               <Col>
                 <Button
