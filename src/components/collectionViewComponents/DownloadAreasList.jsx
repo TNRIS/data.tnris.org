@@ -64,7 +64,7 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
                 minzoom: 2,
                 maxzoom: 24,
                 paint: {
-                  "line-color": "#fff",
+                  "line-color": "#ffffff",
                   "line-width": 2.0,
                   "line-opacity": 0.75,
                 },
