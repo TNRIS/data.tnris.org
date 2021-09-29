@@ -34,10 +34,13 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
   const [areaHover, setAreaHover] = useState();
 
   useEffect(() => {
-    if(map && areaTypes && opts && areaTypeSelection === "state"){
-      setSelectedAreas( prev => [...prev, areaTypes["state"].features[0].properties.area_type_id])
+    if (map && areaTypes && opts && areaTypeSelection === "state") {
+      setSelectedAreas((prev) => [
+        ...prev,
+        areaTypes["state"].features[0].properties.area_type_id,
+      ]);
     }
-  }, [opts, areaTypes, setSelectedAreas, areaTypeSelection, map])
+  }, [opts, areaTypes, setSelectedAreas, areaTypeSelection, map]);
   // Add the area type layers when the component mounts
   useEffect(() => {
     if (map) {
@@ -53,19 +56,26 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
               promoteId: "area_type_id",
             });
             // Add base outline layer for areas
-            map.addLayer({
-              id: `${k}-outline`,
-              type: "line",
-              source: `${k}-source`,
-              minzoom: 2,
-              maxzoom: 24,
-              paint: {
-                "line-color": "#fff",
-                "line-width": 2.0,
-                "line-opacity": 0.75,
-              },
-              layout: { visibility: "none" },
-            });
+            map.addLayer(
+              {
+                id: `${k}-outline`,
+                type: "line",
+                source: `${k}-source`,
+                minzoom: 2,
+                maxzoom: 24,
+                paint: {
+                  "line-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#1e8dc1",
+                    "#fff",
+                  ],
+                  "line-width": 2.0,
+                  "line-opacity": 0.75,
+                },
+                layout: { visibility: "none" },
+              }
+            );
             // Add hover layer for hover highlight
             // Controlled by feature state
             map.addLayer(
@@ -80,10 +90,15 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
                   "fill-color": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
-                    "#73808c",
+                    "#fff",
                     "#73808c",
                   ],
-                  "fill-outline-color": "#fff",
+                  "fill-outline-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#1e8dc1",
+                    "#fff",
+                  ],
                   "fill-opacity": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
@@ -101,18 +116,17 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
             map.addLayer(
               {
                 id: `${k}-select`,
-                type: "fill",
+                type: "line",
                 source: `${k}-source`,
                 minzoom: 2,
                 maxzoom: 24,
                 paint: {
                   // hover state is set here using a case expression
-                  "fill-color": "#73808c",
-                  "fill-opacity": 0.75,
+                  "line-color": "#00aeff",
+                  "line-width": 2,
                 },
                 filter: ["match", ["get", "area_type_id"], "", true, false],
               },
-              `${k}-hover`
             );
             // Add listener to add area to selectedAreas atom on click
           }
@@ -228,7 +242,7 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
         }
       });
       let popup = new Popup({
-        closeButton:false
+        closeButton: false,
       });
       let hoveredStateId = null;
       // When the user moves their mouse over the hover layer, update
@@ -283,7 +297,6 @@ export function DownloadAreasList({ areaTypes, areaTypesState, collectionId }) {
       setActiveTab("0");
     };
   }, [setActiveTab]);
-
 
   return (
     <div style={{ padding: "1rem" }}>
