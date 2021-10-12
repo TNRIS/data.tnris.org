@@ -1,7 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useRecoilState } from "recoil";
-import { cartAtom } from "../../../utilities/atoms/cartAtoms";
+import { cartAtom } from "../../../atoms/cartAtoms";
 
 export function DeleteCartItem({ collection_id }) {
   const [cart, setCart] = useRecoilState(cartAtom);

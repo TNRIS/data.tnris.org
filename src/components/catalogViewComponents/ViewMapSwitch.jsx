@@ -1,8 +1,8 @@
 import { Switch } from "antd";
 import { useHistory } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { searchString } from "../../utilities/atoms/urlFactoryAtoms";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import { searchString } from "../../atoms/urlFactoryAtoms";
+import useQueryParam from "../../utilities/customHooks/useQueryParam";
 import { changeParams } from "../../utilities/changeParamsUtil";
 
 export function ViewMapSwitch() {

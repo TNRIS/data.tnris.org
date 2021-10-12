@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { bboxToWKTPolygon } from "../mapHelpers/bboxToWKTPolygon";
+import { bboxToWKTPolygon } from "../utilities/mapHelpers/bboxToWKTPolygon";
 import { geoSearchBboxAtom } from "./geofilterAtoms";
 import { searchString } from "./urlFactoryAtoms";
 // parse pg from url, if present. If not, default to 1

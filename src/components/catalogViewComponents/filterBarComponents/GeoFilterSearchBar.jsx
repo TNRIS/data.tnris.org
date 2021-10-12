@@ -8,10 +8,10 @@ import {
   fetchGeocoderSearchResultsSelector,
   geoFilterSearchTextAtom,
   geoSearchBboxAtom
-} from "../../../utilities/atoms/geofilterAtoms";
-import { drawControlsAtom, mapAtom } from "../../../utilities/atoms/mapAtoms";
+} from "../../../atoms/geofilterAtoms";
+import { drawControlsAtom, mapAtom } from "../../../atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
-import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../../../utilities/customHooks/useQueryParam";
 
 export function GeoFilterSearchBar(props) {
   const history = useHistory();

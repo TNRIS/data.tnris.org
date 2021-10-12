@@ -2,7 +2,7 @@ import { Col, InputNumber, Row, Slider } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { changeParams } from "../../../utilities/changeParamsUtil";
-import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../../../utilities/customHooks/useQueryParam";
 
 export function DateRange() {
   const history = useHistory();

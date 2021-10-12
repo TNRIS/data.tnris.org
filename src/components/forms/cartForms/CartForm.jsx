@@ -1,7 +1,7 @@
 import { Button, Form, Progress, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { cartAtom, cartOpenAtom } from "../../../utilities/atoms/cartAtoms";
+import { cartAtom, cartOpenAtom } from "../../../atoms/cartAtoms";
 import { CartItemList } from "./CartItemList";
 import { DeliveryMethodFields } from "./DeliveryMethodFields";
 import { HardDriveFields } from "./HardDriveFields";

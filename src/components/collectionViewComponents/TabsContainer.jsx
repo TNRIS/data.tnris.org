@@ -12,10 +12,10 @@ import {
 import {
   fetchAreaTypesByCollectionIdSelector,
   fetchCollectionByIdSelector,
-} from "../../utilities/atoms/collectionsAtoms";
-import { mapAtom } from "../../utilities/atoms/mapAtoms";
+} from "../../atoms/collectionsAtoms";
+import { mapAtom } from "../../atoms/mapAtoms";
 // local imports
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../../utilities/customHooks/useQueryParam";
 import { removeCoverageLayer } from "../../utilities/mapHelpers/highlightHelpers";
 import { DataInquiryForm } from "../forms/DataInquiryForm";
 import { OrderFormContainer } from "../forms/orderForms/OrderFormContainer";

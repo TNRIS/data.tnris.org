@@ -3,7 +3,7 @@ import { Content } from "antd/lib/layout/layout";
 import { BrowserRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { RootRouter } from "../../routers/RootRouter";
-import { cartOpenAtom } from "../../utilities/atoms/cartAtoms";
+import { cartOpenAtom } from "../../atoms/cartAtoms";
 import { FooterContainer } from "../FooterContainer";
 import { CartForm } from "../forms/cartForms/CartForm";
 import { HeaderContainer } from "../headerComponents/HeaderContainer";

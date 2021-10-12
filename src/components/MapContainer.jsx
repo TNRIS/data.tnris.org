@@ -10,9 +10,9 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   geoSearchBboxAtom,
   mapBoundsAtom,
-} from "../utilities/atoms/geofilterAtoms";
-import { drawControlsAtom, mapAtom } from "../utilities/atoms/mapAtoms";
-import useQueryParam from "../utilities/custom-hooks/useQueryParam";
+} from "../atoms/geofilterAtoms";
+import { drawControlsAtom, mapAtom } from "../atoms/mapAtoms";
+import useQueryParam from "../utilities/customHooks/useQueryParam";
 import { NavigateToExtentControl } from "../utilities/mapHelpers/navigateToExtentControl.js";
 import { MapControlPanel } from "./MapControlPanel";
 

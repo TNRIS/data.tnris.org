@@ -1,7 +1,7 @@
 import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValueLoadable } from "recoil";
-import { fetchCatalogCollectionsSelector } from "../../utilities/atoms/catalogAtoms";
+import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 import { FilterBar } from "./filterBarComponents/FilterBar";
 import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";

@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { mapAtom } from "../../utilities/atoms/mapAtoms";
+import { mapAtom } from "../../atoms/mapAtoms";
 import {
   addCoverageLayer,
   removeCoverageLayer,
