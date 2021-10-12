@@ -4,7 +4,7 @@ import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import {
   collectionAreasMapSelectionAtom,
   fetchResourcesByCollectionIdAndAreaTypeIDSelector
-} from "../../utilities/atoms/collectionsAtoms";
+} from "../../atoms/collectionsAtoms";
 
 export function DownloadAreaResources({ areaTypeId, collectionId, hovered }) {
   const setSelectedAreas = useSetRecoilState(collectionAreasMapSelectionAtom);

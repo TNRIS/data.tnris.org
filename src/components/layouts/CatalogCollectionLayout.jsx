@@ -1,6 +1,6 @@
 import { Col, Row } from "antd";
 import { LeftPanelRouter } from "../../routers/LeftPanelRouter";
-import useQueryParam from "../../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../../utilities/customHooks/useQueryParam";
 import { MapContainer } from "../MapContainer";
 
 export function CatalogCollectionLayout(props) {

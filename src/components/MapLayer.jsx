@@ -1,7 +1,7 @@
 import { Card, Row, Switch } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { mapAtom } from "../utilities/atoms/mapAtoms";
+import { mapAtom } from "../atoms/mapAtoms";
 import {
   hideLayer,
   showLayer,

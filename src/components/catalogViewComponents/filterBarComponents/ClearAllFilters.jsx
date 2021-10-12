@@ -1,8 +1,8 @@
 import { Button } from "antd";
 import { useHistory, useLocation } from "react-router";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { geoSearchBboxAtom } from "../../../utilities/atoms/geofilterAtoms";
-import { drawControlsAtom } from "../../../utilities/atoms/mapAtoms";
+import { geoSearchBboxAtom } from "../../../atoms/geofilterAtoms";
+import { drawControlsAtom } from "../../../atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 
 export function ClearAllFilters(props) {

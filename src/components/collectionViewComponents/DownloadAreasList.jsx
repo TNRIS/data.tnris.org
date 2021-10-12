@@ -2,8 +2,8 @@ import { Alert, Empty, List, Select } from "antd";
 import { Popup } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { collectionAreasMapSelectionAtom } from "../../utilities/atoms/collectionsAtoms";
-import { mapAtom } from "../../utilities/atoms/mapAtoms";
+import { collectionAreasMapSelectionAtom } from "../../atoms/collectionsAtoms";
+import { mapAtom } from "../../atoms/mapAtoms";
 import {
   highlightSelectedAreaType,
   removeCoverageLayer,

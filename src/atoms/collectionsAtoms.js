@@ -2,7 +2,7 @@ import { atom, selectorFamily } from "recoil";
 import { AREA_TYPES } from "../constants/areaTypes";
 import {
   recursiveAreaTypesFetcher,
-} from "../recursiveFetcher";
+} from "../utilities/recursiveFetcher";
 
 export const fetchCollectionByIdSelector = selectorFamily({
   key: "fetchCollectionByIdSelector",

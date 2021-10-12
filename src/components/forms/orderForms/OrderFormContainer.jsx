@@ -2,7 +2,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Alert, Button, Form } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { cartAtom, cartOpenAtom } from "../../../utilities/atoms/cartAtoms";
+import { cartAtom, cartOpenAtom } from "../../../atoms/cartAtoms";
 import { uploadFilesToS3 } from "../../../utilities/formHelpers/fileUploadHelpers";
 import { BaseFields } from "./BaseFields";
 import { HistoricFields } from "./HistoricFields";

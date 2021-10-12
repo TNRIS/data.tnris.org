@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { CatalogCollectionLayout } from "../components/layouts/CatalogCollectionLayout";
-import { searchString } from "../utilities/atoms/urlFactoryAtoms";
+import { searchString } from "../atoms/urlFactoryAtoms";
 export function RootRouter() {
 
   const location = useLocation()

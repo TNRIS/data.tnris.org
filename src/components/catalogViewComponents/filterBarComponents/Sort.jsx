@@ -1,7 +1,7 @@
 import { Select } from "antd";
 import { useHistory, useLocation } from "react-router";
 import { changeParams } from "../../../utilities/changeParamsUtil";
-import useQueryParam from "../../../utilities/custom-hooks/useQueryParam";
+import useQueryParam from "../../../utilities/customHooks/useQueryParam";
 
 export function Sort() {
   const history = useHistory();

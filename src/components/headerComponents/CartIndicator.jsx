@@ -1,6 +1,6 @@
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Badge, Button } from "antd";
-import { cartAtom, cartOpenAtom } from "../../utilities/atoms/cartAtoms";
+import { cartAtom, cartOpenAtom } from "../../atoms/cartAtoms";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export function CartIndicator() {

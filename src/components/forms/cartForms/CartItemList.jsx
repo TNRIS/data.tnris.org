@@ -1,7 +1,7 @@
 import { Collapse, Empty } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { cartAtom } from "../../../utilities/atoms/cartAtoms";
+import { cartAtom } from "../../../atoms/cartAtoms";
 import { CartItem } from "./CartItem";
 import { DeleteCartItem } from "./DeleteCartItem";
 
