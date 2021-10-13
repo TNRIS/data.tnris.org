@@ -112,14 +112,18 @@ export function CartForm() {
         orders += `   Identified By: ${dataOrder.type}\n`;
       }
       if (dataOrder.description) {
-        const opts = {
-          string: `   Description: ${dataOrder.description}\n`,
-          object: `   Description Files:\n ${dataOrder.description
-            .map((v, i) => `\t(${i + 1}) File: ${v.filename}\n${v.link}\n`)
-            .toString()}`,
-        };
-
-        orders += opts[typeof dataOrder.description];
+        switch (typeof dataOrder.description) {
+          case "string":
+            orders += `   Description: ${dataOrder.description}\n`;
+            break;
+          case "object":
+            orders += `   Description Files:\n ${dataOrder.description
+              .map((v, i) => `\t(${i + 1}) File: ${v.filename}\n${v.link}\n`)
+              .toString()}`;
+              break;
+          default:
+            orders += `   Description: ${dataOrder.description}\n`;
+        }
       }
       return orders;
     });
@@ -164,13 +168,12 @@ export function CartForm() {
         }, 5 * 1000);
 
       setTOut();
-      setCartOpen(false);    
+      setCartOpen(false);
       clearTOut();
-
     } else {
       setStep(1);
     }
-    
+
     return await json;
   };
   function onSubmit(data) {
