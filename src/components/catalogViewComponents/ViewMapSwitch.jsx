@@ -16,15 +16,19 @@ export function ViewMapSwitch() {
       defaultChecked={false}
       checked={map === "true"}
       onClick={() =>
-        history.push({ 
+        history.push({
           search: changeParams(
             [
-              { key: "map", value: map === "true" ? "false" : "true", ACTION: "set" },
+              {
+                key: "map",
+                value: map === "true" ? "false" : "true",
+                ACTION: "set",
+              },
             ],
             currentSearchString
           ),
         })
       }
-   />
+    />
   );
 }

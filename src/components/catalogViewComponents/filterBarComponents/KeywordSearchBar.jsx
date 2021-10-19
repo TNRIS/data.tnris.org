@@ -19,6 +19,8 @@ export function KeywordSearchBar() {
   return (
     <>
       <Input.Search
+        aria-label="Search collections by keyword"
+        title="Search collections by keyword"
         allowClear
         placeholder="Search collections by keyword"
         value={searchbar}

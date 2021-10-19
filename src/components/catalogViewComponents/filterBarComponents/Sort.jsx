@@ -10,6 +10,7 @@ export function Sort() {
   const sort = sortParam ? sortParam : "NEWEST";
   return (
     <Select
+      aria-label="sort results"
       value={sort}
       onChange={(v) => {
         history.push({
@@ -24,14 +25,26 @@ export function Sort() {
             search
           ),
         });
-        
       }}
       bordered={true}
-    >
-      <Select.Option value="NEWEST">Sort By:  Newest</Select.Option>
-      <Select.Option value="OLDEST">Sort By:  Oldest</Select.Option>
-      <Select.Option value="AZ">Sort By:  A to Z</Select.Option>
-      <Select.Option value="ZA">Sort By:  Z to A</Select.Option>
-    </Select>
+      options={[
+        {
+          label: "Sort by: NEWEST",
+          value: "NEWEST",
+        },
+        {
+          label: "Sort by: OLDEST",
+          value: "OLDEST",
+        },
+        {
+          label: "Sort by: A to Z",
+          value: "AZ",
+        },
+        {
+          label: "Sort by: Z to A",
+          value: "ZA",
+        },
+      ]}
+    />
   );
 }
