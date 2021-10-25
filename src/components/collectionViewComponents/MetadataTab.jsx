@@ -10,7 +10,7 @@ import {
   Row,
   Tag,
   Tooltip,
-  Typography,
+  Typography
 } from "antd";
 import {
   EmailIcon,
@@ -20,11 +20,11 @@ import {
   RedditIcon,
   RedditShareButton,
   TwitterIcon,
-  TwitterShareButton,
+  TwitterShareButton
 } from "react-share";
 import {
   emailRegex,
-  urlRegex,
+  urlRegex
 } from "../../utilities/regexHelpers/regexHelpers";
 
 const orderedContemporaryMetaKeys = [
@@ -73,6 +73,7 @@ function ContemporaryMeta({ metadata }) {
   return (
     <>
       <CollectionDescription about={metadata.description} />
+      {metadata.category.split(",").includes("Lidar") && <AboutLidar />}
       <Collapse>
         <Collapse.Panel
           header={
@@ -114,7 +115,6 @@ function ContemporaryMeta({ metadata }) {
         </Collapse.Panel>
       </Collapse>
       <CollectionMapService metadata={metadata} />
-      {metadata.category.split(",").includes("Lidar") && <AboutLidar />}
       <CollectionSupplementalDownloads metadata={metadata} />
       <Card size="small">
         <HyperLink
