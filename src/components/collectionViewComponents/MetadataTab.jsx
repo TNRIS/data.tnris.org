@@ -114,6 +114,7 @@ function ContemporaryMeta({ metadata }) {
         </Collapse.Panel>
       </Collapse>
       <CollectionMapService metadata={metadata} />
+      {metadata.category.split(",").includes("Lidar") && <AboutLidar />}
       <CollectionSupplementalDownloads metadata={metadata} />
       <Card size="small">
         <HyperLink
@@ -123,7 +124,6 @@ function ContemporaryMeta({ metadata }) {
         />
       </Card>
       <CollectionCitation metadata={metadata} />
-
       <CollectionSocialShare />
     </>
   );
@@ -551,16 +551,21 @@ export function ScannedIndexes({ metadata }) {
 export function AboutLidar() {
   return (
     <Card size="small">
+      <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
+        about lidar data
+      </h3>
       <p>
         Lidar data for Texas is available online through the use of
-        <a href="https://rapidlasso.com/lastools/">LASTools</a>, an open-source
+        <a href="https://rapidlasso.com/lastools/"> LASTools</a>, an open-source
         collection of tools for lidar data viewing and manipulation.
       </p>
-      Click
-      <a href="https://cdn.tnris.org/data/lidar/tnris-lidar_48_vector.zip">
-        here
-      </a>
-      to download a complete index of all available lidar data at TNRIS.
+      <p>
+        Click{" "}
+        <a href="https://cdn.tnris.org/data/lidar/tnris-lidar_48_vector.zip">
+          here
+        </a>{" "}
+        to download a complete index of all available lidar data at TNRIS.
+      </p>
     </Card>
   );
 }
