@@ -31,7 +31,7 @@ export function OrderFormContainer({ collection }) {
 
   const parseFormDataToCartItem = async (f) => {
     let files = null;
-    if (f.Type === "Screenshot" || f.Type === "Mapfile") {
+    if (f.Type === "Screenshot" || f.Type === "Shapefile") {
       files = await uploadFilesToS3(
         collection.collection_id,
         f.Description,

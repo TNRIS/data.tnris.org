@@ -180,7 +180,7 @@ export function GeoFilterSearchBar(props) {
           loading={state === "loading"}
           onClear={handleClear}
           // value is set to selection from dropdown if selection made, else, null
-          value={geoSearchSelectionText}
+          value={geoSearchSelectionText ? geoSearchSelectionText : null}
           // on selection change, set URI
           // and set geoSearchInputTextAtom and geoSearchBboxAtom
           onChange={handleOnChange}
