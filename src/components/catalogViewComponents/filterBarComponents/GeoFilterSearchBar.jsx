@@ -60,13 +60,33 @@ export function GeoFilterSearchBar(props) {
       }
     }
   };
+  const handleOnChange = (v) => {
+    if (contents.features[v]?.properties) {
+      setGeoSearchSelectionText(() => {
+        return contents.features[v].properties.display_name;
+      });
+      history.push({
+        search: changeParams(
+          [
+            {
+              key: "geo",
+              value: contents?.features[v]?.bbox,
+              ACTION: "set",
+            },
+          ],
+          search
+        ),
+      });
+      setGeoSearchBbox(contents.features[v].bbox);
+    }
+  };
 
   useEffect(() => {
     // if geo param is null, setGeoSearchBbox to null and setGeoSearchInputText null
     // this clears the input and item from the map
     if (!geo) {
       setGeoSearchBbox(null);
-      setGeoSearchSelectionText(null);
+      setGeoSearchSelectionText("");
     } else {
       setGeoSearchSelectionText((cur) => {
         if (!cur) {
@@ -141,6 +161,8 @@ export function GeoFilterSearchBar(props) {
     <>
       {true && (
         <Select
+          aria-label="Search collections by location"
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           showSearch
           placeholder="Search collections by location bbox"
           searchValue={geoSearchInputText}
@@ -158,43 +180,26 @@ export function GeoFilterSearchBar(props) {
           loading={state === "loading"}
           onClear={handleClear}
           // value is set to selection from dropdown if selection made, else, null
-          value={geoSearchSelectionText}
+          value={geoSearchSelectionText ? geoSearchSelectionText : null}
           // on selection change, set URI
           // and set geoSearchInputTextAtom and geoSearchBboxAtom
-          onChange={(v) => {
-            if (contents.features[v]?.properties) {
-              setGeoSearchSelectionText(() => {
-                return contents.features[v].properties.display_name;
-              });
-              history.push({
-                search: changeParams(
-                  [
-                    {
-                      key: "geo",
-                      value: contents?.features[v]?.bbox,
-                      ACTION: "set",
-                    },
-                  ],
-                  search
-                ),
-              });
-              setGeoSearchBbox(contents.features[v].bbox);
-            }
-          }}
+          onChange={handleOnChange}
           className="GeoFilterSearchBar"
-          {...props}
+          options={
+            contents && contents.features && contents.features.length > 0
+              ? contents.features.map((f, i) => {
+                  return {
+                    key: f.properties.display_name + "_" + i,
+                    label: f.properties.display_name,
+                    value: i,
+                  };
+                })
+              : null
+          }
         >
           {
             // if nominatim has returned results with length > 0, return as options
           }
-          {state !== "loading" &&
-            contents &&
-            contents.features.length > 0 &&
-            contents.features.map((v, i) => (
-              <Select.Option key={i} value={i}>
-                {v.properties.display_name}
-              </Select.Option>
-            ))}
         </Select>
       )}
       <div style={{ display: "inline-block" }}>
@@ -210,7 +215,7 @@ export function GeoFilterSearchBar(props) {
                       value: true,
                       ACTION: "set",
                     },
-                  ]),
+                  ], search),
                 });
               }
               return !currentMode;

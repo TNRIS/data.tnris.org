@@ -1,5 +1,5 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Badge, Button, Checkbox, Col, Popover, Row } from "antd";
+import { Badge, Button, Checkbox, Popover, Row } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { catalogFiltersOptions } from "../../../atoms/catalogFilterAtoms";
@@ -12,14 +12,22 @@ import { Sort } from "./Sort";
 export function FilterBar() {
   const filterOptions = useRecoilValue(catalogFiltersOptions);
   return (
-    <Row justify="start" style={{ rowGap: ".25rem" }} className="FilterBar">
+    <Row
+      id="FilterBar"
+      justify="start"
+      style={{ rowGap: ".25rem" }}
+      className="FilterBar"
+    >
       {Object.entries(filterOptions).map((set, i) => (
         <Popover
+          role="combobox"
           key={set[0] + "+" + i}
           trigger={"click"}
           placement="bottomLeft"
+          destroyTooltipOnHide={false}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
           content={
-            <Col>
+            <ul className="FilterControls" role="listbox" tabindex="0">
               {set[1].map((opt) => (
                 <FilterOption
                   key={set[0] + "+" + opt}
@@ -28,7 +36,7 @@ export function FilterBar() {
                 />
               ))}
               <ToggleAllOptions set={set} />
-            </Col>
+            </ul>
           }
         >
           <Button shape="round">
@@ -45,6 +53,8 @@ export function FilterBar() {
       ))}
 
       <Popover
+        role="combobox"
+        forceRender={true}
         key={"datepicker"}
         trigger={"click"}
         placement="bottomLeft"
@@ -101,18 +111,19 @@ export function ToggleAllOptions({ set }) {
     }
   };
   return (
-    <>
-      <hr />
-      <Row>
-        <Checkbox
-          indeterminate={indeterminate}
-          checked={allSelected}
-          onChange={onCheckAllChange}
-        >
-          {allSelected ? "Uncheck All" : "Check All"}
-        </Checkbox>
-      </Row>
-    </>
+    <li>
+      <Checkbox
+        aria-label={`select all ${set[1].toString()}`}
+        title={`select all ${set[1].toString()}`}
+        tabIndex="0"
+        aria-selected={selected}
+        indeterminate={indeterminate}
+        checked={allSelected}
+        onChange={onCheckAllChange}
+      >
+        {allSelected ? "Uncheck All" : "Check All"}
+      </Checkbox>
+    </li>
   );
 }
 
@@ -141,11 +152,19 @@ export function FilterOption({ filterSet, value }) {
       ),
     });
   return (
-    <Row>
-      <Checkbox checked={selected} onClick={toggle}>
+    <li aria-label={value.replace("_", " ")} title={value.replace("_", " ")}>
+      <Checkbox
+        role="option"
+        aria-label={value.replace("_", " ") + " " + filterSet + " filter"}
+        title={value.replace("_", " ")}
+        tabIndex="0"
+        aria-selected={selected}
+        checked={selected}
+        onClick={toggle}
+      >
         {value.replace("_", " ")}
       </Checkbox>
-    </Row>
+    </li>
   );
 }
 

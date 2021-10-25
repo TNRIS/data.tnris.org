@@ -23,8 +23,8 @@ export function CatalogPaginationControls() {
           })
         : null}
       <Pagination
+        aria-label="pagination"
         size="small"
-        showQuickJumper
         responsive
         pageSizeOptions={[12, 24, 60, 120]}
         current={page ? Number(page) : 1}

@@ -1,12 +1,12 @@
 import { handleErrorsHelper } from "./handleErrorsHelpers";
 
 export async function getUploadPolicy(fileInfo) {
-  const { collectionId, file, uploadType } = fileInfo;
+  const { collectionId, file, submitType } = fileInfo;
   const fileKey = `data-tnris-org-order/${collectionId}_${Date.now()}_${file.name
     .split(" ")
     .join("_")}`;
   const policyUrl = `https://api.tnris.org/api/v1/contact/policy/${
-    uploadType === "Shapefile" ? "zip-upload" : "image-upload"
+    submitType === "Shapefile" ? "zip-upload" : "image-upload"
   }`;
   const payload = {
     method: "POST",
@@ -82,7 +82,6 @@ export async function uploadFilesToS3(
       setStatusCallback({
         status: `Uploading ${file.name}`,
       });
-
       const uploadResponse = await fetch(policy.url, payload);
       const uploadRes = await handleErrorsHelper(uploadResponse);
       if (uploadRes.ok) {

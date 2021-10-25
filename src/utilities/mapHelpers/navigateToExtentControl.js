@@ -26,7 +26,7 @@ export class NavigateToExtentControl {
     el.type = 'button';
     el.title = 'Reset extent to statewide';
     el.setAttribute('aria-label', 'Reset extent to statewide');
-    el.innerHTML = `<img src=${TexasIcon} style="width: 1rem; height: 1rem;" />`
+    el.innerHTML = `<img src=${TexasIcon} alt="reset extent to statewide" style="width: 1rem; height: 1rem;" />`
     el.addEventListener('click', (e) => {
       this._map.easeTo({
       center: [-99.7, 31.33],
