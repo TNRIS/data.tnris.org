@@ -7,13 +7,13 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeocoderSearchResultsSelector,
   geoFilterSearchTextAtom,
-  geoSearchBboxAtom
+  geoSearchBboxAtom,
 } from "../../../atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/customHooks/useQueryParam";
 
-export function GeoFilterSearchBar(props) {
+export function GeoFilterDrawSearchToggle(props) {
   const history = useHistory();
   const geo = useQueryParam().get("geo");
   const showMap = useQueryParam().get("map");
@@ -21,7 +21,7 @@ export function GeoFilterSearchBar(props) {
   const map = useRecoilValue(mapAtom);
 
   const [drawMode, setDrawMode] = useState(false);
-  const [geoSearchSelectionText, setGeoSearchSelectionText] = useState();
+  const [geoSearchSelectionText, setGeoSearchSelectionText] = useState(null);
   const drawControls = useRecoilValue(drawControlsAtom);
   const { state, contents } = useRecoilValueLoadable(
     fetchGeocoderSearchResultsSelector
@@ -39,7 +39,7 @@ export function GeoFilterSearchBar(props) {
   // handler for clearing drawn geosearch boundary
   const handleClear = () => {
     history.push({
-      pathname: "/",
+      pathname: window.location.pathname,
       search: changeParams(
         [
           {
@@ -86,7 +86,7 @@ export function GeoFilterSearchBar(props) {
     // this clears the input and item from the map
     if (!geo) {
       setGeoSearchBbox(null);
-      setGeoSearchSelectionText("");
+      setGeoSearchSelectionText(null);
     } else {
       setGeoSearchSelectionText((cur) => {
         if (!cur) {
@@ -159,49 +159,6 @@ export function GeoFilterSearchBar(props) {
 
   return (
     <>
-      {true && (
-        <Select
-          aria-label="Search collections by location"
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          showSearch
-          placeholder="Search collections by location bbox"
-          searchValue={geoSearchInputText}
-          // set geoFilterSearchText atom
-          // when geoFilterSearchText changes, the fetch geoFilterResults selector automatically re-runs the query to nominatim
-          onSearch={(v) => {
-            setGeoSearchInputText(v);
-          }}
-          notFoundContent={
-            state === "loading" ? <Spin size="small" /> : <Empty />
-          }
-          showArrow={false}
-          filterOption={false}
-          allowClear
-          loading={state === "loading"}
-          onClear={handleClear}
-          // value is set to selection from dropdown if selection made, else, null
-          value={geoSearchSelectionText}
-          // on selection change, set URI
-          // and set geoSearchInputTextAtom and geoSearchBboxAtom
-          onChange={handleOnChange}
-          className="GeoFilterSearchBar"
-          options={
-            contents && contents.features && contents.features.length > 0
-              ? contents.features.map((f, i) => {
-                  return {
-                    key: f.properties.display_name + "_" + i,
-                    label: f.properties.display_name,
-                    value: i,
-                  };
-                })
-              : null
-          }
-        >
-          {
-            // if nominatim has returned results with length > 0, return as options
-          }
-        </Select>
-      )}
       <div style={{ display: "inline-block" }}>
         <Checkbox
           checked={drawMode}
@@ -209,13 +166,16 @@ export function GeoFilterSearchBar(props) {
             setDrawMode((currentMode) => {
               if (!currentMode && showMap !== true) {
                 history.push({
-                  search: changeParams([
-                    {
-                      key: "map",
-                      value: true,
-                      ACTION: "set",
-                    },
-                  ], search),
+                  search: changeParams(
+                    [
+                      {
+                        key: "map",
+                        value: true,
+                        ACTION: "set",
+                      },
+                    ],
+                    search
+                  ),
                 });
               }
               return !currentMode;

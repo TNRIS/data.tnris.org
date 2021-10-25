@@ -1,10 +1,15 @@
 import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { useRecoilValueLoadable } from "recoil";
+import { useHistory, useLocation } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
+import { geoSearchBboxAtom } from "../../atoms/geofilterAtoms";
+import { mapAtom } from "../../atoms/mapAtoms";
+import { changeParams } from "../../utilities/changeParamsUtil";
+import useQueryParam from "../../utilities/customHooks/useQueryParam";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 import { FilterBar } from "./filterBarComponents/FilterBar";
-import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
+import { GeoFilterSearchBarV2 } from "./filterBarComponents/GeoFilterSearchBarV2";
 import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
 import { CatalogPaginationControls } from "./PaginationControls";
@@ -39,20 +44,74 @@ export function CatalogList() {
     fetchCatalogCollectionsSelector
   );
 
+  const history = useHistory();
+  const geo = useQueryParam().get("geo");
+  const search = useLocation().search;
+  const map = useRecoilValue(mapAtom);
+  const [geoSearchBbox, setGeoSearchBbox] = useRecoilState(geoSearchBboxAtom);
+
+  /* const handleOnChange = (v) => {
+    if (v) {
+      history.push({
+        search: changeParams(
+          [
+            {
+              key: "geo",
+              value: v.bbox,
+              ACTION: "set",
+            },
+          ],
+          search
+        ),
+      });
+      //console.log(v.bbox);
+      //setGeoSearchBbox(v.bbox.toString());
+    }
+  };
+  const handleOnClear = () => {
+    history.push({
+      pathname: window.location.pathname,
+      search: changeParams(
+        [
+          {
+            key: "geo",
+            value: null,
+            ACTION: "delete",
+          },
+        ],
+        search
+      ),
+    });
+    //setGeoSearchBbox(null);
+  };
+
+  useEffect(() => {
+    if (geo && !geoSearchBbox) {
+      handleOnChange({ bbox: geo.split(",") });
+    }
+  });
+
+  useEffect(() => {
+    if (geoSearchBbox && map) {
+      // Zoom to bounds of selection
+      map.fitBounds(geoSearchBbox.bbox.split(","));
+    }
+  }, [geoSearchBbox, map]); */
+
   //if results returned, notify how many with toast
   useEffect(() => {
-    if(state === "loading") {
+    if (state === "loading") {
       message.loading({
         content: `Searching for collections...`,
         key: "catalogCount",
-        style: { position: "fixed", bottom: "2.4rem", },
-      })
+        style: { position: "fixed", bottom: "2.4rem" },
+      });
     }
     if (state === "hasValue") {
       message.success({
         content: `${contents.count} collections found`,
         key: "catalogCount",
-        style: { position: "fixed", bottom: "2.4rem", },
+        style: { position: "fixed", bottom: "2.4rem" },
       });
     }
   }, [state, contents]);
@@ -62,7 +121,11 @@ export function CatalogList() {
       <div>
         <Input.Group className="CatalogSearchBar">
           <KeywordSearchBar />
-          <GeoFilterSearchBar />
+          <GeoFilterSearchBarV2
+            placeholder="Search collections by geolocation"
+            //handleOnSetSelectedSearchOption={handleOnChange}
+            //handleOnClearSelectedSearchOption={handleOnClear}
+          />
         </Input.Group>
         <div className={"FilterRow"}>
           <FilterBar />
