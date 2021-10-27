@@ -10,14 +10,23 @@ import {
 import { mapAtom } from "../../../atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/customHooks/useQueryParam";
+import {
+  addGeoSearchBboxToMap,
+  removeGeoSearchBboxFromMap,
+} from "../../../utilities/mapHelpers/highlightHelpers";
+import { zoomToBbox } from "../../../utilities/mapHelpers/zoomHelpers";
 
 export function GeoFilterSearchBarV2({
-  handleOnSetSelectedSearchOption = (selectedValue) =>
-    console.log("SELECTED VALUE: ", selectedValue),
-  handleOnClearSelectedSearchOption = (clearedValue) =>
-    console.log("CLEARED VALUE: ", clearedValue),
+  handleOnSetSelectedSearchOption = (selectedValue) => {
+    //console.log("SELECTED VALUE: ", selectedValue);
+    return;
+  },
+  handleOnClearSelectedSearchOption = (clearedValue) => {
+    //console.log("CLEARED VALUE: ", clearedValue);
+    return;
+  },
   notFoundContent = <Empty />,
-  placeholder = "input search text",
+  placeholder = "Search by geolocation",
 }) {
   //////////////////////////////
   ////custom hooks//////////////
@@ -31,7 +40,7 @@ export function GeoFilterSearchBarV2({
   //////////////////////////////
   ////recoil state//////////////
   //////////////////////////////
-  //const MAP = useRecoilValue(mapAtom);
+  const MAP = useRecoilValue(mapAtom);
   //input text of search box.
   //triggers fetch of options from nominatim
   const [SEARCH_INPUT, SET_SEARCH_INPUT] = useRecoilState(
@@ -50,6 +59,7 @@ export function GeoFilterSearchBarV2({
   ////handler functions/////////
   //////////////////////////////
   const HANDLE_ON_SEARCH = (input) => {
+    //console.log(input, SEARCH_INPUT);
     SET_SEARCH_INPUT(input);
   };
   const HANDLE_ON_SEARCH_SELECTION_CHANGE = (result_index) => {
@@ -75,24 +85,17 @@ export function GeoFilterSearchBarV2({
       handleOnSetSelectedSearchOption(RESULT_AT_INDEX);
     }
   };
-  const HANDLE_NAV_WITH_GEO_PARAM = (v) => {
-    if (v) {
-      history.push({
-        search: changeParams(
-          [
-            {
-              key: "geo",
-              value: v.bbox,
-              ACTION: "set",
-            },
-          ],
-          search
-        ),
-      });
-      SET_SEARCH_SELECTION({
-        bbox: v.bbox,
-        properties: { display_name: "Custom search boundary" },
-      });
+  const HANDLE_NAV_WITH_GEO_PARAM = () => {
+    const g = geo;
+
+    if (g && g.split(",").length === 4 && !SEARCH_SELECTION) {
+      const v = {
+        bbox: g.split(","),
+        properties: {
+          display_name: "Custom search boundary",
+        },
+      };
+      SET_SEARCH_SELECTION(v);
     }
   };
   //Function to handle clear controls of antd Select component
@@ -117,11 +120,26 @@ export function GeoFilterSearchBarV2({
     handleOnClearSelectedSearchOption(SEARCH_SELECTION);
   };
 
+  ///////////////////////////////
+  ////Effects//////////////////
+  ///////////////////////////////
   useEffect(() => {
-    SET_SEARCH_SELECTION(cur => {
-      
-    })
-  }, [SET_SEARCH_SELECTION, HANDLE_NAV_WITH_GEO_PARAM, geo,]);
+    HANDLE_NAV_WITH_GEO_PARAM();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Remove the geoSearchBboxLayer and replace it when the selection changes.
+    if (MAP && SEARCH_SELECTION) {
+      removeGeoSearchBboxFromMap(MAP);
+      addGeoSearchBboxToMap(MAP, SEARCH_SELECTION.bbox);
+      zoomToBbox(MAP, SEARCH_SELECTION.bbox);
+    }
+    // Remove the geoSearchBboxLayer if selection is cleared.
+    if (MAP && !SEARCH_SELECTION) {
+      removeGeoSearchBboxFromMap(MAP);
+    }
+  }, [MAP, SEARCH_SELECTION]);
 
   return (
     <Select

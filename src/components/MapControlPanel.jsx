@@ -3,6 +3,7 @@ import { Row } from "antd";
 import { useLocation } from "react-router-dom";
 import { atom, useRecoilValue } from "recoil";
 import { MapLayer } from "./MapLayer";
+import { MapSearchOnMoveToggle } from "./MapSearchOnMoveToggle";
 
 export const LayersSVG = (props) => (
   <svg
@@ -85,6 +86,7 @@ export function MapControlPanel() {
               defaultVisibility={false}
             />
           ))}
+          <MapSearchOnMoveToggle />
       </Row>
     </>
   );

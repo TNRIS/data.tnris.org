@@ -7,18 +7,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  geoSearchBboxAtom,
-  mapBoundsAtom,
-} from "../atoms/geofilterAtoms";
+import { geoSearchBboxAtom, mapBoundsAtom } from "../atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../atoms/mapAtoms";
 import useQueryParam from "../utilities/customHooks/useQueryParam";
 import { NavigateToExtentControl } from "../utilities/mapHelpers/navigateToExtentControl.js";
 import { MapControlPanel } from "./MapControlPanel";
 
 export function MapContainer() {
-  const location = useLocation();
-  const geoSearchBbox = useRecoilValue(geoSearchBboxAtom);
   const [map, setMap] = useRecoilState(mapAtom);
   const setDrawControls = useSetRecoilState(drawControlsAtom);
   const [bounds, setBounds] = useRecoilState(mapBoundsAtom);
@@ -62,9 +57,6 @@ export function MapContainer() {
       map.addControl(draw);
       setDrawControls(draw);
 
-      map.on("moveend", () => {
-        //setBounds(JSON.stringify(map.getBounds()));
-      });
       map.on("load", () => {
         // Store map object in Recoil Atom
         setMap(map);
@@ -75,40 +67,6 @@ export function MapContainer() {
       initializeMap({ setMap, MapContainer });
     }
   }, [map, bounds, setBounds, zoom, setMap, setDrawControls]);
-
-  // Show  geoSearchBbox geometry when available
-  useEffect(() => {
-    // Only animate to geosearch layer when at root "/" path
-    // Check that map is initialized
-    if (map) {
-      // Check if layer already exists
-      const filterLayer = map.getLayer("geofilter-layer");
-      if (typeof filterLayer !== "undefined") {
-        // If it exists, remove it and its source
-        map.removeLayer("geofilter-layer");
-        map.removeSource("geofilter-source");
-      }
-      // Check if geoSearchBbox atom is populated with search result
-      if (geoSearchBbox) {
-        // If so, add source from geojson and layer from source
-        map.addSource("geofilter-source", {
-          type: "geojson",
-          data: bboxPolygon(geoSearchBbox.split(",")),
-        });
-        map.addLayer({
-          id: "geofilter-layer",
-          type: "line",
-          source: "geofilter-source",
-          layout: {},
-          paint: {
-            "line-color": "red",
-            "line-opacity": 1,
-            "line-width": 4,
-          },
-        });
-      }
-    }
-  }, [geoSearchBbox, map, location]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the

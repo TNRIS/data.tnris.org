@@ -1,12 +1,7 @@
 import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
+import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
-import { geoSearchBboxAtom } from "../../atoms/geofilterAtoms";
-import { mapAtom } from "../../atoms/mapAtoms";
-import { changeParams } from "../../utilities/changeParamsUtil";
-import useQueryParam from "../../utilities/customHooks/useQueryParam";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 import { FilterBar } from "./filterBarComponents/FilterBar";
 import { GeoFilterSearchBarV2 } from "./filterBarComponents/GeoFilterSearchBarV2";
@@ -43,60 +38,6 @@ export function CatalogList() {
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
-
-  const history = useHistory();
-  const geo = useQueryParam().get("geo");
-  const search = useLocation().search;
-  const map = useRecoilValue(mapAtom);
-  const [geoSearchBbox, setGeoSearchBbox] = useRecoilState(geoSearchBboxAtom);
-
-  /* const handleOnChange = (v) => {
-    if (v) {
-      history.push({
-        search: changeParams(
-          [
-            {
-              key: "geo",
-              value: v.bbox,
-              ACTION: "set",
-            },
-          ],
-          search
-        ),
-      });
-      //console.log(v.bbox);
-      //setGeoSearchBbox(v.bbox.toString());
-    }
-  };
-  const handleOnClear = () => {
-    history.push({
-      pathname: window.location.pathname,
-      search: changeParams(
-        [
-          {
-            key: "geo",
-            value: null,
-            ACTION: "delete",
-          },
-        ],
-        search
-      ),
-    });
-    //setGeoSearchBbox(null);
-  };
-
-  useEffect(() => {
-    if (geo && !geoSearchBbox) {
-      handleOnChange({ bbox: geo.split(",") });
-    }
-  });
-
-  useEffect(() => {
-    if (geoSearchBbox && map) {
-      // Zoom to bounds of selection
-      map.fitBounds(geoSearchBbox.bbox.split(","));
-    }
-  }, [geoSearchBbox, map]); */
 
   //if results returned, notify how many with toast
   useEffect(() => {
