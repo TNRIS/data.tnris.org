@@ -1,4 +1,4 @@
-import { Button, Form, Progress, Row } from "antd";
+import { Button, Form, message, Progress, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { cartAtom, cartOpenAtom } from "../../../atoms/cartAtoms";
@@ -120,7 +120,7 @@ export function CartForm() {
             orders += `   Description Files:\n ${dataOrder.description
               .map((v, i) => `\t(${i + 1}) File: ${v.filename}\n${v.link}\n`)
               .toString()}`;
-              break;
+            break;
           default:
             orders += `   Description: ${dataOrder.description}\n`;
         }
@@ -169,8 +169,13 @@ export function CartForm() {
 
       setTOut();
       setCartOpen(false);
+      message.success("Your order was submitted successfully!", 5);
       clearTOut();
     } else {
+      message.error(
+        "There was a problem submitting your order. Please check that all the required fields are filled.",
+        5
+      );
       setStep(1);
     }
 

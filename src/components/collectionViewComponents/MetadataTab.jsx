@@ -116,13 +116,13 @@ function ContemporaryMeta({ metadata }) {
       </Collapse>
       <CollectionMapService metadata={metadata} />
       <CollectionSupplementalDownloads metadata={metadata} />
-      <Card size="small">
+      <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
         <HyperLink
           url={metadata.license_url}
           text={metadata.license_name}
           label="license"
         />
-      </Card>
+      </div>
       <CollectionCitation metadata={metadata} />
       <CollectionSocialShare />
     </>
@@ -174,13 +174,13 @@ function HistoricMeta({ metadata }) {
       {metadata.products && <HistoricProducts products={metadata.products} />}
       <CollectionSupplementalDownloads metadata={metadata} />
       <AboutHistoric />
-      <Card size="small">
+      <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
         <HyperLink
           url={metadata.license_url}
           text={metadata.license_name}
           label="license"
         />
-      </Card>
+      </div>
       <CollectionCitation metadata={metadata} />
       <CollectionSocialShare />
     </>
@@ -213,12 +213,12 @@ export function HyperLink({ url, text, label }) {
 ////////////////////////////////////////////////////////////////////////
 export function CollectionDescription({ about }) {
   return (
-    <Card size="small" className="DescriptionCard">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}} className="DescriptionCard">
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         description
       </h3>
       <div dangerouslySetInnerHTML={{ __html: about }} />
-    </Card>
+    </div>
   );
 }
 export function CollectionCitation({ metadata }) {
@@ -229,7 +229,7 @@ export function CollectionCitation({ metadata }) {
   const sourceCitationText = `${metadata.source_name} (${metadata.source_abbreviation}). ${metadata.name}, ${metadata.acquisition_date}. Web. ${dateString}.`;
 
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         cite this collection
       </h3>
@@ -245,7 +245,7 @@ export function CollectionCitation({ metadata }) {
       >
         {sourceCitationText}
       </Typography.Paragraph>
-    </Card>
+    </div>
   );
 }
 export function CollectionSupplementalDownloads({ metadata }) {
@@ -262,7 +262,7 @@ export function CollectionSupplementalDownloads({ metadata }) {
   return (
     <>
       {items && items.length > 0 && (
-        <Card size="small">
+        <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
           <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
             supplemental downloads
           </h3>
@@ -289,7 +289,7 @@ export function CollectionSupplementalDownloads({ metadata }) {
               </List.Item>
             )}
           ></List>
-        </Card>
+        </div>
       )}
       {(!items || items.length < 1) && null}
     </>
@@ -306,7 +306,7 @@ export function CollectionSocialShare({ metadata }) {
   const tweetTitle =
     shareUrl.includes("[") || shareUrl.includes("]") ? shareCombo : shareTitle;
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         share this collection
       </h3>
@@ -345,7 +345,7 @@ export function CollectionSocialShare({ metadata }) {
           </EmailShareButton>
         </Tooltip>
       </Row>
-    </Card>
+    </div>
   );
 }
 export function CollectionMapService({ metadata }) {
@@ -362,7 +362,7 @@ export function CollectionMapService({ metadata }) {
   return (
     <>
       {metadata.wms_link && metadata.popup_link && (
-        <Card size="small">
+        <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
           <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
             online mapping services
           </h3>
@@ -411,7 +411,7 @@ export function CollectionMapService({ metadata }) {
               Open ArcGIS Map Preview
             </Button>
           </Row>
-        </Card>
+        </div>
       )}
     </>
   );
@@ -421,14 +421,14 @@ export function CollectionMapService({ metadata }) {
 //////////////////////////////////////////////
 export function HistoricScanStatus({ status }) {
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         scan status
       </h3>
       <Tag color={status ? "green" : "gold"}>
         {status ? <>COMPLETED</> : <>IN PROGRESS</>}
       </Tag>
-    </Card>
+    </div>
   );
 }
 export function HistoricProducts({ products }) {
@@ -442,7 +442,7 @@ export function HistoricProducts({ products }) {
   }, {});
 
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>products</h3>
       <p>
         Historic imagery projects occasionally produced multiple printed
@@ -468,12 +468,12 @@ export function HistoricProducts({ products }) {
           })}
         </Descriptions>
       )}
-    </Card>
+    </div>
   );
 }
 export function AboutHistoric() {
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         about the historic imagery archive
       </h3>
@@ -488,7 +488,7 @@ export function AboutHistoric() {
         preserving this collection, distributing it to the public, and
         continuing with the large task of digitizing the frames.
       </p>
-    </Card>
+    </div>
   );
 }
 
@@ -496,7 +496,7 @@ export function ScannedIndexes({ metadata }) {
   const idxAsJson = JSON.parse("[" + metadata.scanned_index_ls4_links + "]");
 
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         scanned indexes
       </h3>
@@ -542,7 +542,7 @@ export function ScannedIndexes({ metadata }) {
           </List.Item>
         )}
       />
-    </Card>
+    </div>
   );
 }
 //////////////////////////////////////////
@@ -550,7 +550,7 @@ export function ScannedIndexes({ metadata }) {
 //////////////////////////////////////////
 export function AboutLidar() {
   return (
-    <Card size="small">
+    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         about lidar data
       </h3>
@@ -566,6 +566,6 @@ export function AboutLidar() {
         </a>{" "}
         to download a complete index of all available lidar data at TNRIS.
       </p>
-    </Card>
+    </div>
   );
 }
