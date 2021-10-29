@@ -2,7 +2,6 @@ import { DownloadOutlined } from "@ant-design/icons";
 import {
   Alert,
   Button,
-  Card,
   Collapse,
   Descriptions,
   Input,
@@ -10,7 +9,7 @@ import {
   Row,
   Tag,
   Tooltip,
-  Typography
+  Typography,
 } from "antd";
 import {
   EmailIcon,
@@ -20,11 +19,11 @@ import {
   RedditIcon,
   RedditShareButton,
   TwitterIcon,
-  TwitterShareButton
+  TwitterShareButton,
 } from "react-share";
 import {
   emailRegex,
-  urlRegex
+  urlRegex,
 } from "../../utilities/regexHelpers/regexHelpers";
 
 const orderedContemporaryMetaKeys = [
@@ -57,7 +56,9 @@ export function MetadataTab({ metadata }) {
   return (
     <div id="MetadataTabContentContainer">
       <div>
-        {metadata && metadata.category.includes("Historic_Imagery") ? (
+        {metadata &&
+        metadata.category &&
+        metadata.category.includes("Historic_Imagery") ? (
           <HistoricMeta metadata={metadata} />
         ) : (
           <ContemporaryMeta metadata={metadata} />
@@ -73,7 +74,9 @@ function ContemporaryMeta({ metadata }) {
   return (
     <>
       <CollectionDescription about={metadata.description} />
-      {metadata.category.split(",").includes("Lidar") && <AboutLidar />}
+      {metadata.category && metadata.category.split(",").includes("Lidar") && (
+        <AboutLidar />
+      )}
       <Collapse>
         <Collapse.Panel
           header={
@@ -116,7 +119,7 @@ function ContemporaryMeta({ metadata }) {
       </Collapse>
       <CollectionMapService metadata={metadata} />
       <CollectionSupplementalDownloads metadata={metadata} />
-      <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+      <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
         <HyperLink
           url={metadata.license_url}
           text={metadata.license_name}
@@ -174,7 +177,7 @@ function HistoricMeta({ metadata }) {
       {metadata.products && <HistoricProducts products={metadata.products} />}
       <CollectionSupplementalDownloads metadata={metadata} />
       <AboutHistoric />
-      <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+      <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
         <HyperLink
           url={metadata.license_url}
           text={metadata.license_name}
@@ -213,7 +216,10 @@ export function HyperLink({ url, text, label }) {
 ////////////////////////////////////////////////////////////////////////
 export function CollectionDescription({ about }) {
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}} className="DescriptionCard">
+    <div
+      style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}
+      className="DescriptionCard"
+    >
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         description
       </h3>
@@ -229,7 +235,7 @@ export function CollectionCitation({ metadata }) {
   const sourceCitationText = `${metadata.source_name} (${metadata.source_abbreviation}). ${metadata.name}, ${metadata.acquisition_date}. Web. ${dateString}.`;
 
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         cite this collection
       </h3>
@@ -262,7 +268,7 @@ export function CollectionSupplementalDownloads({ metadata }) {
   return (
     <>
       {items && items.length > 0 && (
-        <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+        <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
           <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
             supplemental downloads
           </h3>
@@ -306,7 +312,7 @@ export function CollectionSocialShare({ metadata }) {
   const tweetTitle =
     shareUrl.includes("[") || shareUrl.includes("]") ? shareCombo : shareTitle;
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         share this collection
       </h3>
@@ -362,7 +368,7 @@ export function CollectionMapService({ metadata }) {
   return (
     <>
       {metadata.wms_link && metadata.popup_link && (
-        <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+        <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
           <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
             online mapping services
           </h3>
@@ -421,7 +427,7 @@ export function CollectionMapService({ metadata }) {
 //////////////////////////////////////////////
 export function HistoricScanStatus({ status }) {
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         scan status
       </h3>
@@ -442,7 +448,7 @@ export function HistoricProducts({ products }) {
   }, {});
 
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>products</h3>
       <p>
         Historic imagery projects occasionally produced multiple printed
@@ -473,7 +479,7 @@ export function HistoricProducts({ products }) {
 }
 export function AboutHistoric() {
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         about the historic imagery archive
       </h3>
@@ -496,7 +502,7 @@ export function ScannedIndexes({ metadata }) {
   const idxAsJson = JSON.parse("[" + metadata.scanned_index_ls4_links + "]");
 
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         scanned indexes
       </h3>
@@ -550,7 +556,7 @@ export function ScannedIndexes({ metadata }) {
 //////////////////////////////////////////
 export function AboutLidar() {
   return (
-    <div style={{borderBottom: "1 px solid grey", padding: ".25rem"}}>
+    <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
       <h3 style={{ fontVariant: "small-caps", fontWeight: "800" }}>
         about lidar data
       </h3>
