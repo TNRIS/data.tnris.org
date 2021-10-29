@@ -1,5 +1,14 @@
 // package imports
-import { List, message, PageHeader, Row, Skeleton, Spin, Tabs } from "antd";
+import {
+  Empty,
+  List,
+  message,
+  PageHeader,
+  Row,
+  Skeleton,
+  Spin,
+  Tabs,
+} from "antd";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
@@ -75,7 +84,7 @@ export default function CollectionTabsContainer({ collection }) {
       }
       // TODO: Add wms layer for historical collections
       //
-      console.log(collectionContents.index_service_url);
+      //console.log(collectionContents.index_service_url);
       if (collectionContents.index_service_url) {
         const locale = collectionContents.counties.includes(", ")
           ? "Multi-County"
@@ -247,6 +256,9 @@ export default function CollectionTabsContainer({ collection }) {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    return () => setActiveTab("0")
+  }, [setActiveTab])
   // Sets the active tab in the state
   const handleTabChange = (key) => {
     setActiveTab(key);
@@ -266,9 +278,13 @@ export default function CollectionTabsContainer({ collection }) {
                 )}
               </span>
             }
-            onBack={() => (history.length > 0 ? history.goBack() : history.push({
-              pathname: "/"
-            }))}
+            onBack={() =>
+              history.length > 0
+                ? history.goBack()
+                : history.push({
+                    pathname: "/",
+                  })
+            }
           />
         )}
         <div id={"TabContentContainer"}>
@@ -294,42 +310,117 @@ export default function CollectionTabsContainer({ collection }) {
                 <MetadataTab metadata={collectionContents} />
               </Tabs.TabPane>
               <Tabs.TabPane tab="Downloads" key="1" forceRender>
-                {AreaTypesState === "loading" && (
-                  <Spin
-                    spinning={AreaTypesState === "loading"}
-                    tip={"Loading collection resources..."}
-                  >
-                    <Skeleton>
-                      <List>
-                        <List.Item>
-                          <Row></Row>
-                        </List.Item>
-                        <List.Item>
-                          <Row></Row>
-                        </List.Item>
-                        <List.Item>
-                          <Row></Row>
-                        </List.Item>
-                      </List>
-                    </Skeleton>
-                  </Spin>
-                )}
-                {AreaTypesState !== "loading" && (
-                  <DownloadAreasList
-                    collectionId={collectionContents.collection_id}
-                    areaTypes={AreaTypesContents}
-                    areaTypesState={AreaTypesState}
+                {collectionContents.availability.includes("External_Link") && (
+                  <Empty
+                    description={
+                      <>
+                        <p>
+                          Sorry, this collection links to an external resource
+                          that we do not provide downloads for.
+                        </p>
+                        {collectionContents.source_data_website && (
+                          <p>
+                            You may be able to download this collection at the
+                            data owners website,{" "}
+                            <a href={collectionContents.source_data_website}>
+                              {collectionContents.source_data_website}
+                            </a>
+                          </p>
+                        )}
+                        {collectionContents.source_contact && (
+                          <>
+                            <p>
+                              You can contact the owner of this dataset at{" "}
+                              <a
+                                href={
+                                  "mailto:" + collectionContents.source_contact
+                                }
+                              >
+                                {collectionContents.source_contact}
+                              </a>
+                            </p>
+                          </>
+                        )}
+                      </>
+                    }
                   />
                 )}
+                {!collectionContents.availability.includes("External_Link") &&
+                  AreaTypesState === "loading" && (
+                    <Spin
+                      spinning={AreaTypesState === "loading"}
+                      tip={"Loading collection resources..."}
+                    >
+                      <Skeleton>
+                        <List>
+                          <List.Item>
+                            <Row></Row>
+                          </List.Item>
+                          <List.Item>
+                            <Row></Row>
+                          </List.Item>
+                          <List.Item>
+                            <Row></Row>
+                          </List.Item>
+                        </List>
+                      </Skeleton>
+                    </Spin>
+                  )}
+                {!collectionContents.availability.includes("External_Link") &&
+                  AreaTypesState !== "loading" && (
+                    <DownloadAreasList
+                      collectionId={collectionContents.collection_id}
+                      areaTypes={AreaTypesContents}
+                      areaTypesState={AreaTypesState}
+                    />
+                  )}
               </Tabs.TabPane>
               <Tabs.TabPane
                 tab="Custom Order"
                 key="2"
                 style={{ height: "100%" }}
               >
-                {collectionState === "hasValue" && (
-                  <OrderFormContainer collection={collectionContents} />
-                )}
+                {collectionState === "hasValue" &&
+                  !collectionContents.availability.includes(
+                    "External_Link"
+                  ) && <OrderFormContainer collection={collectionContents} />}
+                {collectionState === "hasValue" &&
+                  collectionContents.availability.includes("External_Link") && (
+                    <Empty
+                      description={
+                        <>
+                          <p>
+                            Sorry, this collection links to an external resource
+                            that we do not provide orders for.
+                          </p>
+                          {collectionContents.source_data_website && (
+                            <p>
+                              You may be able to download this collection at the
+                              data owners website,{" "}
+                              <a href={collectionContents.source_data_website}>
+                                {collectionContents.source_data_website}
+                              </a>
+                            </p>
+                          )}
+                          {collectionContents.source_contact && (
+                            <>
+                              <p>
+                                You can contact the owner of this dataset at{" "}
+                                <a
+                                  href={
+                                    "mailto:" +
+                                    collectionContents.source_contact
+                                  }
+                                >
+                                  {collectionContents.source_contact}
+                                </a>
+                              </p>
+                            </>
+                          )}
+                        </>
+                      }
+                    />
+                  )}
               </Tabs.TabPane>
               <Tabs.TabPane tab="Contact" key="3" style={{ height: "100%" }}>
                 {collectionState === "hasValue" && (
