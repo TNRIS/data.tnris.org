@@ -1,21 +1,16 @@
 // Package imports
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import bboxPolygon from "@turf/bbox-polygon";
-import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { geoSearchBboxAtom, mapBoundsAtom } from "../atoms/geofilterAtoms";
-import { drawControlsAtom, mapAtom } from "../atoms/mapAtoms";
+import { useRecoilState } from "recoil";
+import { mapBoundsAtom } from "../atoms/geofilterAtoms";
+import { mapAtom } from "../atoms/mapAtoms";
 import useQueryParam from "../utilities/customHooks/useQueryParam";
 import { NavigateToExtentControl } from "../utilities/mapHelpers/navigateToExtentControl.js";
 import { MapControlPanel } from "./MapControlPanel";
 
 export function MapContainer() {
   const [map, setMap] = useRecoilState(mapAtom);
-  const setDrawControls = useSetRecoilState(drawControlsAtom);
   const [bounds, setBounds] = useRecoilState(mapBoundsAtom);
   const [zoom] = useState(5.5);
   const MapContainer = useRef(null);
@@ -42,21 +37,6 @@ export function MapContainer() {
       const navigateToExtentControl = new NavigateToExtentControl(map);
       map.addControl(navigateToExtentControl, "top-right");
 
-      const modes = MapboxDraw.modes;
-      modes.draw_rectangle = DrawRectangle;
-
-      const draw = new MapboxDraw({
-        displayControlsDefault: false,
-        modes: modes,
-        controls: {
-          simple_select: false,
-          draw_rectangle: false,
-          trash: false,
-        },
-      });
-      map.addControl(draw);
-      setDrawControls(draw);
-
       map.on("load", () => {
         // Store map object in Recoil Atom
         setMap(map);
@@ -66,7 +46,7 @@ export function MapContainer() {
     if (!map) {
       initializeMap({ setMap, MapContainer });
     }
-  }, [map, bounds, setBounds, zoom, setMap, setDrawControls]);
+  }, [map, bounds, setBounds, zoom, setMap]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the

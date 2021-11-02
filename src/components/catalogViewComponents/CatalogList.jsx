@@ -4,6 +4,7 @@ import { useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
 import { FilterBar } from "./filterBarComponents/FilterBar";
+import { GeoFilterDrawToggle } from "./filterBarComponents/GeoFilterDrawToggle";
 import { GeoFilterSearchBarV2 } from "./filterBarComponents/GeoFilterSearchBarV2";
 import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
@@ -67,6 +68,7 @@ export function CatalogList() {
             //handleOnSetSelectedSearchOption={handleOnChange}
             //handleOnClearSelectedSearchOption={handleOnClear}
           />
+          <GeoFilterDrawToggle />
         </Input.Group>
         <div className={"FilterRow"}>
           <FilterBar />
