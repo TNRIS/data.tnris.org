@@ -4,7 +4,7 @@ import bbox from "@turf/bbox";
 import { Button } from "antd";
 import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
 import { useHistory, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { geoSearchSelectionAtom } from "../../../atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../atoms/mapAtoms";

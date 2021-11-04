@@ -1,6 +1,6 @@
 import { Empty, Select } from "antd";
+import { useCallback, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { useEffect } from "react/cjs/react.development";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeocoderSearchResultsSelector,
@@ -89,7 +89,7 @@ export function GeoFilterSearchBar({
       }
     }
   };
-  const HANDLE_NAV_WITH_GEO_PARAM = () => {
+  const HANDLE_NAV_WITH_GEO_PARAM = useCallback(() => {
     const g = geo;
 
     if (g && g.split(",").length === 4 && !SEARCH_SELECTION) {
@@ -101,7 +101,7 @@ export function GeoFilterSearchBar({
       };
       SET_SEARCH_SELECTION(v);
     }
-  };
+  }, [SET_SEARCH_SELECTION, SEARCH_SELECTION, geo]);
   //Function to handle clear controls of antd Select component
   const HANDLE_ON_CLEAR_FN = () => {
     history.push({
@@ -128,9 +128,10 @@ export function GeoFilterSearchBar({
   ////Effects//////////////////
   ///////////////////////////////
   useEffect(() => {
-    HANDLE_NAV_WITH_GEO_PARAM();
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (HANDLE_NAV_WITH_GEO_PARAM) {
+      HANDLE_NAV_WITH_GEO_PARAM();
+    }
+  }, [HANDLE_NAV_WITH_GEO_PARAM]);
 
   useEffect(() => {
     // Remove the geoSearchBboxLayer and replace it when the selection changes.
@@ -147,10 +148,10 @@ export function GeoFilterSearchBar({
 
   useEffect(() => {
     return () => {
-      SET_SEARCH_SELECTION(null)
-      SET_SEARCH_INPUT(null)
-    }
-  }, [SET_SEARCH_SELECTION, SET_SEARCH_INPUT])
+      SET_SEARCH_SELECTION(null);
+      SET_SEARCH_INPUT(null);
+    };
+  }, [SET_SEARCH_SELECTION, SET_SEARCH_INPUT]);
 
   return (
     <Select
