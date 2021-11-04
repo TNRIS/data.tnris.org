@@ -1,10 +1,10 @@
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import bbox from "@turf/bbox";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
-import { useHistory, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { geoSearchSelectionAtom } from "../../../atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../atoms/mapAtoms";
@@ -67,6 +67,8 @@ export function GeoFilterDrawToggle() {
             display_name: "Custom search boundary",
           },
         };
+        document.getElementsByClassName("mapboxgl-canvas")[0].style.cursor =
+          "unset";
         SET_SEARCH_SELECTION(v);
         DRAW_MODE.deleteAll();
       };
@@ -97,6 +99,13 @@ export function GeoFilterDrawToggle() {
           icon={<EditFilled />}
           onClick={() => {
             if (MAP && DRAW_MODE) {
+              message.info(
+                "Click once, drag, then twice to create a bounding box",
+                4
+              );
+              document.getElementsByClassName(
+                "mapboxgl-canvas"
+              )[0].style.cursor = "crosshair";
               DRAW_MODE.changeMode("draw_rectangle");
               SET_IS_DRAW_MODE((prev) => !prev);
             }
