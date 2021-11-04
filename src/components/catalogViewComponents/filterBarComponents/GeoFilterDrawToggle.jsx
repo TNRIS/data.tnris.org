@@ -1,7 +1,7 @@
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import bbox from "@turf/bbox";
-import { Button, Card, Checkbox, Row } from "antd";
+import { Button } from "antd";
 import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
 import { useHistory, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react/cjs/react.development";
@@ -68,6 +68,7 @@ export function GeoFilterDrawToggle() {
           },
         };
         SET_SEARCH_SELECTION(v);
+        DRAW_MODE.deleteAll();
       };
       // Add drawLayerFn to listeners
       MAP.on("draw.create", drawLayerFn);
@@ -81,18 +82,14 @@ export function GeoFilterDrawToggle() {
     }
   }, [MAP, DRAW_MODE, SET_DRAW_MODE, SET_SEARCH_SELECTION, history, search]);
 
-  //Set draw controls active or inactive when IS_DRAW_MODE changes
-  /*   useEffect(() => {
-    if (MAP && DRAW_MODE) {
-      if (IS_DRAW_MODE === true) {
-        DRAW_MODE.changeMode("draw_rectangle");
-      }
-      if (IS_DRAW_MODE === false) {
+  useEffect(() => {
+    return () => {
+      if (IS_DRAW_MODE) {
         DRAW_MODE.deleteAll();
       }
-    }
-  }, [IS_DRAW_MODE, MAP, DRAW_MODE, SET_SEARCH_SELECTION, history, search]);
- */
+    };
+  }, [DRAW_MODE, IS_DRAW_MODE]);
+
   return (
     <b>
       {!IS_DRAW_MODE ? (

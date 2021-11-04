@@ -7,7 +7,7 @@ import {
   geoFilterSearchTextAtom,
   geoSearchSelectionAtom,
 } from "../../../atoms/geofilterAtoms";
-import { mapAtom } from "../../../atoms/mapAtoms";
+import { drawControlsAtom, mapAtom } from "../../../atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/customHooks/useQueryParam";
 import {
@@ -16,7 +16,7 @@ import {
 } from "../../../utilities/mapHelpers/highlightHelpers";
 import { zoomToBbox } from "../../../utilities/mapHelpers/zoomHelpers";
 
-export function GeoFilterSearchBarV2({
+export function GeoFilterSearchBar({
   handleOnSetSelectedSearchOption = (selectedValue) => {
     //console.log("SELECTED VALUE: ", selectedValue);
     return;
@@ -41,6 +41,7 @@ export function GeoFilterSearchBarV2({
   ////recoil state//////////////
   //////////////////////////////
   const MAP = useRecoilValue(mapAtom);
+  const DRAW = useRecoilValue(drawControlsAtom);
   //input text of search box.
   //triggers fetch of options from nominatim
   const [SEARCH_INPUT, SET_SEARCH_INPUT] = useRecoilState(
@@ -83,6 +84,9 @@ export function GeoFilterSearchBarV2({
       //Execute optional function passed as property when seletion changes.
       //Default function does nothing and returns null.
       handleOnSetSelectedSearchOption(RESULT_AT_INDEX);
+      if (DRAW) {
+        DRAW.deleteAll();
+      }
     }
   };
   const HANDLE_NAV_WITH_GEO_PARAM = () => {
@@ -140,6 +144,13 @@ export function GeoFilterSearchBarV2({
       removeGeoSearchBboxFromMap(MAP);
     }
   }, [MAP, SEARCH_SELECTION]);
+
+  useEffect(() => {
+    return () => {
+      SET_SEARCH_SELECTION(null)
+      SET_SEARCH_INPUT(null)
+    }
+  }, [SET_SEARCH_SELECTION, SET_SEARCH_INPUT])
 
   return (
     <Select

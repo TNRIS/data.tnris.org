@@ -24,17 +24,7 @@ export const catalogIncrementSelector = selector({
     return incValue ? Number(incValue) : 24;
   },
 });
-// parse map value from url, if present. If not, default to false
-export const showMapSelector = selector({
-  key: "showMap",
-  default: false,
-  get: ({ get }) => {
-    const urlParams = get(searchString);
-    const showMapValue = new URLSearchParams(urlParams).get("map");
 
-    return showMapValue ? showMapValue : false;
-  },
-});
 // parse search from url
 export const catalogSearchSelector = selector({
   key: "catalogSearchSelector",
