@@ -15,7 +15,6 @@
     "@turf/center-of-mass": "^6.5.0",
     "@turf/helpers": "^6.3.0",
     "antd": "^4.15.6",
-    "caniuse-lite": "^1.0.30001276",
     "craco-less": "^1.17.1",
     "ga-4-react": "^0.1.281",
     "mapbox-gl-draw-rectangle-mode": "^1.0.4",
