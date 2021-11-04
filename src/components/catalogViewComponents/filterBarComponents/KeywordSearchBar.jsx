@@ -57,7 +57,6 @@ export function KeywordSearchBar() {
             ),
           })
         }
-        enterKeyHint
         enterButton
         className="KeywordSearchBar"
       />

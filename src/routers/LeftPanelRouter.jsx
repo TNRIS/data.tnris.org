@@ -9,7 +9,7 @@ import { CatalogList } from "../components/catalogViewComponents/CatalogList";
 import CollectionTabsContainer from "../components/collectionViewComponents/TabsContainer";
 import { changeParams } from "../utilities/changeParamsUtil";
 import useQueryParam from "../utilities/customHooks/useQueryParam";
-import { RedirectCollection } from "./OldURLConverters";
+import { RedirectLegacyCollectionURL } from "./LegacyURLConverters";
 
 export function LeftPanelRouter() {
   const history = useHistory();
@@ -18,7 +18,7 @@ export function LeftPanelRouter() {
 
   useEffect(() => {
     if (!page && pathname === "/") {
-      history.replace(
+      history.push(
         {
           search: changeParams(
             [
@@ -43,7 +43,7 @@ export function LeftPanelRouter() {
         <CollectionTabsContainer />
       </Route>
       <Route strict path="/collection/:id">
-        <RedirectCollection />
+        <RedirectLegacyCollectionURL />
       </Route>
       <Route path="/" exact>
         <CatalogList />

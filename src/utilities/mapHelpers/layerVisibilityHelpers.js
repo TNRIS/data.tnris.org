@@ -5,7 +5,6 @@ export const hideLayer = (layerName, map) => {
       );
     }
 }
-
 export const showLayer = (layerName, map) => {
   if (map && map.getLayer(layerName)) {
       map.setLayoutProperty(
