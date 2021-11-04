@@ -1,7 +1,7 @@
 import { Redirect, useLocation } from "react-router-dom";
 
-export const RedirectCollection = () => {
-  const {pathname} = useLocation();
+export const RedirectLegacyCollectionURL = () => {
+  const { pathname } = useLocation();
 
   return (
     <Redirect

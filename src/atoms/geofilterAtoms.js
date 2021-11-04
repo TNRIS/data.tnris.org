@@ -18,6 +18,10 @@ export const geoSearchBboxAtom = atom({
   key: "geoFilterSelectedResultBboxSelector",
   default: null,
 });
+export const geoSearchSelectionAtom = atom({
+  key: "geoSearchSelectionAtom",
+  default: null,
+});
 export const mapBoundsAtom = atom({
   key: "mapBoundsAtom",
   default: { lng: -99.341389, lat: 31.33 },

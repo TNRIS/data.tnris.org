@@ -1,45 +1,111 @@
-import { CloseCircleOutlined } from "@ant-design/icons";
-import bbox from "@turf/bbox";
-import { Button, Checkbox, Empty, Select, Spin } from "antd";
-import { useEffect, useState } from "react";
+import { Empty, Select } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
+import { useEffect } from "react/cjs/react.development";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   fetchGeocoderSearchResultsSelector,
   geoFilterSearchTextAtom,
-  geoSearchBboxAtom
+  geoSearchSelectionAtom,
 } from "../../../atoms/geofilterAtoms";
 import { drawControlsAtom, mapAtom } from "../../../atoms/mapAtoms";
 import { changeParams } from "../../../utilities/changeParamsUtil";
 import useQueryParam from "../../../utilities/customHooks/useQueryParam";
+import {
+  addGeoSearchBboxToMap,
+  removeGeoSearchBboxFromMap,
+} from "../../../utilities/mapHelpers/highlightHelpers";
+import { zoomToBbox } from "../../../utilities/mapHelpers/zoomHelpers";
 
-export function GeoFilterSearchBar(props) {
-  const history = useHistory();
+export function GeoFilterSearchBar({
+  handleOnSetSelectedSearchOption = (selectedValue) => {
+    //console.log("SELECTED VALUE: ", selectedValue);
+    return;
+  },
+  handleOnClearSelectedSearchOption = (clearedValue) => {
+    //console.log("CLEARED VALUE: ", clearedValue);
+    return;
+  },
+  notFoundContent = <Empty />,
+  placeholder = "Search by geolocation",
+}) {
+  //////////////////////////////
+  ////custom hooks//////////////
+  //////////////////////////////
   const geo = useQueryParam().get("geo");
-  const showMap = useQueryParam().get("map");
+  //////////////////////////////
+  ////3rd party hooks///////////
+  //////////////////////////////
+  const history = useHistory();
   const search = useLocation().search;
-  const map = useRecoilValue(mapAtom);
-
-  const [drawMode, setDrawMode] = useState(false);
-  const [geoSearchSelectionText, setGeoSearchSelectionText] = useState();
-  const drawControls = useRecoilValue(drawControlsAtom);
-  const { state, contents } = useRecoilValueLoadable(
-    fetchGeocoderSearchResultsSelector
-  );
-  const [geoSearchInputText, setGeoSearchInputText] = useRecoilState(
+  //////////////////////////////
+  ////recoil state//////////////
+  //////////////////////////////
+  const MAP = useRecoilValue(mapAtom);
+  const DRAW = useRecoilValue(drawControlsAtom);
+  //input text of search box.
+  //triggers fetch of options from nominatim
+  const [SEARCH_INPUT, SET_SEARCH_INPUT] = useRecoilState(
     geoFilterSearchTextAtom
   );
-  const [geoSearchBbox, setGeoSearchBbox] = useRecoilState(geoSearchBboxAtom);
+  //results of nominatim search.
+  //triggered by change of SEARCH_INPUT (geoFilterSearchTextAtom)
+  const { state: SEARCH_STATE, contents: SEARCH_RESULTS } =
+    useRecoilValueLoadable(fetchGeocoderSearchResultsSelector);
+  //stores selected search result.
+  const [SEARCH_SELECTION, SET_SEARCH_SELECTION] = useRecoilState(
+    geoSearchSelectionAtom
+  );
 
-  //if the geo param is set on page load, register it as the search text
-  //then, store the first result as the geoFilterSelection, which will trigger map render of feature
-  if (geo) {
-    setGeoSearchBbox(geo);
-  }
-  // handler for clearing drawn geosearch boundary
-  const handleClear = () => {
+  //////////////////////////////
+  ////handler functions/////////
+  //////////////////////////////
+  const HANDLE_ON_SEARCH = (input) => {
+    //console.log(input, SEARCH_INPUT);
+    SET_SEARCH_INPUT(input);
+  };
+  const HANDLE_ON_SEARCH_SELECTION_CHANGE = (result_index) => {
+    //get result at selected index value
+    const RESULT_AT_INDEX = SEARCH_RESULTS["features"][result_index];
+    //set geo search param equal to bbox of selected value
+    if (RESULT_AT_INDEX) {
+      history.push({
+        search: changeParams(
+          [
+            {
+              key: "geo",
+              value: RESULT_AT_INDEX.bbox,
+              ACTION: "set",
+            },
+          ],
+          search
+        ),
+      });
+      SET_SEARCH_SELECTION(RESULT_AT_INDEX);
+      //Execute optional function passed as property when seletion changes.
+      //Default function does nothing and returns null.
+      handleOnSetSelectedSearchOption(RESULT_AT_INDEX);
+      if (DRAW) {
+        DRAW.deleteAll();
+      }
+    }
+  };
+  const HANDLE_NAV_WITH_GEO_PARAM = () => {
+    const g = geo;
+
+    if (g && g.split(",").length === 4 && !SEARCH_SELECTION) {
+      const v = {
+        bbox: g.split(","),
+        properties: {
+          display_name: "Custom search boundary",
+        },
+      };
+      SET_SEARCH_SELECTION(v);
+    }
+  };
+  //Function to handle clear controls of antd Select component
+  const HANDLE_ON_CLEAR_FN = () => {
     history.push({
-      pathname: "/",
+      pathname: window.location.pathname,
       search: changeParams(
         [
           {
@@ -51,189 +117,73 @@ export function GeoFilterSearchBar(props) {
         search
       ),
     });
-    setGeoSearchBbox(null);
-    if (drawControls && map) {
-      drawControls.deleteAll();
-
-      if (drawMode) {
-        drawControls.changeMode("draw_rectangle");
-      }
-    }
-  };
-  const handleOnChange = (v) => {
-    if (contents.features[v]?.properties) {
-      setGeoSearchSelectionText(() => {
-        return contents.features[v].properties.display_name;
-      });
-      history.push({
-        search: changeParams(
-          [
-            {
-              key: "geo",
-              value: contents?.features[v]?.bbox,
-              ACTION: "set",
-            },
-          ],
-          search
-        ),
-      });
-      setGeoSearchBbox(contents.features[v].bbox);
-    }
+    SET_SEARCH_INPUT(null);
+    SET_SEARCH_SELECTION(null);
+    //Execute optional function passed as proeprty when selection cleared
+    //Default function does nothing and returns null.
+    handleOnClearSelectedSearchOption(SEARCH_SELECTION);
   };
 
+  ///////////////////////////////
+  ////Effects//////////////////
+  ///////////////////////////////
   useEffect(() => {
-    // if geo param is null, setGeoSearchBbox to null and setGeoSearchInputText null
-    // this clears the input and item from the map
-    if (!geo) {
-      setGeoSearchBbox(null);
-      setGeoSearchSelectionText("");
-    } else {
-      setGeoSearchSelectionText((cur) => {
-        if (!cur) {
-          return "Custom search boundary";
-        }
-        return cur;
-      });
-    }
-  }, [geo, setGeoSearchBbox, setGeoSearchSelectionText]);
+    HANDLE_NAV_WITH_GEO_PARAM();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    if (geoSearchBbox && map) {
-      // Zoom to bounds of selection
-      map.fitBounds(geoSearchBbox.split(","));
+    // Remove the geoSearchBboxLayer and replace it when the selection changes.
+    if (MAP && SEARCH_SELECTION) {
+      removeGeoSearchBboxFromMap(MAP);
+      addGeoSearchBboxToMap(MAP, SEARCH_SELECTION.bbox);
+      zoomToBbox(MAP, SEARCH_SELECTION.bbox);
     }
-  }, [geoSearchBbox, map]);
-
-  // when drawMode toggled on or off, change drawMode on drawControlsAtom
-  // add / remove event handler for create listener
-  useEffect(() => {
-    if (map && drawControls) {
-      drawControls.deleteAll();
-      if (drawMode) {
-        drawControls.changeMode("draw_rectangle");
-      } else {
-        drawControls.changeMode("simple_select");
-      }
+    // Remove the geoSearchBboxLayer if selection is cleared.
+    if (MAP && !SEARCH_SELECTION) {
+      removeGeoSearchBboxFromMap(MAP);
     }
-  }, [drawMode, map, drawControls]);
+  }, [MAP, SEARCH_SELECTION]);
 
-  // add draw controls create listener when draw controls and map available
-  useEffect(() => {
-    if (drawControls && map) {
-      const drawLayerFn = (layer) => {
-        setGeoSearchSelectionText("Custom search boundary");
-        history.push({
-          search: changeParams(
-            [
-              {
-                key: "geo",
-                value: bbox(layer.features[0].geometry),
-                ACTION: "set",
-              },
-            ],
-            search
-          ),
-        });
-      };
-      // Add drawLayerFn to listeners
-      map.on("draw.create", drawLayerFn);
-      map.on("draw.update", drawLayerFn);
-
-      // Remove listeners on cleanup
-      return () => {
-        map.off("draw.create", drawLayerFn);
-        map.off("draw.update", drawLayerFn);
-      };
-    }
-  }, [drawControls, map, history, search]);
-
-  // cleanup effect that clears the drawn layers when the component is destroyed
   useEffect(() => {
     return () => {
-      if (drawControls && map) {
-        drawControls.deleteAll();
-        setGeoSearchBbox(null);
-      }
-    };
-  }, [map, drawControls, setGeoSearchBbox]);
+      SET_SEARCH_SELECTION(null)
+      SET_SEARCH_INPUT(null)
+    }
+  }, [SET_SEARCH_SELECTION, SET_SEARCH_INPUT])
 
   return (
-    <>
-      {true && (
-        <Select
-          aria-label="Search collections by location"
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          showSearch
-          placeholder="Search collections by location bbox"
-          searchValue={geoSearchInputText}
-          // set geoFilterSearchText atom
-          // when geoFilterSearchText changes, the fetch geoFilterResults selector automatically re-runs the query to nominatim
-          onSearch={(v) => {
-            setGeoSearchInputText(v);
-          }}
-          notFoundContent={
-            state === "loading" ? <Spin size="small" /> : <Empty />
-          }
-          showArrow={false}
-          filterOption={false}
-          allowClear
-          loading={state === "loading"}
-          onClear={handleClear}
-          // value is set to selection from dropdown if selection made, else, null
-          value={geoSearchSelectionText ? geoSearchSelectionText : null}
-          // on selection change, set URI
-          // and set geoSearchInputTextAtom and geoSearchBboxAtom
-          onChange={handleOnChange}
-          className="GeoFilterSearchBar"
-          options={
-            contents && contents.features && contents.features.length > 0
-              ? contents.features.map((f, i) => {
-                  return {
-                    key: f.properties.display_name + "_" + i,
-                    label: f.properties.display_name,
-                    value: i,
-                  };
-                })
-              : null
-          }
-        >
-          {
-            // if nominatim has returned results with length > 0, return as options
-          }
-        </Select>
-      )}
-      <div style={{ display: "inline-block" }}>
-        <Checkbox
-          checked={drawMode}
-          onChange={() =>
-            setDrawMode((currentMode) => {
-              if (!currentMode && showMap !== true) {
-                history.push({
-                  search: changeParams([
-                    {
-                      key: "map",
-                      value: true,
-                      ACTION: "set",
-                    },
-                  ], search),
-                });
-              }
-              return !currentMode;
+    <Select
+      placeholder={placeholder}
+      loading={() => SEARCH_STATE === "loading"}
+      searchValue={SEARCH_INPUT}
+      onSearch={HANDLE_ON_SEARCH}
+      options={
+        SEARCH_RESULTS &&
+        SEARCH_RESULTS.features &&
+        SEARCH_RESULTS.features.length &&
+        SEARCH_STATE === "hasValue"
+          ? SEARCH_RESULTS.features.map((feature, index) => {
+              return {
+                key: feature.properties.display_name + "_" + index,
+                label: feature.properties.display_name,
+                value: index,
+              };
             })
-          }
-        >
-          Draw search boundary
-        </Checkbox>
-        {geo && (
-          <Button
-            icon={<CloseCircleOutlined />}
-            type="link"
-            onClick={() => handleClear()}
-          >
-            Clear search boundary
-          </Button>
-        )}
-      </div>
-    </>
+          : null
+      }
+      notFoundContent={notFoundContent}
+      onClear={HANDLE_ON_CLEAR_FN}
+      value={
+        SEARCH_SELECTION ? SEARCH_SELECTION["properties"]["display_name"] : null
+      }
+      onChange={HANDLE_ON_SEARCH_SELECTION_CHANGE}
+      className="GeoFilterSearchBar"
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      showSearch
+      allowClear
+      showArrow={false}
+      filterOption={false}
+    />
   );
 }

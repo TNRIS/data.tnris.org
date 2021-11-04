@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 import { bboxToWKTPolygon } from "../utilities/mapHelpers/bboxToWKTPolygon";
-import { geoSearchBboxAtom } from "./geofilterAtoms";
+import { geoSearchSelectionAtom } from "./geofilterAtoms";
 import { searchString } from "./urlFactoryAtoms";
 // parse pg from url, if present. If not, default to 1
 export const catalogPageSelector = selector({
@@ -24,17 +24,7 @@ export const catalogIncrementSelector = selector({
     return incValue ? Number(incValue) : 24;
   },
 });
-// parse map value from url, if present. If not, default to false
-export const showMapSelector = selector({
-  key: "showMap",
-  default: false,
-  get: ({ get }) => {
-    const urlParams = get(searchString);
-    const showMapValue = new URLSearchParams(urlParams).get("map");
 
-    return showMapValue ? showMapValue : false;
-  },
-});
 // parse search from url
 export const catalogSearchSelector = selector({
   key: "catalogSearchSelector",
@@ -132,11 +122,11 @@ export const catalogBBoxSelector = selector({
   default: null,
   get: ({ get }) => {
     //const geo = get(geoFilterSelectedResult);
-    const bb = get(geoSearchBboxAtom);
+    const bb = get(geoSearchSelectionAtom);
 
     if (bb !== null) {
       // convert bbox from uri param to polygon, check if the_geom intersects new bbox polygon
-      return `&the_geom__intersects=${bboxToWKTPolygon(bb.split(","))}`;
+      return `&the_geom__intersects=${bboxToWKTPolygon(bb["bbox"])}`;
     } else {
       return "";
     }

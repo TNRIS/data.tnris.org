@@ -1,26 +1,16 @@
 // Package imports
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import bboxPolygon from "@turf/bbox-polygon";
-import DrawRectangle from "mapbox-gl-draw-rectangle-mode";
 import { GeolocateControl, Map, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  geoSearchBboxAtom,
-  mapBoundsAtom,
-} from "../atoms/geofilterAtoms";
-import { drawControlsAtom, mapAtom } from "../atoms/mapAtoms";
+import { useRecoilState } from "recoil";
+import { mapBoundsAtom } from "../atoms/geofilterAtoms";
+import { mapAtom } from "../atoms/mapAtoms";
 import useQueryParam from "../utilities/customHooks/useQueryParam";
 import { NavigateToExtentControl } from "../utilities/mapHelpers/navigateToExtentControl.js";
 import { MapControlPanel } from "./MapControlPanel";
 
 export function MapContainer() {
-  const location = useLocation();
-  const geoSearchBbox = useRecoilValue(geoSearchBboxAtom);
   const [map, setMap] = useRecoilState(mapAtom);
-  const setDrawControls = useSetRecoilState(drawControlsAtom);
   const [bounds, setBounds] = useRecoilState(mapBoundsAtom);
   const [zoom] = useState(5.5);
   const MapContainer = useRef(null);
@@ -47,25 +37,15 @@ export function MapContainer() {
       const navigateToExtentControl = new NavigateToExtentControl(map);
       map.addControl(navigateToExtentControl, "top-right");
 
-      const modes = MapboxDraw.modes;
-      modes.draw_rectangle = DrawRectangle;
-
-      const draw = new MapboxDraw({
-        displayControlsDefault: false,
-        modes: modes,
-        controls: {
-          simple_select: false,
-          draw_rectangle: false,
-          trash: false,
-        },
-      });
-      map.addControl(draw);
-      setDrawControls(draw);
-
-      map.on("moveend", () => {
-        //setBounds(JSON.stringify(map.getBounds()));
-      });
       map.on("load", () => {
+        map.loadImage(
+          "https://maplibre.org/maplibre-gl-js-docs/assets/custom_marker.png",
+          // Add an image to use as a custom marker
+          function (error, image) {
+            if (error) throw error;
+            map.addImage("custom-marker", image);
+          }
+        );
         // Store map object in Recoil Atom
         setMap(map);
       });
@@ -74,41 +54,7 @@ export function MapContainer() {
     if (!map) {
       initializeMap({ setMap, MapContainer });
     }
-  }, [map, bounds, setBounds, zoom, setMap, setDrawControls]);
-
-  // Show  geoSearchBbox geometry when available
-  useEffect(() => {
-    // Only animate to geosearch layer when at root "/" path
-    // Check that map is initialized
-    if (map) {
-      // Check if layer already exists
-      const filterLayer = map.getLayer("geofilter-layer");
-      if (typeof filterLayer !== "undefined") {
-        // If it exists, remove it and its source
-        map.removeLayer("geofilter-layer");
-        map.removeSource("geofilter-source");
-      }
-      // Check if geoSearchBbox atom is populated with search result
-      if (geoSearchBbox) {
-        // If so, add source from geojson and layer from source
-        map.addSource("geofilter-source", {
-          type: "geojson",
-          data: bboxPolygon(geoSearchBbox.split(",")),
-        });
-        map.addLayer({
-          id: "geofilter-layer",
-          type: "line",
-          source: "geofilter-source",
-          layout: {},
-          paint: {
-            "line-color": "red",
-            "line-opacity": 1,
-            "line-width": 4,
-          },
-        });
-      }
-    }
-  }, [geoSearchBbox, map, location]);
+  }, [map, bounds, setBounds, zoom, setMap]);
 
   // We need to resize the map if it is initialized while hidden
   // because the map container size can't be determined till the
