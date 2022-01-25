@@ -7,7 +7,7 @@ import {
   Row,
   Skeleton,
   Spin,
-  Tabs,
+  Tabs
 } from "antd";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -16,11 +16,11 @@ import {
   useRecoilState,
   useRecoilValue,
   useRecoilValueLoadable,
-  useSetRecoilState,
+  useSetRecoilState
 } from "recoil";
 import {
   fetchAreaTypesByCollectionIdSelector,
-  fetchCollectionByIdSelector,
+  fetchCollectionByIdSelector
 } from "../../atoms/collectionsAtoms";
 import { mapAtom } from "../../atoms/mapAtoms";
 // local imports
@@ -109,7 +109,7 @@ export default function CollectionTabsContainer({ collection }) {
           collectionContents.index_service_url +
           "&bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=" +
           rasterLayer;
-        console.log(mvtUrl, wmsRasterUrl);
+        //console.log(mvtUrl, wmsRasterUrl);
         // use the tiles url query on index service
         // to add a source to the map
         setMapSources((prev) => {
@@ -257,8 +257,8 @@ export default function CollectionTabsContainer({ collection }) {
   }, [activeTab]);
 
   useEffect(() => {
-    return () => setActiveTab("0")
-  }, [setActiveTab])
+    return () => setActiveTab("0");
+  }, [setActiveTab]);
   // Sets the active tab in the state
   const handleTabChange = (key) => {
     setActiveTab(key);

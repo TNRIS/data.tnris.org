@@ -43,6 +43,7 @@ export function OrderFormContainer({ collection }) {
       collection_id: collection.collection_id,
       name: collection.name,
       coverage: f.Coverage,
+      acquisition_date: collection.acquisition_date,
       description: files && files.length ? files : f.Description,
       type: f.Type,
       formats: f.Format ? f.Format.toString() : undefined,

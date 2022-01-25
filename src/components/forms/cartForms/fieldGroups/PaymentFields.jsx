@@ -1,4 +1,4 @@
-import { Form, Radio } from "antd";
+import { Form, Select } from "antd";
 import { useEffect } from "react";
 
 const paymentOptions = [
@@ -34,29 +34,37 @@ export function PaymentFields({ form }) {
 
   return (
     <Form.Item
-      name="Payment Method"
-      help="Once a quote for your order has been completed, TNRIS will contact you for payment details."
-      rules={[{ required: true }]}
+      noStyle
+      shouldUpdate={(prevValues, currentValues) =>
+        prevValues["Delivery Method"] !== currentValues["Delivery Method"]
+      }
     >
-      {form.getFieldValue("Delivery Method") === "ZIP" && (
+      {deliveryMethod === "ZIP" && (
         <div>
-          <strong>Pre-prepared ZIP files are provided free of charge and delivered to you by email. Please proceed without selecting a payment method.</strong>
+          <strong>
+            Pre-prepared ZIP files are provided free of charge and delivered to
+            you by email. Please proceed without selecting a payment method.
+          </strong>
         </div>
       )}
-      {deliveryMethod !== "ZIP" && (
-        <Radio.Group>
+      <Form.Item
+        name="Payment Method"
+        help="Once a quote for your order has been completed, TNRIS will contact you for payment details."
+        rules={[{ required: true }]}
+      >
+        <Select>
           {paymentOptions.map((v, i) => (
-            <Radio
+            <Select.Option
               key={`${v}_${i}`}
               value={v.value}
               style={{ display: "block" }}
               disabled={!selectable.includes(i)}
             >
               {v.label}
-            </Radio>
+            </Select.Option>
           ))}
-        </Radio.Group>
-      )}
+        </Select>
+      </Form.Item>
     </Form.Item>
   );
 }
