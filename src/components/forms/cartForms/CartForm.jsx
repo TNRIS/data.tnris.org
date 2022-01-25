@@ -62,6 +62,7 @@ export function CartForm() {
       setStepIdx(steps.length - 1);
       setCart({});
       setTimeout(() => {
+        form.resetFields()
         submitMutation.reset();
         setStepIdx(0);
       }, 3000);
