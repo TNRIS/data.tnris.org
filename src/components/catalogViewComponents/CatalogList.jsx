@@ -1,6 +1,9 @@
+//import { useRef } from "react";
+//import ReactDOM from "react-dom";
 import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
+//import centerOfMass from "@turf/center-of-mass";
 import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
 import { mapAtom } from "../../atoms/mapAtoms";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
@@ -11,10 +14,11 @@ import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { ViewMapSwitch } from "./ViewMapSwitch";
+//import maplibreGl from "maplibre-gl";
+//import { BrowserRouter, Link, useHistory } from "react-router-dom";
 
 export function LazyBackground(props) {
   const [source, setSource] = useState(null);
-
   useEffect(() => {
     const { src } = props;
 
@@ -37,6 +41,9 @@ export function LazyBackground(props) {
 }
 
 export function CatalogList() {
+  //const history = useHistory();
+
+  //const popUpRef = useRef(new maplibreGl.Popup({ offset: 15 }));
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
@@ -44,7 +51,10 @@ export function CatalogList() {
 
   // ADD MAP MARKERS TO MAP
   // WORK IN PROGRESS
-  /* useEffect(() => {
+  // TODO: Remove / close popup on cataloglist unmount
+  // TODO: Prettify popup component
+
+  /*   useEffect(() => {
     if (MAP && contents && contents.results) {
       const centroids = contents.results
         .filter((c) => c.the_geom)
@@ -56,6 +66,9 @@ export function CatalogList() {
               name: c.name,
               description: c.description,
               thumbnail_image: c.thumbnail_image,
+              category: c.category,
+              availability: c.availability,
+              acquisition_date: c.acquisition_date,
             },
           };
         });
@@ -94,58 +107,26 @@ export function CatalogList() {
         // Copy coordinates array.
         const properties = e.features[0].properties;
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const popupDivContainer = document.createElement("div");
-        const PopupLink = () => (
-          <h5
-            onClick={navigate.replace(
-              `collection?c=${properties.collection_id}`
-            )}
-          >
-            {properties.name}
-          </h5>
-        );
-        const PopupDescription = () => (
-          <div
-            style={{
-              maxHeight: "200px",
-              overflow: "auto",
-              whiteSpace: "break-spaces",
-            }}
-          >
-            {properties.description}
-          </div>
-        );
-        const PopupImage = () => (
-          <img
-            src={properties.thumbnail_image}
-            alt={properties.name}
-            style={{ width: "220px" }}
-          />
-        );
-        const PopupComponent = () => {
-          return (
-            <>
-              <PopupLink />
-              <PopupImage />
-              <PopupDescription />
-            </>
-          );
-        };
-        ReactDOM.render(<PopupComponent />, popupDivContainer);
-        // Ensure that if the map is zoomed out such that multiple
-        // copies of the feature are visible, the popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
+        const popupNode = document.createElement("div");
 
-        new Popup(popupDivContainer)
+        ReactDOM.render(
+          <Card
+            title={properties.name}
+            onClick={() =>
+              history.push(`/collection?c=${properties.collection_id}`)
+            }
+          >
+            <p>{properties.category}</p>
+          </Card>,
+          popupNode
+        );
+        popUpRef.current
           .setLngLat(coordinates)
-          .setHTML()
+          .setDOMContent(popupNode)
           .addTo(MAP);
       });
     }
-  }, [MAP, state, contents]); */
+  }, [MAP, state, contents, history]); */
 
   //if results returned, notify how many with toast
   useEffect(() => {

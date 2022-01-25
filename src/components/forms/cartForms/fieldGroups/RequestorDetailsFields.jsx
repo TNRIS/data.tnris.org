@@ -1,5 +1,5 @@
 import { Form, Input, Select } from "antd";
-import { industriesList, stateNames } from "../commonFieldOptions";
+import { industriesList, stateNames } from "../../commonFieldOptions";
 
 export function RequestorDetailsFields({ form }) {
   return (
@@ -45,6 +45,9 @@ export function RequestorDetailsFields({ form }) {
         <Input />
       </Form.Item>
       <Form.Item label="Email" name="Email" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="Organization" name="Organization" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item label="Industry" name="Industry" rules={[{ required: true }]}>

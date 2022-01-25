@@ -2,7 +2,7 @@ import bbox from "@turf/bbox";
 import { multiPolygon, polygon } from "@turf/helpers";
 
 export const zoomToFeatures = (map, features, padding = 100) => {
-  console.log(features)
+  //console.log(features)
   if (map) {
     try{
       switch(features.type){

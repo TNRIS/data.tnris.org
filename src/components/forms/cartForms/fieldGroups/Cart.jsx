@@ -1,11 +1,11 @@
 import { Collapse, Empty } from "antd";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { cartAtom } from "../../../atoms/cartAtoms";
+import { cartAtom } from "../../../../atoms/cartAtoms";
 import { CartItem } from "./CartItem";
-import { DeleteCartItem } from "./DeleteCartItem";
+import { CartDeleteItem } from "./CartDeleteItem";
 
-export function CartItemList() {
+export function Cart() {
   const cart = useRecoilValue(cartAtom);
   return (
     <>
@@ -23,7 +23,7 @@ export function CartItemList() {
                 </Link>
               }
               extra={
-                <DeleteCartItem collection_id={cart[itemKey].collection_id} />
+                <CartDeleteItem collection_id={cart[itemKey].collection_id} />
               }
             >
               <CartItem cartItem={cart[itemKey]} key={itemKey + "_" + index} />

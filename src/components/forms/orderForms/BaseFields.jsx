@@ -1,4 +1,5 @@
 import { Form, Radio } from "antd";
+import { useState } from "react";
 import { DescriptionUpload } from "./DescriptionUpload";
 
 const orderTypeOptions = [
@@ -21,6 +22,7 @@ const descriptionTypeOptions = [
 ];
 
 export function BaseFields({ form }) {
+  const [coverage, setCoverage] = useState(undefined);
   return (
     <>
       <Form.Item
@@ -29,33 +31,23 @@ export function BaseFields({ form }) {
         rules={[{ required: true }]}
       >
         <Radio.Group
+          value={coverage}
+          onChange={(v) => setCoverage(v.target.value)}
           options={orderTypeOptions}
           optionType="button"
         />
       </Form.Item>
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) =>
-          prevValues["Coverage"] !== currentValues["Coverage"]
-        }
-      >
-        {({ getFieldValue }) => {
-          return getFieldValue("Coverage") === "Partial" ? (
-            <Form.Item
-              label="How will you describe the extent of the data you need?"
-              name="Type"
-              rules={[{ required: true }]}
-            >
-              <Radio.Group
-                optionType="button"
-                options={descriptionTypeOptions}
-              />
-            </Form.Item>
-          ) : (
-            form.setFieldsValue({ "Type": null })
-          );
-        }}
-      </Form.Item>
+
+      {coverage === "Partial" && (
+        <Form.Item
+          label="How will you describe the extent of the data you need?"
+          name="Type"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group optionType="button" options={descriptionTypeOptions} />
+        </Form.Item>
+      )}
+
       <Form.Item
         noStyle
         shouldUpdate={(prevValues, currentValues) =>
@@ -63,7 +55,7 @@ export function BaseFields({ form }) {
         }
       >
         {({ getFieldValue }) => (
-          <DescriptionUpload description={getFieldValue("Type")}/>
+          <DescriptionUpload description={getFieldValue("Type")} />
         )}
       </Form.Item>
     </>
