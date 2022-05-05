@@ -44,7 +44,7 @@ export function CatalogList() {
   const history = useHistory();
 
   const popUpRef = useRef(
-    new maplibreGl.Popup({ offset: 15, closeButton: false })
+    new maplibreGl.Popup({ offset: 15, closeButton: false, className: "MapCard" })
   );
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
@@ -106,7 +106,7 @@ export function CatalogList() {
         const properties = e.features[0].properties;
         const coordinates = e.features[0].geometry.coordinates.slice();
         const popupNode = document.createElement("div");
-
+        popupNode.setAttribute("class", "MapCard")
         ReactDOM.render(
           <CatalogMapCard
             collection={properties}
@@ -115,6 +115,7 @@ export function CatalogList() {
           />,
           popupNode
         );
+        
         popUpRef.current
           .setLngLat(coordinates)
           .setDOMContent(popupNode)
