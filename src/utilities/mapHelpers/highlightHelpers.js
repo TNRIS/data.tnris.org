@@ -2,13 +2,14 @@ import bboxPolygon from "@turf/bbox-polygon";
 
 export const removeCoverageLayer = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {
-    map.removeLayer("collection-coverage-layer");
     map.removeLayer("collection-coverage-outline-layer");
+    map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
   }
 };
 export const addCoverageLayer = (map, coverage) => {
   if (map && map.getSource("collection-coverage-source")) {
+    map.removeLayer("collection-coverage-outline-layer")
     map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
   }

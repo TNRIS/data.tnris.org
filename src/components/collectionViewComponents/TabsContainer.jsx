@@ -7,7 +7,7 @@ import {
   Row,
   Skeleton,
   Spin,
-  Tabs
+  Tabs,
 } from "antd";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -16,11 +16,13 @@ import {
   useRecoilState,
   useRecoilValue,
   useRecoilValueLoadable,
-  useSetRecoilState
+  useSetRecoilState,
 } from "recoil";
 import {
   fetchAreaTypesByCollectionIdSelector,
-  fetchCollectionByIdSelector
+  fetchCollectionByIdSelector,
+  removeCollectionExtent,
+  showCollectionExtentByCollectionId,
 } from "../../atoms/collectionsAtoms";
 import { mapAtom } from "../../atoms/mapAtoms";
 // local imports
@@ -50,10 +52,13 @@ export default function CollectionTabsContainer({ collection }) {
   const { state: AreaTypesState, contents: AreaTypesContents } =
     useRecoilValueLoadable(fetchAreaTypesByCollectionIdSelector(collection_id));
 
+  const showExtent = useSetRecoilState(
+    showCollectionExtentByCollectionId(collection_id)
+  );
+  const removeExtent = useSetRecoilState(removeCollectionExtent);
   // Add WMS / Preview Layers when map initialized and collectionContents retreived
   useEffect(() => {
     if (map && collectionContents) {
-      setTimeout(() => removeCoverageLayer(map), 1200);
       //console.log(collectionContents);
       if (collectionContents.wms_link) {
         setMapSources((prev) => {
@@ -180,7 +185,7 @@ export default function CollectionTabsContainer({ collection }) {
         ]);
       }
     }
-  }, [map, collectionContents, setMapSources, setMapLayers]);
+  }, [map, collectionContents, setMapSources, setMapLayers, showExtent]);
   //remove preview layers and sources on unmounting with cleanup fn
   useEffect(() => {
     return () => {
@@ -263,6 +268,18 @@ export default function CollectionTabsContainer({ collection }) {
   const handleTabChange = (key) => {
     setActiveTab(key);
   };
+
+  useEffect(() => {
+    if (map && collectionContents) {
+      setTimeout(() => removeCoverageLayer(map), 1200);
+      if (collectionContents.category?.includes("Lidar")) {
+        setTimeout(() => showExtent(), 1400);
+      }
+    }
+    return () => {
+      removeExtent();
+    };
+  }, [showExtent, removeExtent, map, collectionContents]);
 
   return (
     <>

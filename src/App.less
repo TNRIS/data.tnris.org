@@ -24,14 +24,17 @@
   .BrandBar {
     min-width: 25%;
     grid-area: header;
+
     .HeaderLogo {
       display: flex;
       align-items: center;
       color: white;
       width: fit-content;
+
       .TnrisLogo {
         width: 4rem;
       }
+
       a {
         color: white;
       }
@@ -50,22 +53,27 @@
   .KeywordSearchBar {
     width: 100%;
   }
+
   .GeoFilterSearchBar {
     width: 100%;
   }
+
   @media (max-width: @screen-md) {
     width: 100%;
     min-width: 100%;
     max-width: 360px;
+
     .KeywordSearchBar {
       width: 100%;
       padding: calc(@padding-xs / 2) 0px;
     }
+
     .GeoFilterSearchBar {
       width: 100%;
     }
   }
 }
+
 .FilterRow {
   display: flex;
   gap: @padding-xs;
@@ -73,14 +81,17 @@
   padding: @padding-xs @padding-md @padding-md @padding-md;
   //background: #2a2b2e;
 }
+
 .FilterBar {
   gap: calc(@padding-xs / 2);
 }
+
 .FilterControls {
   margin: 0;
   padding: 0;
   list-style: none;
 }
+
 .content {
   grid-area: content;
   overflow: hidden;
@@ -96,6 +107,7 @@
   a {
     color: white;
   }
+
   .footerLink {
     color: white;
     padding: @padding-xs;
@@ -108,9 +120,11 @@
 
   .MapContainer {
     height: 100%;
+
     @media (max-width: @screen-lg) {
       height: 30%;
     }
+
     @media (min-width: @screen-lg) {
       height: 100%;
     }
@@ -130,6 +144,7 @@
 
   .LeftPanelContainer {
     margin: 0;
+
     @media (max-width: @screen-lg) {
       height: 70%;
 
@@ -137,13 +152,16 @@
         height: 100%;
       }
     }
+
     @media (min-width: @screen-lg) {
       height: 100%;
     }
+
     .CatalogHeaderControlPanel {
       border-bottom: "solid 1px grey";
       box-shadow: @shadow-1-down;
     }
+
     .CatalogGrid {
       padding: 8px;
       display: grid;
@@ -203,6 +221,7 @@
             }
           }
         }
+
         .CatalogCardMetaTagContainer {
           padding: 0 0.125rem 0.5rem 0;
         }
@@ -219,12 +238,15 @@
 
     #TabContentContainer {
       display: contents;
+
       .ant-tabs-nav {
         margin-bottom: 0;
       }
+
       .ant-tabs-content-holder {
         background: white;
         overflow: hidden auto;
+
         .search,
         #MetadataTabContentContainer {
           padding: @padding-xs;
@@ -234,10 +256,29 @@
           }
         }
       }
+
       .ant-card-body::before {
         display: none;
       }
     }
+  }
+}
+
+.CatalogCard .MapCard {
+  border-radius: .4rem;
+  .CollectionCardOverlay {
+    padding: .4rem;
+    background: linear-gradient(#000, rgba(0, 0, 0, 0.301));
+  }
+
+  h3 {
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px black;
+  }
+
+  :hover {
+    cursor: pointer;
   }
 }
 
@@ -259,3 +300,8 @@
 
 // ANT-DESIGN CLASS OVERRIDES
 
+// MAPLIBRE STYLE CLASS OVERRIDES
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  background: none;
+}
