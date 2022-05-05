@@ -1,9 +1,10 @@
-//import { useRef } from "react";
-//import ReactDOM from "react-dom";
+import centerOfMass from "@turf/center-of-mass";
 import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
-import { useEffect, useState } from "react";
+import maplibreGl from "maplibre-gl";
+import { useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
+import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
-//import centerOfMass from "@turf/center-of-mass";
 import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
 import { mapAtom } from "../../atoms/mapAtoms";
 import { ClearAllFilters } from "./filterBarComponents/ClearAllFilters";
@@ -12,10 +13,9 @@ import { GeoFilterDrawToggle } from "./filterBarComponents/GeoFilterDrawToggle";
 import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
 import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
+import { CatalogMapCard } from "./MapCard";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { ViewMapSwitch } from "./ViewMapSwitch";
-//import maplibreGl from "maplibre-gl";
-//import { BrowserRouter, Link, useHistory } from "react-router-dom";
 
 export function LazyBackground(props) {
   const [source, setSource] = useState(null);
@@ -41,9 +41,11 @@ export function LazyBackground(props) {
 }
 
 export function CatalogList() {
-  //const history = useHistory();
+  const history = useHistory();
 
-  //const popUpRef = useRef(new maplibreGl.Popup({ offset: 15 }));
+  const popUpRef = useRef(
+    new maplibreGl.Popup({ offset: 15, closeButton: false })
+  );
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
@@ -54,7 +56,7 @@ export function CatalogList() {
   // TODO: Remove / close popup on cataloglist unmount
   // TODO: Prettify popup component
 
-  /*   useEffect(() => {
+  useEffect(() => {
     if (MAP && contents && contents.results) {
       const centroids = contents.results
         .filter((c) => c.the_geom)
@@ -69,6 +71,7 @@ export function CatalogList() {
               category: c.category,
               availability: c.availability,
               acquisition_date: c.acquisition_date,
+              the_geom: JSON.stringify(c.the_geom),
             },
           };
         });
@@ -95,11 +98,6 @@ export function CatalogList() {
           "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.5, 15, 1],
           "icon-allow-overlap": true,
           "icon-anchor": "center",
-          "text-field": ["get", "name"],
-          "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-          "text-size": ["interpolate", ["linear"], ["zoom"], 5, 1, 15, 24],
-          "text-anchor": "bottom",
-          "text-optional": true,
         },
       });
 
@@ -110,14 +108,11 @@ export function CatalogList() {
         const popupNode = document.createElement("div");
 
         ReactDOM.render(
-          <Card
-            title={properties.name}
-            onClick={() =>
-              history.push(`/collection?c=${properties.collection_id}`)
-            }
-          >
-            <p>{properties.category}</p>
-          </Card>,
+          <CatalogMapCard
+            collection={properties}
+            map={MAP}
+            history={history}
+          />,
           popupNode
         );
         popUpRef.current
@@ -126,7 +121,7 @@ export function CatalogList() {
           .addTo(MAP);
       });
     }
-  }, [MAP, state, contents, history]); */
+  }, [MAP, state, contents, history]);
 
   //if results returned, notify how many with toast
   useEffect(() => {
