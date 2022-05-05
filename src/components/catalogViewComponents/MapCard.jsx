@@ -42,7 +42,7 @@ export function CatalogMapCard({ collection, map, history }) {
             {collection.name}
           </h3>
 
-          <Row gutter={[8, 0]}>
+          <Row gutter={[8, 4]}>
             <Col span={24} className="CatalogCardMetaTagContainer MapCard">
               <Row>
                 <Tag
