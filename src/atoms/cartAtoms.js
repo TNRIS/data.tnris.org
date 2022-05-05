@@ -7,7 +7,7 @@ const localStorageEffect =
     if (savedValue != null) {
       setSelf(JSON.parse(savedValue));
     } else {
-      setSelf({})
+      setSelf({});
     }
     onSet((newValue) => {
       if (newValue instanceof DefaultValue) {
