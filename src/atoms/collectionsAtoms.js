@@ -1,7 +1,14 @@
 import { message } from "antd";
 import { atom, selector, selectorFamily } from "recoil";
 import { AREA_TYPES } from "../constants/areaTypes";
-import { addCoverageLayer, removeCoverageLayer } from "../utilities/mapHelpers/highlightHelpers";
+import {
+  collectionCoverageLayerStyle,
+  collectionCoverageOutlineLayerStyle,
+} from "../constants/mapbox-styles/collectionExtent";
+import {
+  addCoverageLayer,
+  removeCoverageLayer,
+} from "../utilities/mapHelpers/highlightHelpers";
 import { recursiveAreaTypesFetcher } from "../utilities/recursiveFetcher";
 import { mapAtom } from "./mapAtoms";
 
@@ -67,33 +74,38 @@ export const fetchResourcesByCollectionIdAndAreaTypeIDSelector = selectorFamily(
 
 export const showCollectionExtentByCollectionId = selectorFamily({
   key: "fetchCollectionExtentByCollectionId",
-  set: (collectionId) => async ({get}) => {
-    const map = get(mapAtom);
-    const response = await fetch(
-      `https://api.tnris.org/api/v1/collections_catalog?collection_id=${collectionId}`
-    );
-    const resp = await response.json()
-    const geom = resp.results[0].the_geom
+  set:
+    ({
+      collectionId,
+      outlineStyle,
+      fillStyle,
+    }) =>
+    async ({ get }) => {
+      const map = get(mapAtom);
+      const response = await fetch(
+        `https://api.tnris.org/api/v1/collections_catalog?collection_id=${collectionId}`
+      );
+      const resp = await response.json();
+      const geom = resp.results[0].the_geom;
 
-    addCoverageLayer(map, geom)
-    message.info({
-      content: `${resp.results[0].name} extent layer added to map`,
-      key: "extentLayerNotification",
-      style: { position: "fixed", top: "4.8rem", right: "2.4rem" },
-    })
-    console.log("added collection extent layer to map")
-  },
+      addCoverageLayer(map, geom, outlineStyle, fillStyle);
+      message.info({
+        content: `${resp.results[0].name} extent layer added to map`,
+        key: "extentLayerNotification",
+        style: { position: "fixed", top: "4.8rem", right: "2.4rem" },
+      });
+      console.log("added collection extent layer to map");
+    },
 });
 
 export const removeCollectionExtent = selector({
   key: "removeCollectionExtent",
-  set:
-    ({get}) => {
-      const map = get(mapAtom);
-      removeCoverageLayer(map)
-      console.log("removed collection extent layer from map")
-    }
-})
+  set: ({ get }) => {
+    const map = get(mapAtom);
+    removeCoverageLayer(map);
+    console.log("removed collection extent layer from map");
+  },
+});
 
 export const collectionAreasMapSelectionAtom = atom({
   key: "collectionAreasMapSelectionAtom",

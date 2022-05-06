@@ -25,6 +25,11 @@ import {
   showCollectionExtentByCollectionId,
 } from "../../atoms/collectionsAtoms";
 import { mapAtom } from "../../atoms/mapAtoms";
+import {
+  collectionCoverageLayerStyle,
+  collectionCoverageLidarOutlineLayerStyle,
+  collectionCoverageOutlineLayerStyle,
+} from "../../constants/mapbox-styles/collectionExtent";
 // local imports
 import useQueryParam from "../../utilities/customHooks/useQueryParam";
 import { removeCoverageLayer } from "../../utilities/mapHelpers/highlightHelpers";
@@ -53,7 +58,11 @@ export default function CollectionTabsContainer({ collection }) {
     useRecoilValueLoadable(fetchAreaTypesByCollectionIdSelector(collection_id));
 
   const showExtent = useSetRecoilState(
-    showCollectionExtentByCollectionId(collection_id)
+    showCollectionExtentByCollectionId({
+      collectionId: collection_id,
+      outlineStyle: collectionCoverageLidarOutlineLayerStyle,
+      fillStyle: collectionCoverageLayerStyle
+    })
   );
   const removeExtent = useSetRecoilState(removeCollectionExtent);
   // Add WMS / Preview Layers when map initialized and collectionContents retreived
@@ -185,7 +194,7 @@ export default function CollectionTabsContainer({ collection }) {
         ]);
       }
     }
-  }, [map, collectionContents, setMapSources, setMapLayers, showExtent]);
+  }, [map, collectionContents, setMapSources, setMapLayers]);
   //remove preview layers and sources on unmounting with cleanup fn
   useEffect(() => {
     return () => {
