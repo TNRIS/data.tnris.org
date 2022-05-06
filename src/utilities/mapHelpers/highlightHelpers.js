@@ -1,4 +1,6 @@
 import bboxPolygon from "@turf/bbox-polygon";
+import { collectionCoverageLayerStyle, collectionCoverageOutlineLayerStyle } from "../../constants/mapbox-styles/collectionExtent";
+import { geosearchLayer } from "../../constants/mapbox-styles/geosearch";
 
 export const removeCoverageLayer = (map) => {
   if (map && map.getLayer("collection-coverage-layer")) {
@@ -7,9 +9,14 @@ export const removeCoverageLayer = (map) => {
     map.removeSource("collection-coverage-source");
   }
 };
-export const addCoverageLayer = (map, coverage) => {
+export const addCoverageLayer = (
+  map, 
+  coverage, 
+  outlineStyle = collectionCoverageOutlineLayerStyle, 
+  fillStyle = collectionCoverageLayerStyle
+  ) => {
   if (map && map.getSource("collection-coverage-source")) {
-    map.removeLayer("collection-coverage-outline-layer")
+    map.removeLayer("collection-coverage-outline-layer");
     map.removeLayer("collection-coverage-layer");
     map.removeSource("collection-coverage-source");
   }
@@ -18,29 +25,8 @@ export const addCoverageLayer = (map, coverage) => {
       type: "geojson",
       data: coverage,
     });
-    map.addLayer({
-      id: "collection-coverage-layer",
-      type: "fill",
-      source: "collection-coverage-source",
-      minzoom: 2,
-      maxzoom: 24,
-      paint: {
-        "fill-color": "#73808c",
-        "fill-opacity": 0.25,
-        "fill-outline-color": "#73808C",
-      },
-    });
-    map.addLayer({
-      id: "collection-coverage-outline-layer",
-      type: "line",
-      source: "collection-coverage-source",
-      minzoom: 2,
-      maxzoom: 24,
-      paint: {
-        "line-color": "#fff",
-        "line-width": 2,
-      },
-    });
+    map.addLayer(fillStyle);
+    map.addLayer(outlineStyle);
   }
 };
 // Highlight a selected area type in the map
@@ -71,17 +57,7 @@ export const addGeoSearchBboxToMap = (map, bboxArray) => {
       type: "geojson",
       data: bboxPolygon(bboxArray),
     });
-    map.addLayer({
-      id: "geosearch-layer",
-      type: "line",
-      source: "geosearch-source",
-      layout: {},
-      paint: {
-        "line-color": "red",
-        "line-opacity": 1,
-        "line-width": 4,
-      },
-    });
+    map.addLayer(geosearchLayer);
   }
 };
 export const removeGeoSearchBboxFromMap = (map) => {

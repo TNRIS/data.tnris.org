@@ -1,9 +1,13 @@
-import centerOfMass from "@turf/center-of-mass";
+//import centerOfMass from "@turf/center-of-mass";
 import { Col, Empty, Input, message, PageHeader, Spin } from "antd";
-import maplibreGl from "maplibre-gl";
-import { useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
-import { useHistory } from "react-router-dom";
+//import maplibreGl from "maplibre-gl";
+import {
+  useEffect,
+  //useRef,
+  useState,
+} from "react";
+//import ReactDOM from "react-dom";
+//import { useHistory } from "react-router-dom";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { fetchCatalogCollectionsSelector } from "../../atoms/catalogAtoms";
 import { mapAtom } from "../../atoms/mapAtoms";
@@ -13,7 +17,7 @@ import { GeoFilterDrawToggle } from "./filterBarComponents/GeoFilterDrawToggle";
 import { GeoFilterSearchBar } from "./filterBarComponents/GeoFilterSearchBar";
 import { KeywordSearchBar } from "./filterBarComponents/KeywordSearchBar";
 import { CatalogListCard } from "./ListCard";
-import { CatalogMapCard } from "./MapCard";
+//import { CatalogMapCard } from "./MapCard";
 import { CatalogPaginationControls } from "./PaginationControls";
 import { ViewMapSwitch } from "./ViewMapSwitch";
 
@@ -41,11 +45,11 @@ export function LazyBackground(props) {
 }
 
 export function CatalogList() {
-  const history = useHistory();
+  /* const history = useHistory();
 
   const popUpRef = useRef(
     new maplibreGl.Popup({ offset: 15, closeButton: false, className: "MapCard" })
-  );
+  ); */
   const { state, contents } = useRecoilValueLoadable(
     fetchCatalogCollectionsSelector
   );
@@ -56,7 +60,7 @@ export function CatalogList() {
   // TODO: Remove / close popup on cataloglist unmount
   // TODO: Prettify popup component
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (MAP && contents && contents.results) {
       const centroids = contents.results
         .filter((c) => c.the_geom)
@@ -122,7 +126,7 @@ export function CatalogList() {
           .addTo(MAP);
       });
     }
-  }, [MAP, state, contents, history]);
+  }, [MAP, state, contents, history]); */
 
   //if results returned, notify how many with toast
   useEffect(() => {
