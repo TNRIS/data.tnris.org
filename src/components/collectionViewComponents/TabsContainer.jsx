@@ -28,7 +28,6 @@ import { mapAtom } from "../../atoms/mapAtoms";
 import {
   collectionCoverageLayerStyle,
   collectionCoverageLidarOutlineLayerStyle,
-  collectionCoverageOutlineLayerStyle,
 } from "../../constants/mapbox-styles/collectionExtent";
 // local imports
 import useQueryParam from "../../utilities/customHooks/useQueryParam";

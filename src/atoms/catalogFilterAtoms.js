@@ -20,6 +20,7 @@ export const catalogFiltersOptions = atom({
       "Reference Grid",
       "Transportation",
       "Weather",
+      "Bathymetry"
     ],
     file_type: [
       "DEM",
