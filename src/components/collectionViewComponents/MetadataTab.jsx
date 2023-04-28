@@ -117,6 +117,30 @@ function ContemporaryMeta({ metadata }) {
             ))}
         </Collapse.Panel>
       </Collapse>
+
+      {metadata.s_three_key && metadata.s_three_key.length &&
+        <Collapse>
+          <Collapse.Panel
+            header={
+              <h3
+                style={{
+                  fontVariant: "small-caps",
+                  fontWeight: "800",
+                  margin: 0,
+                }}
+              >
+                additional collection download links
+              </h3>
+            }
+          >
+          <h4 style={{fontVariant: "small-caps", fontWeight: "800"}}>downloadable data store for this collection</h4>
+          <a href={"https://tnris-data-warehouse.s3.us-east-1.amazonaws.com/index.html?prefix=LCD/collection/" + metadata.s_three_key}>Link to our data store for this collection</a>
+          <br /><br />
+          <h4 style={{fontVariant: "small-caps", fontWeight: "800"}}>aws cli uri for this collection (will require aws account)</h4>
+          {"s3://tnris-data-warehouse/LCD/collection/" + metadata.s_three_key}
+          </Collapse.Panel>
+        </Collapse>
+      }
       <CollectionMapService metadata={metadata} />
       <CollectionSupplementalDownloads metadata={metadata} />
       <div style={{ borderBottom: "1 px solid grey", padding: ".25rem" }}>
