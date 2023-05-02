@@ -7,9 +7,10 @@ import { cartOpenAtom } from "../../atoms/cartAtoms";
 import { FooterContainer } from "../FooterContainer";
 import { CartForm } from "../forms/cartForms/CartForm";
 import { HeaderContainer } from "../headerComponents/HeaderContainer";
+import { ModalBackground } from "../modal/ModalBackground";
 
 export function RootLayout() {
-  const [cartOpen, setCartOpen] = useRecoilState(cartOpenAtom)
+  const [cartOpen, setCartOpen] = useRecoilState(cartOpenAtom);
 
   return (
     <BrowserRouter>
@@ -24,7 +25,7 @@ export function RootLayout() {
             width={window.innerWidth < 1000 ? "90%" : "40%"}
             placement="right"
             closable
-            onClose={ () => setCartOpen(false) }
+            onClose={() => setCartOpen(false)}
             visible={cartOpen}
             getContainer={false}
             style={{ position: "absolute" }}
@@ -34,6 +35,8 @@ export function RootLayout() {
           </Drawer>
         </Content>
         {/** Footer contained in footer grid-area */}
+        <ModalBackground />
+
         <FooterContainer className="footer" />
       </Layout>
     </BrowserRouter>
