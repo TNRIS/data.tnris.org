@@ -35,16 +35,17 @@ export function ModalBackground({ children }) {
           <hr />
           <p>
             <strong>Starting Monday, May 15th</strong>, you may notice some
-            aesthetic changes to the TNRIS data hub. These changes serve a dual
+            changes to data.tnris.org. These changes serve a dual
             purpose of improving site accessibility and providing an interface
-            to make payments online. The changes, aside from the data payment
-            portal, are solely aesthetic and you are able to continue using
-            the data hub as usual. If you experience any issues, please report
-            them using the general contact form found in the footer of this
-            webpage.
+            to make payments online for custom data orders.
+            Custom data orders are submitted in the exact same way they have been.
+            However, you will receive an email upon submission with a link to check your order status.
+            Once our team has processed your order and the cost of your order has been calculated, you will receive
+            another email with a link to the data.tnris.org payment portal. From here you will be able to submit
+            your electronic payment of the internet.
           </p>
           <p>
-            Thank you for your continued support as we continue efforts to
+            Thank you for your continued support as we proceed with our efforts to
             modernize and improve our data delivery services. We are dedicated
             to continually improving our public data services, and we hope that
             these changes make getting the data you need easier and faster.
