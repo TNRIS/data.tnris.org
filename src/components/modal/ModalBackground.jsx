@@ -31,26 +31,16 @@ export function ModalBackground({ children }) {
     return (
       <section style={modalWrapperStyle}>
         <div style={modalContainerStyle}>
-          <h1>Upcoming changes to data.tnris.org</h1>
+          <h1>New Updates Are Coming...</h1>
           <hr />
           <p>
-            <strong>Starting Monday, May 24th</strong>, you may notice some
-            changes to data.tnris.org. These changes serve a dual
-            purpose of improving site accessibility and providing an interface
-            to make payments online for custom data orders.
-            Custom data orders are submitted in the exact same way they have been.
-            However, you will receive an email upon submission with a link to check your order status.
-            Once our team has processed your order and the cost of your order has been calculated, you will receive
-            another email with a link to the data.tnris.org payment portal. Follow on-screen guidance to submit your electronic payment.
+            We're working on necessary maintenance changes for data.tnris.org and a new feature for making payments online for custom data orders. We appreciate your patience as we roll these out in the coming days.
           </p>
           <p>
-            We thank you for your continued support as we proceed with our efforts to
-            modernize and improve our data delivery services. We are dedicated
-            to continually improving our public data services, and we hope that
-            these changes make getting the data you need easier and faster.
+            Thank you for your support as we modernize and improve our data delivery services to better serve you.
           </p>
           <p>Best Regards,</p>
-          <h4>TNRIS</h4>
+          <h4>TNRIS Team</h4>
           <hr />
           <div style={modalButtonsBarStyle}>
             <Checkbox value={doNotShow} onClick={toggleDoNotShow}>
