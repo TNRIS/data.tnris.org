@@ -34,7 +34,7 @@ export function ModalBackground({ children }) {
           <h1>Upcoming changes to data.tnris.org</h1>
           <hr />
           <p>
-            <strong>Starting Monday, May 15th</strong>, you may notice some
+            <strong>Starting Monday, May 24th</strong>, you may notice some
             changes to data.tnris.org. These changes serve a dual
             purpose of improving site accessibility and providing an interface
             to make payments online for custom data orders.
